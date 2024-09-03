@@ -13,7 +13,7 @@ import ProductCardRowStyleTwo from "../Helpers/Cards/ProductCardRowStyleTwo";
 import LoaderStyleOne from "../Helpers/Loaders/LoaderStyleOne";
 import ServeLangItem from "../Helpers/ServeLangItem";
 
-export default function AllProductPage({ response, sellerInfo }) {
+export default function AllServicePage({ response, sellerInfo }) {
   console.log(response,"resyy")
   const [resProducts, setProducts] = useState(null);
   const [nxtPage, setNxtPage] = useState(null);
@@ -22,12 +22,12 @@ export default function AllProductPage({ response, sellerInfo }) {
   const [categoriesFilter, setCategoriesFilter] = useState(null);
   const [brands, setBrands] = useState(null);
   const [cardViewStyle, setCardViewStyle] = useState("col");
-  console.log(resProducts,"resyy2")
+  console.log(resProducts,"resyy21")
   const products =
     resProducts &&
     resProducts.length > 0 &&
     resProducts.map((item) => {
-      return {
+      return {  
         id: item.id,
         title: item.name,
         slug: item.slug,
@@ -59,9 +59,9 @@ export default function AllProductPage({ response, sellerInfo }) {
         return {
           ...varient,
           active_variant_items:
-            varient.active_variant_items &&
-            varient.active_variant_items.length > 0 &&
-            varient.active_variant_items.map((variant_item) => {
+            varient?.active_variant_items &&
+            varient?.active_variant_items?.length > 0 &&
+            varient?.active_variant_items.map((variant_item) => {
               if (variant_item.name === name) {
                 return {
                   ...variant_item,
@@ -137,8 +137,8 @@ export default function AllProductPage({ response, sellerInfo }) {
   const [filterToggle, setToggle] = useState(false);
 
   useEffect(() => {
-    setProducts(response.data && response.data.products.data);
-    setNxtPage(response.data && response.data.products.next_page_url);
+    setProducts(response.data && response.data.services.data);
+    setNxtPage(response.data && response.data.services.next_page_url);
     setCategoriesFilter(
       response.data &&
       response.data.categories.length > 0 &&
@@ -151,14 +151,14 @@ export default function AllProductPage({ response, sellerInfo }) {
     );
     setVariantsFilter(
       response.data &&
-      response.data.activeVariants.length > 0 &&
-      response.data.activeVariants.map((varient) => {
+      response.data?.activeVariants?.length > 0 &&
+      response.data?.activeVariants.map((varient) => {
         return {
           ...varient,
           active_variant_items:
-            varient.active_variant_items &&
-            varient.active_variant_items.length > 0 &&
-            varient.active_variant_items.map((variant_item) => {
+            varient?.active_variant_items &&
+            varient?.active_variant_items.length > 0 &&
+            varient?.active_variant_items.map((variant_item) => {
               return {
                 ...variant_item,
                 selected: false,
@@ -178,14 +178,14 @@ export default function AllProductPage({ response, sellerInfo }) {
       })
     );
     const min = response.data &&
-      response.data.products.data &&
+      response.data.services.data &&
       Math.min(
-        ...response.data.products.data.map((item) => parseInt(item.price))
+        ...response.data.services.data.map((item) => parseInt(item.price))
       );
     const max = response.data &&
-      response.data.products.data &&
+      response.data.services.data &&
       Math.max(
-        ...response.data.products.data.map((item) => parseInt(item.price))
+        ...response.data.services.data.map((item) => parseInt(item.price))
       );
     const volumeArr = [min, max];
     setVolume(volumeArr);
@@ -195,12 +195,12 @@ export default function AllProductPage({ response, sellerInfo }) {
       const min =
         response.data &&
         Math.min(
-          ...response.data.products.data.map((item) => parseInt(item.price))
+          ...response.data.services.data.map((item) => parseInt(item.price))
         );
       const max =
         response.data &&
         Math.max(
-          ...response.data.products.data.map((item) => parseInt(item.price))
+          ...response.data.services.data.map((item) => parseInt(item.price))
         );
       const check =
         selectedVarientFilterItem.length > 0 ||
@@ -243,21 +243,21 @@ export default function AllProductPage({ response, sellerInfo }) {
             : "";
         axios
           .get(
-            `${process.env.NEXT_PUBLIC_BASE_URL}api/search-product?${brandString && brandString
+            `${process.env.NEXT_PUBLIC_BASE_URL}api/search-service?${brandString && brandString
             }${categoryString && categoryString}${variantString && variantString
             }min_price=${volume[0]}&max_price=${volume[1]}${sellerInfo ? `&shop_name=${sellerInfo.seller.slug}` : ""
             }`
           )
           .then((res) => {
-            res.data && res.data.products.data.length > 0
-              ? setProducts(res.data.products.data)
-              : setProducts(response.data.products.data);
+            res.data && res.data.services.data.length > 0
+              ? setProducts(res.data.services.data)
+              : setProducts(response.data.services.data);
           })
           .catch((err) => {
             console.log(err);
           });
       } else {
-        setProducts(response.data.products.data);
+        setProducts(response.data.services.data);
       }
     } else {
       return false;
@@ -493,14 +493,14 @@ export default function AllProductPage({ response, sellerInfo }) {
                   filterToggleHandler={() => setToggle(!filterToggle)}
                   categories={categoriesFilter}
                   brands={brands}
-                  varientHandler={varientHandler}
+                  // varientHandler={varientHandler}
                   categoryHandler={categoryHandler}
                   brandsHandler={brandsHandler}
                   volume={volume}
                   priceMax={
                     response.data &&
                     Math.max(
-                      ...response.data.products.data.map((item) =>
+                      ...response.data.services.data.map((item) =>
                         parseInt(item.price)
                       )
                     )
@@ -508,7 +508,7 @@ export default function AllProductPage({ response, sellerInfo }) {
                   priceMin={
                     response.data &&
                     Math.min(
-                      ...response.data.products.data.map((item) =>
+                      ...response.data.services.data.map((item) =>
                         parseInt(item.price)
                       )
                     )
@@ -598,7 +598,7 @@ export default function AllProductPage({ response, sellerInfo }) {
               </div>
 
               <div className="flex-1">
-                {response.data && response.data.products.data.length > 0 ? (
+                {response.data && response.data.services.data.length > 0 ? (
                   <div className="w-full">
                     <div className="products-sorting w-full bg-white md:h-[70px] flex md:flex-row flex-col md:space-y-0 space-y-5 md:justify-between md:items-center p-[30px] mb-[40px]">
                       <div>
@@ -608,8 +608,8 @@ export default function AllProductPage({ response, sellerInfo }) {
                             {ServeLangItem()?.Showing}
                           </span>{" "}
                           1–
-                          {response.data.products.data.length}{" "}
-                          {ServeLangItem()?.of} {response.data.products.total}{" "}
+                          {response.data.services.data.length}{" "}
+                          {ServeLangItem()?.of} {response.data.services.total}{" "}
                           {ServeLangItem()?.results}
                         </p>
                       </div>

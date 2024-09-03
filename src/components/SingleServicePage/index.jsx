@@ -17,8 +17,7 @@ import Lightbox from "yet-another-react-lightbox";
 import Video from "yet-another-react-lightbox/plugins/video";
 import "yet-another-react-lightbox/styles.css";
 
-export default function SingleProductPage({ details }) {
-    console.log(details,"resydet")
+export default function SingleServicePage({ details }) {
     const [open, setOpen] = useState(false);
     const [photoIndex, setIndex] = useState(0);
     const popupHandler = (value) => {
@@ -130,8 +129,8 @@ export default function SingleProductPage({ details }) {
                                         paths={[
                                             { name: ServeLangItem()?.home, path: "/" },
                                             {
-                                                name: details.product.slug,
-                                                path: `/single-product?slug=${details.product.slug}`
+                                                name: details.service.slug,
+                                                path: `/service?slug=${details.service.slug}`
                                             },
                                         ]}
                                     />
@@ -141,7 +140,7 @@ export default function SingleProductPage({ details }) {
                                 <div className="container-x mx-auto">
                                     {/*key name spelling not correct (gellery)*/}
                                     <ProductView
-                                        product={details.product}
+                                        product={details.service}
                                         images={details.gellery}
                                         reportHandler={ReportHandler}
                                         seller={details.seller ? details.seller : false}

@@ -96,45 +96,49 @@ export default function DefaultLayout({ children }) {
     axios
       .get(`${process.env.NEXT_PUBLIC_BASE_URL}api/website-setup`)
       .then((res) => {
-        // currency
-        const {currencies} = res.data;
-        const getDefaultCurrency = currencies && currencies.length>0 ? currencies.find((item)=>item.is_default==='Yes' || item.is_default==='yes') :{};
-        if(!localStorage.getItem("shopoDefaultCurrency")){
-          localStorage.setItem("shopoDefaultCurrency", JSON.stringify(getDefaultCurrency));
-        }
+        axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/service`)
+        .then((data)=>{
+          const {currencies} = res.data;
+          const getDefaultCurrency = currencies && currencies.length>0 ? currencies.find((item)=>item.is_default==='Yes' || item.is_default==='yes') :{};
+          if(!localStorage.getItem("shopoDefaultCurrency")){
+            localStorage.setItem("shopoDefaultCurrency", JSON.stringify(getDefaultCurrency));
+          }
+          res.data.serviceCategories = data.data;
+          // handle success
+          dispatch(setupAction(res.data));
+          localStorage.setItem(
+            "settings",
+            JSON.stringify(res.data && res.data.setting)
+          );
+          localStorage.setItem(
+            "pusher",
+            JSON.stringify(
+              res.data && res.data.pusher_info ? res.data.pusher_info : null
+            )
+          );
 
-        // handle success
-        dispatch(setupAction(res.data));
-        localStorage.setItem(
-          "settings",
-          JSON.stringify(res.data && res.data.setting)
-        );
-        localStorage.setItem(
-          "pusher",
-          JSON.stringify(
-            res.data && res.data.pusher_info ? res.data.pusher_info : null
-          )
-        );
-
-        if (res.data) {
-          setgTagId(res.data.googleAnalytic.analytic_id);
-          setTwkData({
-            widgetId: res.data.tawk_setting.widget_id,
-            propertyId: res.data.tawk_setting.property_id,
-          });
-          setFbPixel(res.data.facebookPixel);
-          localStorage.setItem("language", JSON.stringify(res.data.language));
-          const checkDefaultExists = localStorage.getItem("language") && localStorage.getItem("shopoDefaultCurrency");
-          if (checkDefaultExists) {
-            setLoad(false);
-            if (!messageWid) {
-              if (localStorage.getItem("pusher")) {
-                const pusher = JSON.parse(localStorage.getItem("pusher"));
-                setMessageWid(pusher);
+          if (res.data) {
+            setgTagId(res.data.googleAnalytic.analytic_id);
+            setTwkData({
+              widgetId: res.data.tawk_setting.widget_id,
+              propertyId: res.data.tawk_setting.property_id,
+            });
+            setFbPixel(res.data.facebookPixel);
+            localStorage.setItem("language", JSON.stringify(res.data.language));
+            const checkDefaultExists = localStorage.getItem("language") && localStorage.getItem("shopoDefaultCurrency");
+            if (checkDefaultExists) {
+              setLoad(false);
+              if (!messageWid) {
+                if (localStorage.getItem("pusher")) {
+                  const pusher = JSON.parse(localStorage.getItem("pusher"));
+                  setMessageWid(pusher);
+                }
               }
             }
           }
-        }
+        })
+        // currency
+        
       })
       .catch((error) => {
         // handle error

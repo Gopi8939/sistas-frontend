@@ -6,16 +6,21 @@ import { useRouter } from "next/router";
 import ServeLangItem from "../ServeLangItem";
 import LoginContext from "../../Contexts/LoginContext";
 import auth from "../../../../utils/auth";
+import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import axios from "axios";
+
 
 export default function SearchBox({ className }) {
   const router = useRouter();
   const [toggleCat, setToggleCat] = useState(false);
+  const [items, setItems] = useState([]);
   const [subToggleCat, setSubToggleCat] = useState(false);
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   const [categories, setCategories] = useState(null);
   const [subCategories, setSubCategoris] = useState(null);
   const [selectedCat, setSelectedCat] = useState(null);
   const [selectedSubCat, setSelectedSubCat] = useState(null);
+  const [action, setAction] = useState("product");
   const [searchKey, setSearchkey] = useState("");
   const loginPopupBoard = useContext(LoginContext);
   useEffect(() => {
@@ -74,6 +79,55 @@ export default function SearchBox({ className }) {
     }
   };
 
+  useEffect(()=>{
+    let fetch = async ()=>{
+      try {
+        let arr=[]
+        if(action === "product"){
+          let res = await axios.get("https://backend.wolferstech.com/api/search-product")
+          res.data.products.data.map((i)=>{
+            arr.push({id:i.id,name:i.short_name})
+          })
+        }else{
+          let res = await axios.get("https://backend.wolferstech.com/api/search-service")
+          res.data.services.data.map((i)=>{
+            console.log(i,"resing")
+            arr.push({id:i.id,name:i.short_name})
+          })
+        }
+        setItems(arr)
+      } catch (error) {
+        console.log(error.message,"mass");
+      }
+    }
+    fetch()
+  },[action])
+
+
+
+  const handleOnSearch = (string, results) => {
+    console.log(string, results);
+  };
+
+  const handleOnHover = (result) => {
+    console.log(result);
+  };
+
+  const handleOnSelect = (item) => {
+    console.log(item);
+  };
+
+  console.log(action,"mass");
+  
+
+  const handleOnFocus = () => {
+    console.log("Focused");
+  };
+
+  const handleOnClear = () => {
+    console.log("Cleared");
+  };
+
   return (
     <>
       <div
@@ -83,14 +137,53 @@ export default function SearchBox({ className }) {
       >
         <div className="flex-1 bg-red-500 h-full">
           <div className="h-full">
-            <input
+            {/* <input
               value={searchKey}
               onKeyDown={(e) => e.key === "Enter" && searchHandler()}
               onChange={(e) => setSearchkey(e.target.value)}
               type="text"
               className="search-input"
               placeholder= "Search Product or Services"
+            /> */}
+            {/* <Select options={options} placeholder="Search" /> */}
+            <ReactSearchAutocomplete
+              items={items}
+              placeholder=""
+              // fuseOptions={{ keys: ["title", "description"] }} // Search on both fields
+              // resultStringKeyName="title" // String to display in the results
+              onSearch={handleOnSearch}
+              onHover={handleOnHover}
+              onSelect={handleOnSelect}
+              onFocus={handleOnFocus}
+              onClear={handleOnClear}
+              showIcon={false}
+              styling={{
+                height: "41px",
+                // border: "1px solid white",
+                backgroundColor: "white",
+                boxShadow: "none",
+                borderRadius:"0px",
+                // hoverBackgroundColor: "lightgreen",
+                color: "darkgreen",
+                fontSize: "14px",
+                fontFamily: "Courier",
+                iconColor: "green",
+                lineColor: "lightgreen",
+                placeholderColor: "darkgreen",
+                clearIconMargin: "3px 8px 0 0",
+                zIndex: 39,
+              }}
             />
+            {/* <ReactSearchAutocomplete
+            items={items}
+            onSearch={handleOnSearch}
+            onHover={handleOnHover}
+            onSelect={handleOnSelect}
+            onFocus={handleOnFocus}
+            onClear={handleOnClear}
+            styling={{ zIndex: 4 }} // To display it on top of the search box below
+            autoFocus
+          /> */}
           </div>
         </div>
         {/* <div className="w-[1px] h-[22px] bg-qgray-border"></div>
@@ -215,6 +308,10 @@ export default function SearchBox({ className }) {
         {/*    </>*/}
         {/*  )}*/}
         {/*</div>*/}
+        <select id="selectSearch" onChange={(e)=>setAction(e.target.value)} style={{height:"40px",outline:"none"}} >
+          <option style={{height:"2033px",padding:"5px 4px"}} value="product" >Product</option>
+          <option style={{height:"2033px",padding:"5px 4px"}} value="service" >Service</option>
+        </select>
         <button
           onClick={searchHandler}
           className="search-btn w-[93px] h-full text-sm font-600"
