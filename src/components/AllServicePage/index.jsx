@@ -14,7 +14,6 @@ import LoaderStyleOne from "../Helpers/Loaders/LoaderStyleOne";
 import ServeLangItem from "../Helpers/ServeLangItem";
 
 export default function AllServicePage({ response, sellerInfo }) {
-  console.log(response,"resyy")
   const [resProducts, setProducts] = useState(null);
   const [nxtPage, setNxtPage] = useState(null);
   const [loading, setLoading] = useState(false);
