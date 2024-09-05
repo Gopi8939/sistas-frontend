@@ -22,6 +22,9 @@ function BecomeServiceProvider() {
   const [location, setLocation] = useState("");
   const [shopName, setName] = useState("");
   const [shopAddress, setAddress] = useState("");
+  const [open_at, setopen_at] = useState("");
+  const [closed_at, setclosed_at] = useState("");
+  const [agree_terms_condition, setagree_terms_condition] = useState("");
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState('');
@@ -117,12 +120,13 @@ function BecomeServiceProvider() {
       const formData = new FormData();
       formData.append("banner_image", uploadCoverImg);
       formData.append("shop_name", shopName);
-      formData.append("provider_name", providerName);
+      formData.append("logo", logoImg);
       formData.append("email", email);
       formData.append("phone", phone);
-      formData.append("state", state);
-      formData.append("city", city);
       formData.append("address", shopAddress);
+      formData.append("open_at", open_at);
+      formData.append("closed_at", closed_at);
+      formData.append("agree_terms_condition", agree_terms_condition);
       // formData.append("gst_number", gstNumber);
       // formData.append("open_at", "10.00AM");
       // formData.append("closed_at", "10.00PM");
@@ -137,7 +141,7 @@ function BecomeServiceProvider() {
       };
       await axios
         .post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}api/user/seller-request?token=${auth().access_token
+          `${process.env.NEXT_PUBLIC_BASE_URL}api/user/service-provider-request?token=${auth().access_token
           }`,
           formData,
           options
@@ -249,6 +253,63 @@ function BecomeServiceProvider() {
                 </div>
                 <div className="mb-5">
                   <InputCom
+                    placeholder={ServeLangItem()?.Open_At}
+                    label={ServeLangItem()?.Open_At + "*"}
+                    name="open_at"
+                    type="open_at"
+                    inputClasses="h-[50px]"
+                    value={open_at}
+                    inputHandler={(e) => setopen_at(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "open_at"))}
+                  />
+                  {errors && Object.hasOwn(errors, "open_at") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.open_at[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
+                    placeholder={ServeLangItem()?.Closed_At}
+                    label={ServeLangItem()?.Closed_At + "*"}
+                    name="closed_at"
+                    type="closed_at"
+                    inputClasses="h-[50px]"
+                    value={closed_at}
+                    inputHandler={(e) => setclosed_at(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "closed_at"))}
+                  />
+                  {errors && Object.hasOwn(errors, "closed_at") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.closed_at[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
+                    placeholder={ServeLangItem()?.Agree_terms_condition}
+                    label={ServeLangItem()?.Agree_terms_condition + "*"}
+                    name="agree_terms_condition"
+                    type="agree_terms_condition"
+                    inputClasses="h-[50px]"
+                    value={agree_terms_condition}
+                    inputHandler={(e) => setAgree_terms_condition(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "agree_terms_condition"))}
+                  />
+                  {errors && Object.hasOwn(errors, "agree_terms_condition") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.agree_terms_condition[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
                     placeholder="0213 *********"
                     label={ServeLangItem()?.phone + "*"}
                     name="phone"
@@ -266,7 +327,7 @@ function BecomeServiceProvider() {
                     ""
                   )}
                 </div>
-                <div className="mb-5 flex">
+                {/* <div className="mb-5 flex">
                   <div className="flex flex-col me-5">
                     <label className="mb-2 text-[13px] text-qgray">State*</label>
                     <select
@@ -305,7 +366,7 @@ function BecomeServiceProvider() {
                   ) : (
                     ""
                   )}
-                </div>
+                </div> */}
 
                 {/*<div className="input-item mb-5">*/}
                 {/*  <h6 className="input-label text-qgray capitalize text-[13px] font-normal block mb-2 ">*/}
@@ -564,7 +625,7 @@ function BecomeServiceProvider() {
               {/*    </div>*/}
               {/*  </div>*/}
               {/*</div>*/}
-              {/* <div className="update-logo w-full mb-9">
+          <div className="update-logo w-full mb-9">
                   <h1 className="text-xl tracking-wide font-bold text-qblack mb-2">
                     {ServeLangItem()?.Update_Logo}
                   </h1>
@@ -619,8 +680,8 @@ function BecomeServiceProvider() {
                       </div>
                     </div>
                   </div>
-                </div> */}
-              {/* <div className="update-cover w-full">
+                </div> 
+            <div className="update-cover w-full">
                   <h1 className="text-xl tracking-wide font-bold text-qblack mb-2">
                     {ServeLangItem()?.Update_Cover}
 
@@ -676,7 +737,7 @@ function BecomeServiceProvider() {
                       </div>
                     </div>
                   </div>
-                </div> */}
+                </div> 
             </div>
             {/* </div> */}
           </div>

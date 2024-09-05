@@ -6,10 +6,11 @@ import Arrow from "../../../Helpers/icons/Arrow";
 import FontAwesomeCom from "../../../Helpers/icons/FontAwesomeCom";
 import Multivendor from "../../../Shared/Multivendor";
 import ServeLangItem from "../../../Helpers/ServeLangItem";
+import axios from "axios";
 export default function Navbar({ className }) {
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   const categoryList = websiteSetup && websiteSetup.payload.productCategories;
-  // console.log(categoryList);
+  const serviceList = websiteSetup && websiteSetup.payload.serviceCategories;
   const mageMenuList = websiteSetup && websiteSetup.payload.megaMenuCategories;
   const megaMenuBanner = websiteSetup && websiteSetup.payload.megaMenuBanner;
   const customPages = websiteSetup && websiteSetup.payload.customPages;
@@ -17,6 +18,9 @@ export default function Navbar({ className }) {
   const [serviceToggle, setServiceToggle] = useState(false);
   const [subCatHeight, setHeight] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [productCategory, setProductCategory] = useState();
+  
+  const [serviceCategory, setServiceCategory] = useState();
   const handleCategoryToggle = () => {
     setCategoryToggle(!categoryToggle);
     setServiceToggle(false);
@@ -25,9 +29,31 @@ export default function Navbar({ className }) {
     setServiceToggle(!serviceToggle);
     setCategoryToggle(false);
   };
+  
+  const apiFetch = async() => {
+    await axios
+    .get(`${process.env.NEXT_PUBLIC_BASE_URL}api/category-list?is_product=1`)
+    .then((res) => {
+      setProductCategory(res);
+      })
+    }
 
-  useEffect(() => {
-    let categorySelector = document.querySelector(".category-dropdown");
+  const apiFetch2 = () => {
+    axios
+    .get(`${process.env.NEXT_PUBLIC_BASE_URL}api/category-list?is_product=0`)
+    .then((res) => {
+      setServiceCategory(res);
+      })
+    }
+
+    console.log(productCategory?.data?.categories,"pro");
+useEffect(()=>{
+  apiFetch()
+  apiFetch2()
+},[])
+
+useEffect(() => {
+  let categorySelector = document.querySelector(".category-dropdown");
     setHeight(categorySelector.offsetHeight);
   }, [categoryToggle]);
   return (
@@ -305,8 +331,8 @@ export default function Navbar({ className }) {
                     }`}
                 >
                   <ul className="categories-list relative">
-                    {categoryList &&
-                      categoryList.map((item) => (
+                    {productCategory?.data?.categories &&
+                      productCategory?.data?.categories.map((item) => (
                         <li key={item.id} className="category-item">
                           <Link
                             href={{
@@ -361,15 +387,15 @@ export default function Navbar({ className }) {
                             </a>
                           </Link>
                           <div
-                            className={`sub-category-lvl-two absolute ltr:left-[270px] rtl:right-[270px] top-0 z-10 w-[270px] ${item.active_sub_categories.length > 0
+                            className={`sub-category-lvl-two absolute ltr:left-[270px] rtl:right-[270px] top-0 z-10 w-[270px] ${item.subcategories.length > 0
                               ? "bg-white"
                               : ""
                               }`}
                             style={{ height: `${subCatHeight}px` }}
                           >
                             <ul className="">
-                              {item.active_sub_categories.length > 0 &&
-                                item.active_sub_categories.map((subItem) => (
+                              {item.subcategories.length > 0 &&
+                                item.subcategories.map((subItem) => (
                                   <li
                                     key={subItem.id}
                                     className="category-item"
@@ -420,7 +446,7 @@ export default function Navbar({ className }) {
                                         </div>
                                       </a>
                                     </Link>
-                                    <div
+                                    {/* <div
                                       className={`sub-category-lvl-three absolute ltr:left-[270px] rtl:right-[270px] top-0 z-10 w-[270px] ${subItem.active_child_categories.length >
                                         0
                                         ? "bg-white"
@@ -461,7 +487,7 @@ export default function Navbar({ className }) {
                                             )
                                           )}
                                       </ul>
-                                    </div>
+                                    </div> */}
                                   </li>
                                 ))}
                             </ul>
@@ -520,12 +546,12 @@ export default function Navbar({ className }) {
                     }`}
                 >
                   <ul className="categories-list relative">
-                    {categoryList &&
-                      categoryList.map((item) => (
+                    {serviceCategory?.data?.categories &&
+                      serviceCategory?.data?.categories.map((item) => (
                         <li key={item.id} className="category-item">
                           <Link
                             href={{
-                              pathname: "/products",
+                              pathname: "/services",
                               query: { category: item.slug },
                             }}
                             passHref
@@ -576,22 +602,22 @@ export default function Navbar({ className }) {
                             </a>
                           </Link>
                           <div
-                            className={`sub-category-lvl-two absolute ltr:left-[270px] rtl:right-[270px] top-0 z-10 w-[270px] ${item.active_sub_categories.length > 0
+                            className={`sub-category-lvl-two absolute ltr:left-[270px] rtl:right-[270px] top-0 z-10 w-[270px] ${item.subcategories.length > 0
                               ? "bg-white"
                               : ""
                               }`}
                             style={{ height: `${subCatHeight}px` }}
                           >
                             <ul className="">
-                              {item.active_sub_categories.length > 0 &&
-                                item.active_sub_categories.map((subItem) => (
+                              {item.subcategories.length > 0 &&
+                                item.subcategories.map((subItem) => (
                                   <li
                                     key={subItem.id}
                                     className="category-item"
                                   >
                                     <Link
                                       href={{
-                                        pathname: "/products",
+                                        pathname: "/services",
                                         query: { sub_category: subItem.slug },
                                       }}
                                       passHref
@@ -635,7 +661,7 @@ export default function Navbar({ className }) {
                                         </div>
                                       </a>
                                     </Link>
-                                    <div
+                                    {/* <div
                                       className={`sub-category-lvl-three absolute ltr:left-[270px] rtl:right-[270px] top-0 z-10 w-[270px] ${subItem.active_child_categories.length >
                                         0
                                         ? "bg-white"
@@ -654,7 +680,7 @@ export default function Navbar({ className }) {
                                               >
                                                 <Link
                                                   href={{
-                                                    pathname: "/products",
+                                                    pathname: "/services",
                                                     query: {
                                                       child_category:
                                                         subsubitem.slug,
@@ -676,7 +702,7 @@ export default function Navbar({ className }) {
                                             )
                                           )}
                                       </ul>
-                                    </div>
+                                    </div> */}
                                   </li>
                                 ))}
                             </ul>

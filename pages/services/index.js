@@ -1,10 +1,10 @@
 import React, {useEffect} from "react";
-import AllProductPage from "../../src/components/AllProductPage/index";
+import AllServicesPage from "../../src/components/AllServicePage/index";
 import PageHead from "../../src/components/Helpers/PageHead";
 import {useRouter} from "next/router";
 
-export default function AllProductsPageData(data) {
-  console.log(data,"resyydata");
+export default function AllServicesPageData(data) {
+  console.log("hiiiiiiiii")
   const { seoSetting } = data.data;
   const router = useRouter();
   useEffect(() => {
@@ -12,6 +12,8 @@ export default function AllProductsPageData(data) {
       router.push("*");
     }
   });
+  console.log(data,"resyyd");
+  
   return (
     <>
       {data && seoSetting && (
@@ -20,7 +22,7 @@ export default function AllProductsPageData(data) {
                 title={`${seoSetting.seo_title}`}
                 metaDes={seoSetting.seo_description}
             />
-            <AllProductPage response={data} />
+            <AllServicesPage response={data} />
           </>
       )}
     </>
@@ -29,7 +31,7 @@ export default function AllProductsPageData(data) {
 export const getServerSideProps = async (context) => {
   try {
     const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}api/product?${
+        `${process.env.NEXT_PUBLIC_BASE_URL}api/service?${
             context.query.category
                 ? `category=${context.query.category}`
                 : context.query.sub_category
@@ -43,7 +45,10 @@ export const getServerSideProps = async (context) => {
                                 : ""
         }`
     );
+    // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/service`)
+    console.log(res,"resyye");
     const data = await res.json();
+    
     return {
       props: {
         data,

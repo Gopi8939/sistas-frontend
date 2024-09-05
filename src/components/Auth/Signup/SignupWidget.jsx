@@ -16,7 +16,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("+880");
+  const [phone, setPhone] = useState("+91");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [checked, setCheck] = useState(false);
@@ -24,7 +24,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
   const [loading, setLoading] = useState(false);
   const [getCountries, setGetCountries] = useState(null);
   const [countryDropToggle, setCountryDropToggle] = useState(false);
-  const [selectedCountry, setSelectedCountry] = useState("BD");
+  const [selectedCountry, setSelectedCountry] = useState("IN");
   const [googleUrl,setGoogleUrl]=useState(null);
   const [faceBookUrl,setFaceBookUrl]=useState(null);
   const [twitterUrl,setTwitterUrl]=useState(null);
@@ -79,14 +79,14 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
   };
   const {phone_number_required,default_phone_code}=settings();
   useEffect(()=>{
-    if(default_phone_code){
-      let defaultCountry=getCountries && getCountries.length>0 && getCountries.find((item)=>item.code===default_phone_code);
+   let default_phone_code = 'IN'
+      let defaultCountry=getCountries && getCountries.length>0 && getCountries.find((item)=>item.code===default_phone_code);      
       if(defaultCountry){
         setPhone(defaultCountry.dial_code);
         setSelectedCountry(defaultCountry.code);
       }
-    }
-  }, [default_phone_code, getCountries]);
+    // }
+  }, [ getCountries]);
   useEffect(()=>{
     axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/login/google`).then((res)=>{
       if(res.data){
@@ -186,7 +186,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
                 ""
             )}
           </div>
-          {phone_number_required==='1'&&(
+          {/* {phone_number_required==='1'&&( */}
               <div className="input-item mb-5 relative">
                 <InputCom
                     placeholder={ServeLangItem()?.Phone_Number}
@@ -228,7 +228,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
                   </ul>
                 </div>
               </div>
-          )}
+          {/* )} */}
           <div className="flex sm:flex-row flex-col space-y-5 sm:space-y-0 sm:space-x-5 rtl:space-x-reverse mb-5">
             <div className="h-full">
               <InputCom
@@ -323,7 +323,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
               </button>
             </div>
           </div>
-          {
+          {/* {
               googleUrl && (
                   <>
                     <a
@@ -412,7 +412,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
                     </a>
                   </>
               )
-          }
+          } */}
 
           <div className="signup-area flex justify-center">
             <p className="text-base text-qgraytwo font-normal">
