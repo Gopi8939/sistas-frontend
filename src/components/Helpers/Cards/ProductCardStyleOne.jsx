@@ -251,7 +251,12 @@ export default function ProductCardStyleOne({ datas }) {
     setImgSrc(value);
   };
   return (
-    <div className="main-wrapper-card relative">
+    <>
+    <Link
+    href={{ pathname: "/single-product", query: { slug: datas.slug } }}
+    passHref
+  >
+    <div className="main-wrapper-card relative" style={{cursor:"pointer"}}>
       <div
         className="product-card-one w-full h-[445px] bg-white relative group overflow-hidden"
         style={{ boxShadow: "0px 15px 64px 0px rgba(0, 0, 0, 0.05)" }}
@@ -360,16 +365,16 @@ export default function ProductCardStyleOne({ datas }) {
             )}
           </div>
 
-          <Link
+          {/* <Link
             href={{ pathname: "/single-product", query: { slug: datas.slug } }}
             passHref
-          >
+          > */}
             <a rel="noopener noreferrer">
               <p className="title mb-2 text-[15px] font-600 text-qblack leading-[24px] line-clamp-2 hover:text-blue-600 cursor-pointer">
                 {datas.title}
               </p>
             </a>
-          </Link>
+          {/* </Link> */}
           <p className="price">
             <span
               suppressHydrationWarning
@@ -505,5 +510,7 @@ export default function ProductCardStyleOne({ datas }) {
       <span className="anim top"></span>
       <span className="anim left"></span>
     </div>
+    </Link>
+    </>
   );
 }

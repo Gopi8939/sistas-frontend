@@ -250,6 +250,7 @@ body {
   justify-center items-center h-full;
   line-height: 0;
   color: white;
+  margin-top: 12px;
 }
 .yellow-btn .btn-content{
   transition: all 0.5s ease-in-out;

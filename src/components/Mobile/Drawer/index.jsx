@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React,{ useState } from "react";
+import React,{ useEffect, useState } from "react";
 import Compair from "../../Helpers/icons/Compair";
 import ThinLove from "../../Helpers/icons/ThinLove";
 import { useSelector } from "react-redux";
@@ -7,16 +7,41 @@ import { useRouter } from "next/router";
 import FontAwesomeCom from "../../Helpers/icons/FontAwesomeCom";
 import ServeLangItem from "../../Helpers/ServeLangItem";
 import Multivendor from "../../Shared/Multivendor";
+import axios from "axios";
 
 export default function Drawer({ className, open, action }) {
   const router = useRouter();
-  const [tab, setTab] = useState("category");
+  const [tab, setTab] = useState("products");
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   const categoryList = websiteSetup && websiteSetup.payload.productCategories;
   const customPages = websiteSetup && websiteSetup.payload.customPages;
   // const mageMenuList = websiteSetup && websiteSetup.payload.megaMenuCategories;
   // const megaMenuBanner = websiteSetup && websiteSetup.payload.megaMenuBanner;
   const [searchKey, setSearchkey] = useState("");
+  const [productCategory, setProductCategory] = useState();
+  const [serviceCategory, setServiceCategory] = useState();
+
+
+  const apiFetch = async() => {
+    await axios
+    .get(`${process.env.NEXT_PUBLIC_BASE_URL}api/category-list?is_product=1`)
+    .then((res) => {
+      setProductCategory(res);
+      })
+    }
+
+  const apiFetch2 = () => {
+    axios
+    .get(`${process.env.NEXT_PUBLIC_BASE_URL}api/category-list?is_product=0`)
+    .then((res) => {
+      setServiceCategory(res);
+      })
+    }
+
+useEffect(()=>{
+  apiFetch()
+  apiFetch2()
+},[])
   const searchHandler = () => {
     if (searchKey !== "") {
       router.push({
@@ -125,28 +150,30 @@ export default function Drawer({ className, open, action }) {
           </div>
           <div className="w-full mt-5 px-5 flex items-center space-x-3">
             <span
-              onClick={() => setTab("category")}
+              onClick={() => setTab("products")}
+              style={{cursor:"pointer"}}
               className={`text-base font-semibold  ${
-                tab === "category" ? "text-qblack" : "text-qgray"
+                tab === "products" ? "text-qblack" : "text-qgray"
               }`}
             >
-              {ServeLangItem()?.Categories}
+              Products
             </span>
             <span className="w-[1px] h-[14px] bg-qgray"></span>
             <span
-              onClick={() => setTab("menu")}
+              onClick={() => setTab("services")}
+              style={{cursor:"pointer"}}
               className={`text-base font-semibold ${
-                tab === "menu" ? "text-qblack" : "text-qgray "
+                tab === "services" ? "text-qblack" : "text-qgray "
               }`}
             >
-              {ServeLangItem()?.Main_Menu}
+              Services
             </span>
           </div>
-          {tab === "category" ? (
+          {tab === "products" && (
             <div className="category-item mt-5 w-full">
               <ul className="categories-list">
-                {categoryList &&
-                  categoryList.map((item, i) => (
+              {productCategory?.data?.categories &&
+                  productCategory?.data?.categories.map((item, i) => (
                     <li key={i} className="category-item">
                       <Link
                         href={{
@@ -201,7 +228,68 @@ export default function Drawer({ className, open, action }) {
                     </li>
                   ))}
               </ul>
-              {Multivendor() === 1 && (
+            </div>
+          )}
+          {tab === "services" && (
+            <div className="category-item mt-5 w-full">
+              <ul className="categories-list">
+              {serviceCategory?.data?.categories &&
+                      serviceCategory?.data?.categories.map((item, i) => (
+                    <li key={i} className="category-item">
+                      <Link
+                        href={{
+                          pathname: "/services",
+                          query: { category: item.slug },
+                        }}
+                      >
+                        <div className=" flex justify-between items-center px-5 h-12 bg-white hover-bg-qyellow transition-all duration-300 ease-in-out cursor-pointer">
+                          <div className="flex items-center space-x-6">
+                            <span>
+                              <span>
+                                <FontAwesomeCom
+                                  className="w-4 h-4"
+                                  icon={item.icon}
+                                />
+                              </span>
+                            </span>
+                            <span className="text-sm font-400 capitalize">
+                              {item.name}
+                            </span>
+                          </div>
+                          <div>
+                            <span>
+                              <svg
+                                width="6"
+                                height="9"
+                                viewBox="0 0 6 9"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <rect
+                                  x="1.49805"
+                                  y="0.818359"
+                                  width="5.78538"
+                                  height="1.28564"
+                                  transform="rotate(45 1.49805 0.818359)"
+                                  fill="#1D1D1D"
+                                />
+                                <rect
+                                  x="5.58984"
+                                  y="4.90918"
+                                  width="5.78538"
+                                  height="1.28564"
+                                  transform="rotate(135 5.58984 4.90918)"
+                                  fill="#1D1D1D"
+                                />
+                              </svg>
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+              {/* {Multivendor() === 1 && (
                   <div className="block my-5 px-2">
                     <Link href="/become-seller" passHref>
                       <a rel="noopener noreferrer">
@@ -211,9 +299,20 @@ export default function Drawer({ className, open, action }) {
                       </a>
                     </Link>
                   </div>
-              )}
+              )} */}
             </div>
-          ) : (
+          )}
+          {Multivendor() === 1 && (
+                  <div className="block my-5 px-2">
+                    <Link href="/become-seller" passHref>
+                      <a rel="noopener noreferrer">
+                  <div className="text-sm leading-6 text-qblack w-full h-10 flex justify-center items-center bg-qyellow font-medium font-500 cursor-pointer">
+                    <span>{ServeLangItem()?.Become_seller}</span>
+                  </div>
+                      </a>
+                    </Link>
+                  </div>
+              )}  
             <div className="menu-item mt-5 w-full">
               <ul className="categories-list">
                 <li className="category-item">
@@ -569,7 +668,6 @@ export default function Drawer({ className, open, action }) {
                 </li>
               </ul>
             </div>
-          )}
         </div>
       </div>
     </>

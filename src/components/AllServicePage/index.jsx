@@ -807,7 +807,7 @@ export default function AllServicePage({ response, sellerInfo }) {
                 ) : (
                   <div className={"mt-5 flex justify-center"}>
                     <h1 className="text-2xl font-medium text-tblack">
-                      Products not available
+                      Services not available
                     </h1>
                   </div>
                 )}
