@@ -32,7 +32,6 @@ export default function DefaultLayout({ children }) {
     // this is working
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
-        console.log(event);
        const {title,body}=event.data?.firebaseMessagingData?.notification;
        const options = {
         body:body

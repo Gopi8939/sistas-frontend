@@ -46,7 +46,6 @@ export default function Navbar({ className }) {
       })
     }
 
-    console.log(productCategory?.data?.categories,"pro");
 useEffect(()=>{
   apiFetch()
   apiFetch2()

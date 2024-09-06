@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import PageHead from "../../src/components/Helpers/PageHead";
 import SingleServicePage from "../../src/components/SingleServicePage";
 const SingleService = ({ data }) => {
-  console.log("ssssssssssssssssssss")
   const router = useRouter();
   useEffect(() => {
     if (router && !router.query.slug) {
@@ -25,7 +24,6 @@ export const getServerSideProps = async (context) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}api/service/${context.query.slug}`
   );
-  console.log(res,"ssyy")
   const data = await res.json();
   return {
     props: {

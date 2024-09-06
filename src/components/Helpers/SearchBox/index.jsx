@@ -91,13 +91,12 @@ export default function SearchBox({ className }) {
         }else{
           let res = await axios.get("https://backend.wolferstech.com/api/search-service")
           res.data.services.data.map((i)=>{
-            console.log(i,"resing")
             arr.push({id:i.id,name:i.short_name})
           })
         }
         setItems(arr)
       } catch (error) {
-        console.log(error.message,"mass");
+        console.log(error.message);
       }
     }
     fetch()
@@ -116,9 +115,6 @@ export default function SearchBox({ className }) {
   const handleOnSelect = (item) => {
     console.log(item);
   };
-
-  console.log(action,"mass");
-  
 
   const handleOnFocus = () => {
     console.log("Focused");

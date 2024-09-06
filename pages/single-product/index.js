@@ -9,7 +9,6 @@ const SingleProduct = ({ data }) => {
       router.push("*");
     }
   });
-  console.log("sssssssss")
 
   return (
     <>

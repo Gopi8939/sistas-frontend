@@ -2,7 +2,6 @@ import PageHead from "../src/components/Helpers/PageHead";
 import Home from "./../src/components/Home/index";
 
 export default function HomePage({ data }) {
-  console.log(data,"resyss");
   const { seoSetting } = data;
   return (
     <>

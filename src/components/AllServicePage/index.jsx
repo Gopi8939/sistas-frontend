@@ -21,7 +21,6 @@ export default function AllServicePage({ response, sellerInfo }) {
   const [categoriesFilter, setCategoriesFilter] = useState(null);
   const [brands, setBrands] = useState(null);
   const [cardViewStyle, setCardViewStyle] = useState("col");
-  console.log(resProducts,"resyy21")
   const products =
     resProducts &&
     resProducts.length > 0 &&

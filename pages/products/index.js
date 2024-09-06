@@ -4,7 +4,6 @@ import PageHead from "../../src/components/Helpers/PageHead";
 import {useRouter} from "next/router";
 
 export default function AllProductsPageData(data) {
-  console.log(data,"resyydata");
   const { seoSetting } = data.data;
   const router = useRouter();
   useEffect(() => {
