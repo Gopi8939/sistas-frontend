@@ -21,7 +21,6 @@ export default function AllProductPage({ response, sellerInfo }) {
   const [categoriesFilter, setCategoriesFilter] = useState(null);
   const [brands, setBrands] = useState(null);
   const [cardViewStyle, setCardViewStyle] = useState("col");
-  console.log(resProducts,"resyy2")
   const products =
     resProducts &&
     resProducts.length > 0 &&
@@ -304,7 +303,6 @@ export default function AllProductPage({ response, sellerInfo }) {
 
           // res.data && res.data.products.data.length > 0;
           // setNxtPage(response.data && response.data.products.next_page_url);
-          console.log(res);
         })
         .catch((err) => {
           setLoading(false);

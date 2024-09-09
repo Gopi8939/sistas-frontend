@@ -4,7 +4,6 @@ import PageHead from "../../src/components/Helpers/PageHead";
 import {useRouter} from "next/router";
 
 export default function AllServicesPageData(data) {
-  console.log("hiiiiiiiii")
   const { seoSetting } = data.data;
   const router = useRouter();
   useEffect(() => {
@@ -12,7 +11,6 @@ export default function AllServicesPageData(data) {
       router.push("*");
     }
   });
-  console.log(data,"resyyd");
   
   return (
     <>
@@ -46,7 +44,6 @@ export const getServerSideProps = async (context) => {
         }`
     );
     // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/service`)
-    console.log(res,"resyye");
     const data = await res.json();
     
     return {

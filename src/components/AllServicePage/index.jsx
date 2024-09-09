@@ -21,7 +21,6 @@ export default function AllServicePage({ response, sellerInfo }) {
   const [categoriesFilter, setCategoriesFilter] = useState(null);
   const [brands, setBrands] = useState(null);
   const [cardViewStyle, setCardViewStyle] = useState("col");
-  console.log(resProducts,"resyy21")
   const products =
     resProducts &&
     resProducts.length > 0 &&
@@ -807,7 +806,7 @@ export default function AllServicePage({ response, sellerInfo }) {
                 ) : (
                   <div className={"mt-5 flex justify-center"}>
                     <h1 className="text-2xl font-medium text-tblack">
-                      Products not available
+                      Services not available
                     </h1>
                   </div>
                 )}

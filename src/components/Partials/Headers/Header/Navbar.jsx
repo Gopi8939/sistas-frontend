@@ -19,8 +19,8 @@ export default function Navbar({ className }) {
   const [subCatHeight, setHeight] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [productCategory, setProductCategory] = useState();
-  
   const [serviceCategory, setServiceCategory] = useState();
+
   const handleCategoryToggle = () => {
     setCategoryToggle(!categoryToggle);
     setServiceToggle(false);
@@ -46,7 +46,6 @@ export default function Navbar({ className }) {
       })
     }
 
-    console.log(productCategory?.data?.categories,"pro");
 useEffect(()=>{
   apiFetch()
   apiFetch2()
