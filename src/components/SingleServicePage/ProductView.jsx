@@ -44,21 +44,21 @@ export default function ProductView({
   const dispatch = useDispatch();
   const [more, setMore] = useState(false);
   const productsImg = images && images.length > 0 && images;
-  const varients =
-    product && product.active_variants.length > 0 && product.active_variants;
-  const [getFirstVarients, setFirstVarients] = useState(
-    varients &&
-      varients.map((v) =>
-        v.active_variant_items.length > 0 ? v.active_variant_items[0] : {}
-      )
-  );
+  // const varients =
+  //   product && product.active_variants.length > 0 && product.active_variants;
+  // const [getFirstVarients, setFirstVarients] = useState(
+  //   varients &&
+  //     varients.map((v) =>
+  //       v.active_variant_items.length > 0 ? v.active_variant_items[0] : {}
+  //     )
+  // );
   const [price, setPrice] = useState(null);
   const [offerPrice, setOffer] = useState(null);
   const [src, setSrc] = useState(product.thumb_image);
   useEffect(() => {
     setSrc(product.thumb_image);
   }, [product]);
-
+console.log(product,"product")
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
@@ -76,46 +76,46 @@ export default function ProductView({
   };
 
   //varient selector handler
-  const [selecteVarientId, setSelecteVarientId] = useState(product.active_variants.length>0&&product.active_variants[0].active_variant_items.length>0?product.active_variants[0].active_variant_items[0]:null);
-  const selectVarient = (value) => {
-    setSelecteVarientId(value);
-    if(value.image){
-      changeImgHandler(value.image)
-    }
+  // const [selecteVarientId, setSelecteVarientId] = useState(product.active_variants.length>0&&product.active_variants[0].active_variant_items.length>0?product.active_variants[0].active_variant_items[0]:null);
+  // const selectVarient = (value) => {
+  //   setSelecteVarientId(value);
+  //   if(value.image){
+  //     changeImgHandler(value.image)
+  //   }
 
-    if (varients.length > 0) {
-      const replacePrice = getFirstVarients.map((v) => {
-        if (
-          parseInt(v.product_variant_id) === parseInt(value.product_variant_id)
-        ) {
-          return value;
-        }
-        return v;
-      });
-      setFirstVarients(replacePrice);
-    }
-  };
-  useEffect(() => {
-    if (varients) {
-      const prices =
-        getFirstVarients &&
-        getFirstVarients.map((v) => (v.price ? v.price : 0));
-      const sumPrice = parseInt(
-        prices.reduce((prev, curr) => parseInt(prev) + parseInt(curr), 0) +
-          parseInt(product.price)
-      );
-      setPrice(sumPrice);
-      if (product.offer_price) {
-        const sumOfferPrice = parseInt(
-          prices.reduce((prev, curr) => parseInt(prev) + parseInt(curr), 0) +
-            parseInt(product.offer_price)
-        );
-        setOffer(sumOfferPrice);
-      }
-    }
-  }, [getFirstVarients, varients]);
+  //   if (varients.length > 0) {
+  //     const replacePrice = getFirstVarients.map((v) => {
+  //       if (
+  //         parseInt(v.product_variant_id) === parseInt(value.product_variant_id)
+  //       ) {
+  //         return value;
+  //       }
+  //       return v;
+  //     });
+  //     setFirstVarients(replacePrice);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (varients) {
+  //     const prices =
+  //       getFirstVarients &&
+  //       getFirstVarients.map((v) => (v.price ? v.price : 0));
+  //     const sumPrice = parseInt(
+  //       prices.reduce((prev, curr) => parseInt(prev) + parseInt(curr), 0) +
+  //         parseInt(product.price)
+  //     );
+  //     setPrice(sumPrice);
+  //     if (product.offer_price) {
+  //       const sumOfferPrice = parseInt(
+  //         prices.reduce((prev, curr) => parseInt(prev) + parseInt(curr), 0) +
+  //           parseInt(product.offer_price)
+  //       );
+  //       setOffer(sumOfferPrice);
+  //     }
+  //   }
+  // }, [getFirstVarients, varients]);
 
-  useEffect(() => {
+  // useEffect(() => {
     // if (varients) {
     //   const prices = varients.map((v) =>
     //     v.active_variant_items.length > 0 ? v.active_variant_items[0].price : 0
@@ -136,43 +136,43 @@ export default function ProductView({
     // } else {
     //   setPrice(product && product.price);
     // }
-    if (varients) {
-      const prices = varients.map((v) =>
-        v.active_variant_items.length > 0 && v.active_variant_items[0].price
-          ? parseInt(v.active_variant_items[0].price)
-          : 0
-      );
+  //   if (varients) {
+  //     const prices = varients.map((v) =>
+  //       v.active_variant_items.length > 0 && v.active_variant_items[0].price
+  //         ? parseInt(v.active_variant_items[0].price)
+  //         : 0
+  //     );
 
-      if (product.offer_price) {
-        const sumCalc = prices.reduce(
-          (prev, curr) => parseInt(prev) + parseInt(curr)
-        );
-        const sumPrice = parseInt(sumCalc) + parseInt(product.price);
-        const sumOfferPrice = parseInt(sumCalc) + parseInt(product.offer_price);
-        setPrice(sumPrice);
-        setOffer(sumOfferPrice);
-      } else {
-        const sumCalc = prices.reduce(
-          (prev, curr) => parseInt(prev) + parseInt(curr)
-        );
-        const sumPrice = parseInt(sumCalc) + parseInt(product.price);
-        setPrice(sumPrice);
-      }
-    } else {
-      setPrice(product && product.price);
-      setOffer(product && product.offer_price);
-    }
-  }, [product, varients]);
+  //     if (product.offer_price) {
+  //       const sumCalc = prices.reduce(
+  //         (prev, curr) => parseInt(prev) + parseInt(curr)
+  //       );
+  //       const sumPrice = parseInt(sumCalc) + parseInt(product.price);
+  //       const sumOfferPrice = parseInt(sumCalc) + parseInt(product.offer_price);
+  //       setPrice(sumPrice);
+  //       setOffer(sumOfferPrice);
+  //     } else {
+  //       const sumCalc = prices.reduce(
+  //         (prev, curr) => parseInt(prev) + parseInt(curr)
+  //       );
+  //       const sumPrice = parseInt(sumCalc) + parseInt(product.price);
+  //       setPrice(sumPrice);
+  //     }
+  //   } else {
+  //     setPrice(product && product.price);
+  //     setOffer(product && product.offer_price);
+  //   }
+  // }, [product, varients]);
 
   const addToCard = () => {
     const data = {
       id: product.id,
       token: auth() && auth().access_token,
       quantity: quantity,
-      variants:
-          getFirstVarients &&
-          getFirstVarients.map((v) => parseInt(v.product_variant_id)),
-      variantItems: getFirstVarients && getFirstVarients.map((v) => v.id),
+      // variants:
+      //     getFirstVarients &&
+      //     getFirstVarients.map((v) => parseInt(v.product_variant_id)),
+      // variantItems: getFirstVarients && getFirstVarients.map((v) => v.id),
     };
     if (auth()) {
       if (varients) {
@@ -185,7 +185,7 @@ export default function ProductView({
           return `items[]=${value}`;
         });
         const itemQueryStr = itemsQuery.map((value) => value + "&").join("");
-        const uri = `token=${data.token}&product_id=${data.id}&${variantString}${itemQueryStr}quantity=${data.quantity}`;
+        const uri = `token=${data.token}&service_id=${data.id}&${variantString}${itemQueryStr}quantity=${data.quantity}`;
         apiRequest
           .addToCard(uri)
           .then((res) =>
@@ -203,7 +203,7 @@ export default function ProductView({
           });
         dispatch(fetchCart());
       } else {
-        const uri = `token=${data.token}&product_id=${data.id}&quantity=${data.quantity}`;
+        const uri = `token=${data.token}&service_id=${data.id}&quantity=${data.quantity}`;
         apiRequest
           .addToCard(uri)
           .then((res) => {
@@ -275,7 +275,7 @@ export default function ProductView({
       const offerFlashSale = websiteSetup.payload.flashSale;
       const flashSaleProducts = websiteSetup.payload.flashSaleProducts;
       const isFlashSaleProduct = flashSaleProducts.find(
-        (item) => parseInt(item.product_id) === product.id
+        (item) => parseInt(item.service_id) === product.id
       );
       if (isFlashSaleProduct) {
         const offer = parseInt(offerFlashSale.offer);
@@ -386,7 +386,19 @@ export default function ProductView({
                 {product.brand.name}
               </span>
             )}
-
+             <Link
+                  href={{
+                    pathname: "/viewstore"
+                    ,query: { slug: product.vendor_id },
+                  }}
+                >
+            <p
+              data-aos="fade-up"
+                  style={{cursor:"pointer",color:"blue"}}
+            >
+              View {seller.shop_name} web store
+            </p>
+            </Link>
             <p
               data-aos="fade-up"
               className="text-xl font-medium text-qblack mb-4"
@@ -514,7 +526,7 @@ export default function ProductView({
             {/*      ))}*/}
             {/*  </div>*/}
             {/*</div>*/}
-            {varients.length > 0 &&
+            {/* {varients.length > 0 &&
               varients.map((item) => (
                 <>
                   {item.active_variant_items.length>0 && (
@@ -557,13 +569,13 @@ export default function ProductView({
                   </div>
                   )}
                 </>
-              ))}
+              ))} */}
 
             <div
               data-aos="fade-up"
               className="quantity-card-wrapper w-full flex items-center h-[50px] space-x-[10px] mb-[30px]"
             >
-              <div className="w-[120px] h-full px-[26px] flex items-center border border-qgray-border">
+              {/* <div className="w-[120px] h-full px-[26px] flex items-center border border-qgray-border">
                 <div className="flex justify-between items-center w-full">
                   <button
                     onClick={decrement}
@@ -581,7 +593,7 @@ export default function ProductView({
                     +
                   </button>
                 </div>
-              </div>
+              </div> */}
               <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border">
                 {/*<button type="button">*/}
                 {/*  <span>*/}
@@ -602,7 +614,7 @@ export default function ProductView({
                 {/*    </svg>*/}
                 {/*  </span>*/}
                 {/*</button>*/}
-                {!arWishlist ? (
+                {/* {!arWishlist ? (
                   <button
                     type="button"
                     onClick={() => addToWishlist(product.id)}
@@ -622,15 +634,15 @@ export default function ProductView({
                       <ThinLove fill={true} />
                     </span>
                   </button>
-                )}
+                )} */}
               </div>
               <div className="flex-1 h-full">
                 <button
-                  onClick={addToCard}
+                  // onClick={addToCard}
                   type="button"
                   className="black-btn text-sm font-semibold w-full h-full"
                 >
-                  {ServeLangItem()?.Add_To_Cart}
+                  View Service
                 </button>
               </div>
             </div>

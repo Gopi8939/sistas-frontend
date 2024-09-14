@@ -18,6 +18,7 @@ import Video from "yet-another-react-lightbox/plugins/video";
 import "yet-another-react-lightbox/styles.css";
 
 export default function SingleProductPage({ details }) {
+    console.log(details,"details")
     const [open, setOpen] = useState(false);
     const [photoIndex, setIndex] = useState(0);
     const popupHandler = (value) => {

@@ -28,7 +28,8 @@ function BecomeServiceProvider() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState('');
-  // const [gstNumber, setGSTNumber] = useState("");
+  const [selectedCity, setSelectedCity] = useState('');
+  const [gstNumber, setGSTNumber] = useState("");
   const [errors, setErrors] = useState(null);
   let [uploadProgress, setProgress] = useState(0);
   const [uploadLogo, setUploadLogo] = useState(null);
@@ -118,16 +119,19 @@ function BecomeServiceProvider() {
   const sellerReq = async () => {
     if (auth()) {
       const formData = new FormData();
-      formData.append("banner_image", uploadCoverImg);
+      // formData.append("banner_image", uploadCoverImg);
       formData.append("shop_name", shopName);
-      formData.append("logo", logoImg);
+      // formData.append("logo", logoImg);
       formData.append("email", email);
       formData.append("phone", phone);
       formData.append("address", shopAddress);
-      formData.append("open_at", open_at);
-      formData.append("closed_at", closed_at);
-      formData.append("agree_terms_condition", agree_terms_condition);
-      // formData.append("gst_number", gstNumber);
+      // formData.append("open_at", open_at);
+      // formData.append("closed_at", closed_at);
+      // formData.append("agree_terms_condition", agree_terms_condition);
+      formData.append("gst_number", gstNumber);
+      formData.append("city", selectedCity);
+      formData.append("state", selectedState);
+      formData.append("country", "India");
       // formData.append("open_at", "10.00AM");
       // formData.append("closed_at", "10.00PM");
       // formData.append("agree_terms_condition", checked);
@@ -147,7 +151,7 @@ function BecomeServiceProvider() {
           options
         )
         .then((res) => {
-          toast.success(
+          toast.success(  
             "Congratulation Your seller request successfully delivered"
           );
 
@@ -183,12 +187,11 @@ function BecomeServiceProvider() {
       </div>
       <div className="content-wrapper w-full mb-10">
         <div className="container-x mx-auto">
-          <div className="w-full bg-white sm:p-[30px] p-3">
+          <div className="w-full bg-white p-3" >
             {/* <div className="flex xl:flex-row flex-col-reverse xl:space-x-11"> */}
             <div className="xl:w-full">
-              <div className="title w-full mb-4">
+              {/* <div className="title w-full mb-4">
                 <h1 className="text-[22px] font-semibold text-qblack mb-1">
-                  {/* {ServeLangItem()?.Seller_Information} */}
                   Service Provider Information
                 </h1>
                 <p className="text-[15px] text-qgraytwo">
@@ -196,23 +199,6 @@ function BecomeServiceProvider() {
                 </p>
               </div>
               <div className="input-area">
-                {/*<div className="flex sm:flex-row flex-col space-y-5 sm:space-y-0 sm:space-x-5 mb-5">*/}
-                {/*  <InputCom*/}
-                {/*    placeholder="Demo Name"*/}
-                {/*    label="Frist Name*"*/}
-                {/*    name="fname"*/}
-                {/*    type="text"*/}
-                {/*    inputClasses="h-[50px]"*/}
-                {/*  />*/}
-
-                {/*  <InputCom*/}
-                {/*    placeholder="Demo Name"*/}
-                {/*    label="Last Name*"*/}
-                {/*    name="lname"*/}
-                {/*    type="text"*/}
-                {/*    inputClasses="h-[50px]"*/}
-                {/*  />*/}
-                {/*</div>*/}
                 <div className="mb-5">
                   <InputCom
                     placeholder="Name"
@@ -401,8 +387,8 @@ function BecomeServiceProvider() {
                 {/*    type="text"*/}
                 {/*    inputClasses="h-[50px]"*/}
                 {/*  />*/}
-                {/*</div>*/}
-              </div>
+                {/*</div>
+              </div> */}
 
               {/* ============================================================== */}
               <div className="title w-full mt-10 mb-4">
@@ -437,6 +423,44 @@ function BecomeServiceProvider() {
                 </div>
                 <div className="mb-5">
                   <InputCom
+                    placeholder={ServeLangItem()?.Email}
+                    label={ServeLangItem()?.Email_Address + "*"}
+                    name="email"
+                    type="email"
+                    inputClasses="h-[50px]"
+                    value={email}
+                    inputHandler={(e) => setEmail(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "email"))}
+                  />
+                  {errors && Object.hasOwn(errors, "email") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.email[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
+                    placeholder="0213 *********"
+                    label={ServeLangItem()?.phone + "*"}
+                    name="phone"
+                    type="text"
+                    inputClasses="h-[50px]"
+                    value={phone}
+                    inputHandler={(e) => setPhone(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "phone"))}
+                  />
+                  {errors && Object.hasOwn(errors, "phone") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.phone[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
                     placeholder={ServeLangItem()?.Your_address_Here}
                     // label={ServeLangItem()?.Address}
                     label="Business Address"
@@ -455,8 +479,113 @@ function BecomeServiceProvider() {
                     ""
                   )}
                 </div>
+                <div className="mb-5 flex flex-wrap">
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
+                    <label className="mb-2 text-[13px] text-qgray">State*</label>
+                    <select
+                      className="cursor-pointer p-2 border w-full px-3 text-sm text-qgray focus:outline-none h-[50px]"
+                      name="state"
+                      value={selectedState}
+                      onChange={handleStateChange}
+                    >
+                      <option value="">Select State</option>
+                      {states.map((state) => (
+                        <option key={state.isoCode} value={state.isoCode}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
+                    <label className="mb-2 text-[13px] text-qgray">City*</label>
+                    <select
+                      className="cursor-pointer p-2 border w-full px-3 text-sm text-qgray focus:outline-none h-[50px]"
+                      name="city"
+                      value={selectedCity}
+                      onChange={(e)=>setSelectedCity(e.target.value)}
+                    >
+                      <option value="">Select City</option>
+                      {cities.map((city) => (
+                        <option key={city.name} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <label className="mb-2 text-[13px] text-qgray">Country*</label>
+                    <select
+                      className="cursor-not-allowed p-2 border w-full px-3 text-sm text-qgray bg-gray-200 focus:outline-none h-[50px]"
+                      name="country"
+                      disabled
+                    >
+                      <option value="IN" selected>
+                        India
+                      </option>
+                    </select>
+                  </div>
+                </div>
                 {/* <div className="mb-5">
+                  <InputCom
+                    placeholder={ServeLangItem()?.Open_At}
+                    label={ServeLangItem()?.Open_At + "*"}
+                    name="open_at"
+                    type="open_at"
+                    inputClasses="h-[50px]"
+                    value={open_at}
+                    inputHandler={(e) => setopen_at(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "open_at"))}
+                  />
+                  {errors && Object.hasOwn(errors, "open_at") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.open_at[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
+                    placeholder={ServeLangItem()?.Closed_At}
+                    label={ServeLangItem()?.Closed_At + "*"}
+                    name="closed_at"
+                    type="closed_at"
+                    inputClasses="h-[50px]"
+                    value={closed_at}
+                    inputHandler={(e) => setclosed_at(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "closed_at"))}
+                  />
+                  {errors && Object.hasOwn(errors, "closed_at") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.closed_at[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
+                    placeholder={ServeLangItem()?.Agree_terms_condition}
+                    label={ServeLangItem()?.Agree_terms_condition + "*"}
+                    name="agree_terms_condition"
+                    type="agree_terms_condition"
+                    inputClasses="h-[50px]"
+                    value={agree_terms_condition}
+                    inputHandler={(e) => setAgree_terms_condition(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "agree_terms_condition"))}
+                  />
+                  {errors && Object.hasOwn(errors, "agree_terms_condition") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.agree_terms_condition[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div> */}
+
+                <div className="mb-5">
                     <InputCom
                       placeholder="Enter GST Number"
                       // label={ServeLangItem()?.Address}
@@ -470,12 +599,12 @@ function BecomeServiceProvider() {
                     />
                     {errors && Object.hasOwn(errors, "address") ? (
                       <span className="text-sm mt-1 text-qred">
-                        {errors.address[0]}
+                        {errors.gstnumber[0]}
                       </span>
                     ) : (
                       ""
                     )}
-                  </div> */}
+                  </div>
                 {/*<div className="flex sm:flex-row flex-col space-y-5 sm:space-y-0 sm:space-x-5 mb-[30px]">*/}
                 {/*  <InputCom*/}
                 {/*    placeholder="* * * * * *"*/}
@@ -527,16 +656,18 @@ function BecomeServiceProvider() {
                     <button
                       onClick={sellerReq}
                       disabled={
-                        providerName &&
+                        // providerName &&
                           email &&
-                          checked &&
+                          // checked &&
                           // coverImg &&
                           // logoImg &&
-                          location &&
+                          // location &&
                           phone &&
                           shopName &&
-                          shopAddress
-                          // gstNumber &&
+                          selectedCity &&
+                          selectedState &&
+                          // shopAddress
+                          gstNumber 
                           ? false
                           : true
                       }
@@ -625,7 +756,7 @@ function BecomeServiceProvider() {
               {/*    </div>*/}
               {/*  </div>*/}
               {/*</div>*/}
-          <div className="update-logo w-full mb-9">
+          {/* <div className="update-logo w-full mb-9">
                   <h1 className="text-xl tracking-wide font-bold text-qblack mb-2">
                     {ServeLangItem()?.Update_Logo}
                   </h1>
@@ -737,7 +868,7 @@ function BecomeServiceProvider() {
                       </div>
                     </div>
                   </div>
-                </div> 
+                </div>  */}
             </div>
             {/* </div> */}
           </div>
