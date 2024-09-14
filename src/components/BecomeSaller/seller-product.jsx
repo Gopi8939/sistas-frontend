@@ -27,6 +27,7 @@ function BecomeSaller() {
   const [selectedState, setSelectedState] = useState('');
   const [onlineShop, setOnlineShop] = useState('');
   // const [gstNumber, setGSTNumber] = useState("");
+  const [selectedCity, setSelectedCity] = useState('');
   const [errors, setErrors] = useState(null);
   let [uploadProgress, setProgress] = useState(0);
   const [uploadLogo, setUploadLogo] = useState(null);
@@ -263,8 +264,8 @@ function BecomeSaller() {
                   )}
                 </div>
 
-                <div className="mb-5 flex">
-                  <div className="flex flex-col me-5">
+                <div className="mb-5 flex flex-wrap">
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
                     <label className="mb-2 text-[13px] text-qgray">State*</label>
                     <select
                       className="cursor-pointer p-2 border w-full px-3 text-sm text-qgray focus:outline-none h-[50px]"
@@ -281,11 +282,13 @@ function BecomeSaller() {
                     </select>
                   </div>
 
-                  <div className="flex flex-col">
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
                     <label className="mb-2 text-[13px] text-qgray">City*</label>
                     <select
                       className="cursor-pointer p-2 border w-full px-3 text-sm text-qgray focus:outline-none h-[50px]"
                       name="city"
+                      value={selectedCity}
+                      onChange={(e)=>setSelectedCity(e.target.value)}
                     >
                       <option value="">Select City</option>
                       {cities.map((city) => (
@@ -295,13 +298,19 @@ function BecomeSaller() {
                       ))}
                     </select>
                   </div>
-                  {errors && Object.hasOwn(errors, "email") ? (
-                    <span className="text-sm mt-1 text-qred">
-                      {errors.email[0]}
-                    </span>
-                  ) : (
-                    ""
-                  )}
+
+                  <div className="flex flex-col w-full md:w-1/3 lg:w-1/3">
+                    <label className="mb-2 text-[13px] text-qgray">Country*</label>
+                    <select
+                      className="cursor-not-allowed p-2 border w-full px-3 text-sm text-qgray bg-gray-200 focus:outline-none h-[50px]"
+                      name="country"
+                      disabled
+                    >
+                      <option value="IN" selected>
+                        India
+                      </option>
+                    </select>
+                  </div>
                 </div>
 
                 {/*<div className="input-item mb-5">*/}

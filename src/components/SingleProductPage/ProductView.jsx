@@ -386,7 +386,19 @@ export default function ProductView({
                 {product.brand.name}
               </span>
             )}
-
+              <Link
+                  href={{
+                    pathname: "/viewstore"
+                    ,query: { slug: product.vendor_id },
+                  }}
+                >
+            <p
+              data-aos="fade-up"
+                  style={{cursor:"pointer",color:"blue"}}
+            >
+              View {seller.shop_name} web store
+            </p>
+            </Link>
             <p
               data-aos="fade-up"
               className="text-xl font-medium text-qblack mb-4"
@@ -775,6 +787,7 @@ export default function ProductView({
                   </button>
                 </div>
             )}
+            
 
           </div>
         </div>

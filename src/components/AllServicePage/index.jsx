@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import ProductCardStyleOne from "../Helpers/Cards/ProductCardStyleOne";
+import ProductCardStyleOne from "../Helpers/Cards/ServiceCardStyleOne";
 import DataIteration from "../Helpers/DataIteration";
 import Star from "../Helpers/icons/Star";
 import Layout from "../Partials/Layout";

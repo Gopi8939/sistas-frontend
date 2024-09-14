@@ -18,6 +18,7 @@ import Video from "yet-another-react-lightbox/plugins/video";
 import "yet-another-react-lightbox/styles.css";
 
 export default function SingleServicePage({ details }) {
+    console.log(details,"details")
     const [open, setOpen] = useState(false);
     const [photoIndex, setIndex] = useState(0);
     const popupHandler = (value) => {
@@ -45,8 +46,8 @@ export default function SingleServicePage({ details }) {
         if (!commnets) {
             const reviews =
                 details &&
-                details.productReviews.length > 0 &&
-                details.productReviews.map((review) => {
+                details?.serviceReviews?.length > 0 &&
+                details?.serviceReviews?.map((review) => {
                     return {
                         id: review.id,
                         author: review.user.name,
@@ -71,19 +72,19 @@ export default function SingleServicePage({ details }) {
             },
         }
         : null;
-    const relatedProducts = details.relatedProducts.map((item) => {
-        return {
-            id: item.id,
-            title: item.name,
-            slug: item.slug,
-            image: process.env.NEXT_PUBLIC_BASE_URL + item.thumb_image,
-            price: item.price,
-            offer_price: item.offer_price,
-            campaingn_product: null,
-            review: parseInt(item.averageRating),
-            variants: item.active_variants,
-        };
-    });
+    // const relatedProducts = details.relatedProducts.map((item) => {
+    //     return {
+    //         id: item.id,
+    //         title: item.name,
+    //         slug: item.slug,
+    //         image: process.env.NEXT_PUBLIC_BASE_URL + item.thumb_image,
+    //         price: item.price,
+    //         offer_price: item.offer_price,
+    //         campaingn_product: null,
+    //         review: parseInt(item.averageRating),
+    //         variants: item.active_variants,
+    //     };
+    // });
     /*product report action method
      * @params (token)
      * if user exists then next process otherwise redirect login page
@@ -300,7 +301,7 @@ export default function SingleServicePage({ details }) {
                                             <div
                                                 className="product-detail-des mb-10"
                                                 dangerouslySetInnerHTML={{
-                                                    __html: details.product.long_description,
+                                                    __html: details.service.long_description,
                                                 }}
                                             ></div>
                                             {/*<div data-aos="fade-up" className="w-full tab-content-item">*/}
@@ -380,7 +381,7 @@ export default function SingleServicePage({ details }) {
                                 </div>
                             </div>
                         </div>
-                        {relatedProducts.length > 0 && (
+                        {/* {relatedProducts.length > 0 && (
                             <div className="related-product w-full bg-white">
                                 <div className="container-x mx-auto">
                                     <div className="w-full py-[60px]">
@@ -410,7 +411,7 @@ export default function SingleServicePage({ details }) {
                                     </div>
                                 </div>
                             </div>
-                        )}
+                        )} */}
                     </div>
                     {report && (
                         <div className="w-full h-full flex fixed left-0 top-0 justify-center z-50 items-center">
