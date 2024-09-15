@@ -4,6 +4,7 @@ import BreadcrumbCom from '../../src/components/BreadcrumbCom';
 import ServeLangItem from '../../src/components/Helpers/ServeLangItem';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import defaultBanner from "../../public/assets/images/saller-cover.png";
 
 const ViewStore = () => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const brandLogoUrl = vendorDetails?.vendor_details?.logo
 
 const bannerImageUrl = vendorDetails?.vendor_details?.banner_image
 ? `${baseUrl}${vendorDetails.vendor_details.banner_image}`
-: `${baseUrl}${vendorDetails?.defaultProfilePic}`; 
+: defaultBanner; 
 
 const BrandStory = ({ media_url, description }) => {
   const fullUrl = `${baseUrl}${media_url}`;
