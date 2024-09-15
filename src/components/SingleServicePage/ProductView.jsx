@@ -58,7 +58,6 @@ export default function ProductView({
   useEffect(() => {
     setSrc(product.thumb_image);
   }, [product]);
-console.log(product,"product")
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);

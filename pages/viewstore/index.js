@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const ViewStore = () => {
   const router = useRouter();
   const { slug } = router.query;
-  console.log(slug,"datass")
   const [vendorDetails, setVendorDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,9 +16,7 @@ const ViewStore = () => {
     const getVendorDetails = async () => {
         try {
             setLoading(true);
-            const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/vendor-details/${slug}`;
-            console.log(`Fetching from URL: ${url}`);
-            
+            const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/vendor-details/${slug}`;            
             const response = await fetch(url);
 
             if (!response.ok) {
@@ -102,8 +99,8 @@ const BrandStory = ({ media_url, description }) => (
               <h1 className="ml-4 text-2xl font-bold text-gray-900">{vendorDetails?.vendor_details?.shop_name}</h1>
             <div className="social-media-icons flex space-x-4 ml-4">
             {vendorDetails?.vendor_details?.social_links.map((social, index) => (
-                console.log("ssss",social),
                 <SocialMediaIcons
+                key={index}
                 link={social.link}
                 icon={social.icon}
               />
