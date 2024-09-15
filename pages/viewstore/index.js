@@ -36,15 +36,28 @@ const ViewStore = () => {
     getVendorDetails();
 }, [slug]);
 
-const BrandStory = ({ media_url, description }) => (
+
+const baseUrl = 'https://vendor.sistas.in/';
+
+const brandLogoUrl = vendorDetails?.vendor_details?.logo
+? `${baseUrl}${vendorDetails?.vendor_details?.logo}`
+: `${baseUrl}${vendorDetails?.defaultProfilePic}`; 
+
+const bannerImageUrl = vendorDetails?.vendor_details?.banner_image
+? `${baseUrl}${vendorDetails.vendor_details.banner_image}`
+: `${baseUrl}${vendorDetails?.defaultProfilePic}`; 
+
+const BrandStory = ({ media_url, description }) => {
+  const fullUrl = `${baseUrl}${media_url}`;
+  return(
     <div className="brand-story mb-6 p-4 border border-gray-200 rounded-lg shadow-md">
         <img
-            src={media_url}
+            src={fullUrl}
             alt="Brand Story"
             className="w-full h-auto object-cover mb-2" />
         <p className="text-gray-700">{description}</p>
     </div>
-  );
+  )};
 
   const SocialMediaIcons = ({ link, icon, key }) => (
     <div className="social-media-icons flex space-x-4">
@@ -90,7 +103,7 @@ const BrandStory = ({ media_url, description }) => (
           <div className="logo-company-section flex items-center justify-between px-4 py-6">
             <div className="logo-container flex items-center">
               <img
-                src={vendorDetails?.vendor_details?.logo} // Replace with actual logo image URL
+                src={brandLogoUrl} // Replace with actual logo image URL
                 alt="Company Logo"
                 className="w-24 h-auto"
                 style={{borderRadius:"50%"}}
@@ -111,7 +124,7 @@ const BrandStory = ({ media_url, description }) => (
           </div>
           <div className="banner-section relative w-full">
             <img
-              src={vendorDetails?.vendor_details?.banner_image}
+              src={bannerImageUrl}
               alt="Banner"
               className="w-full h-auto object-cover"
               style={{ maxHeight: '400px' }} // Adjust max height as needed
