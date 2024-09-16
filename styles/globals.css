@@ -682,6 +682,17 @@ li {
 /* TODO: ===============RESPONSIVE END */
 
 .viewStoreDiv{
-  padding-left: 10%;
-  padding-right: 10%;
+  padding-left: 11.5%;
+  padding-right: 11.5%;
+}
+
+.noVendorText{
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;    /* Centers vertically */
+  height: 100vh;          /* Makes the container take the full viewport height */
+}
+
+.centered-content {
+  text-align: center;     /* Centers text inside the container */
 }

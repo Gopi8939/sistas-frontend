@@ -38,7 +38,7 @@ const ViewStore = () => {
     getVendorDetails();
   }, [slug]); 
 
-  console.log(vendorDetails,"vendorDetails")
+  console.log(vendorDetails?.vendor_details,"vendorDetails")
   const baseUrl = 'https://vendor.sistas.in/';
 
   const brandLogoUrl = vendorDetails?.vendor_details?.logo
@@ -54,10 +54,26 @@ const ViewStore = () => {
     return /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=/.test(url);
   };
 
+  const getYouTubeEmbedUrl = (url) => {
+    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/);
+    if (videoIdMatch) {
+      return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+    }
+    return null;
+  };
+  
   const BrandStory = ({ media_url, description }) => {
     const [youtubeError, setYoutubeError] = useState(false);
     const isYouTube = isYouTubeUrl(media_url);
-
+    const youtubeEmbedUrl = isYouTube ? getYouTubeEmbedUrl(media_url) : null;
+    if (!media_url) {
+      // Render a box indicating no brand story media is available
+      return (
+        <div className="brand-story border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500">
+          <p>No brand story media available</p>
+        </div>
+      );
+    }
     return (
       <div className="brand-story border border-gray-200 rounded-lg shadow-md">
         {youtubeError ? (
@@ -68,13 +84,14 @@ const ViewStore = () => {
           <iframe
             width="100%"
             height="315"
-            src={media_url}
+            src={youtubeEmbedUrl}
             title="YouTube video player"
             frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
             onError={() => setYoutubeError(true)}
-          />
+          ></iframe>
         ) : (
           <video
             src={media_url}
@@ -82,14 +99,13 @@ const ViewStore = () => {
             loop
             className="w-full h-auto object-cover mb-2"
             onError={() => setYoutubeError(true)}
-          >
-            Your browser does not support the video tag.
-          </video>
+          ></video>
         )}
         <p className="text-gray-700">{description}</p>
       </div>
     );
   };
+  
 
   const SocialMediaIcons = ({ link, icon, key }) => (
     <div className="social-media-icons flex space-x-4">
@@ -120,7 +136,8 @@ const ViewStore = () => {
   return (
     <>
       <Layout childrenClasses="pt-0 pb-0">
-      <div className="single-product-wrapper w-full" style={{ backgroundColor: "black" }}>
+      {vendorDetails?.vendor_details ?
+      <div className="single-product-wrapper w-full" >
         <div className="product-view-main-wrapper bg-white w-full viewStoreDiv" >
           {/* <div className="breadcrumb-wrapper w-full">
             <div className="container-x mx-auto">
@@ -133,12 +150,12 @@ const ViewStore = () => {
             </div>
           </div>   */}
            <div className="banner-section relative w-full">
-              {imageError ? (
+           {imageError ? (
                 <div className="fallback-box flex items-center justify-center h-full text-gray-500" 
                 style={{
                   width: "100%",
                   maxWidth: "1200px",
-                  height: "400px",
+                  height: "250px",
                   backgroundColor:"#f9f9f9",
                   border:"1px solid #ddd"
                 }}>
@@ -149,7 +166,7 @@ const ViewStore = () => {
                   src={bannerImageUrl}
                   alt="Banner"
                   className="w-full h-auto object-cover"
-                  style={{ maxHeight: '400px' }} // Adjust max height as needed
+                  style={{ maxHeight: '250px' }} // Adjust max height as needed
                   onError={() => setImageError(true)}
                 />
               )}
@@ -180,13 +197,19 @@ const ViewStore = () => {
           {/* Heading for the brand stories section */}
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Brand Stories</h2>
           <div className="brandStoryDiv">
-          {vendorDetails?.vendor_details?.stories.map((story, index) => (
-              <BrandStory
-                key={index}
-                media_url={story.media_url}
-                description={story.description}
-              />
-            ))}
+              {vendorDetails?.vendor_details?.stories?.length === 0 ? (
+              <div className="no-stories border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500">
+                <p>No brand stories available</p>
+              </div>
+            ) : (
+              vendorDetails?.vendor_details?.stories.map((story, index) => (
+                <BrandStory
+                  key={index}
+                  media_url={story.media_url}
+                  description={story.description}
+                />
+              ))
+           )}
           </div>
         </div>
         <ContactInfo
@@ -195,7 +218,13 @@ const ViewStore = () => {
             address={vendorDetails?.vendor_details?.address}
         />
         </div>
+      </div> :
+      <div className="noVendorText" >
+        <div className="centered-content">
+        <p style={{fontSize:"20px"}}>There is no such vendor</p>
+       </div>
       </div>
+      }
     </Layout>
 
 

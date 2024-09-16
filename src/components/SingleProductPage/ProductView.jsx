@@ -58,7 +58,6 @@ export default function ProductView({
   useEffect(() => {
     setSrc(product.thumb_image);
   }, [product]);
-
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
@@ -308,7 +307,6 @@ export default function ProductView({
       loginPopupBoard.handlerPopup(true);
     }
   };
-
   return (
     <>
       <div
@@ -340,7 +338,7 @@ export default function ProductView({
                 className="object-contain transform scale-110"
               />
             )}
-              {product.offer_price && (
+              {product.offer_price && pricePercent > 0 && (
                 <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
                   <span className="text-tblack">{pricePercent}%</span>
                   {/*<span>*/}
