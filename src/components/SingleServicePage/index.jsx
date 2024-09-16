@@ -18,6 +18,7 @@ import Video from "yet-another-react-lightbox/plugins/video";
 import "yet-another-react-lightbox/styles.css";
 
 export default function SingleServicePage({ details }) {
+    console.log(details,"details")
     const [open, setOpen] = useState(false);
     const [photoIndex, setIndex] = useState(0);
     const popupHandler = (value) => {
@@ -188,7 +189,7 @@ export default function SingleServicePage({ details }) {
                                                 {ServeLangItem()?.Description}
                                             </span>
                                         </li>
-                                        <li>
+                                        {/* <li>
                                             <span
                                                 onClick={() => setTab("review")}
                                                 className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${tab === "review"
@@ -198,7 +199,7 @@ export default function SingleServicePage({ details }) {
                                             >
                                                 {ServeLangItem()?.Reviews}
                                             </span>
-                                        </li>
+                                        </li> */}
 
                                         {/*{Multivendor() === 1 && details.is_seller_product && (*/}
                                         {/*  <li>*/}

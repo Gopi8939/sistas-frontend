@@ -84,12 +84,12 @@ export default function SearchBox({ className }) {
       try {
         let arr=[]
         if(action === "product"){
-          let res = await axios.get("https://backend.wolferstech.com/api/search-product")
+          let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`)
           res.data.products.data.map((i)=>{
             arr.push({id:i.id,name:i.short_name})
           })
         }else{
-          let res = await axios.get("https://backend.wolferstech.com/api/search-service")
+          let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-service`)
           res.data.services.data.map((i)=>{
             arr.push({id:i.id,name:i.short_name})
           })
@@ -304,8 +304,8 @@ export default function SearchBox({ className }) {
         {/*    </>*/}
         {/*  )}*/}
         {/*</div>*/}
-        <select id="selectSearch" onChange={(e)=>setAction(e.target.value)} style={{height:"40px",outline:"none"}} >
-          <option style={{height:"2033px",padding:"5px 4px"}} value="product" >Product</option>
+        <select id="selectSearch" onChange={(e)=>setAction(e.target.value)} style={{height:"40px",outline:"none",marginLeft:"5px",marginRight:"5px"}} >
+          <option style={{height:"2033px",padding:"5px 4px",marginLeft: "1%",marginRight: "1%"}} value="product" >Product</option>
           <option style={{height:"2033px",padding:"5px 4px"}} value="service" >Service</option>
         </select>
         <button

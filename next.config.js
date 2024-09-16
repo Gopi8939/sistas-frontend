@@ -6,7 +6,10 @@ const nextConfig={
   reactStrictMode: true,
   swcMinify: false,
   images: {
-    domains: [`${hostname}`]
+    domains: [
+      'sistas-files.s3.ap-south-1.amazonaws.com',
+      `${hostname}`
+    ],
   },
 }
 const pwa = process.env.NEXT_PWA_STATUS;

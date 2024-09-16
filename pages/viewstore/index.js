@@ -12,6 +12,7 @@ const ViewStore = () => {
   const [vendorDetails, setVendorDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const getVendorDetails = async () => {
@@ -35,30 +36,60 @@ const ViewStore = () => {
     };
 
     getVendorDetails();
-}, [slug]);
+  }, [slug]); 
 
+  console.log(vendorDetails,"vendorDetails")
+  const baseUrl = 'https://vendor.sistas.in/';
 
-const baseUrl = 'https://vendor.sistas.in/';
+  const brandLogoUrl = vendorDetails?.vendor_details?.logo
+  ? `${baseUrl}${vendorDetails?.vendor_details?.logo}`
+  : `${baseUrl}${vendorDetails?.defaultProfilePic}`; 
 
-const brandLogoUrl = vendorDetails?.vendor_details?.logo
-? `${baseUrl}${vendorDetails?.vendor_details?.logo}`
-: `${baseUrl}${vendorDetails?.defaultProfilePic}`; 
+  const bannerImageUrl = vendorDetails?.vendor_details?.banner_image
+  ? `${baseUrl}${vendorDetails.vendor_details.banner_image}`
+  : defaultBanner; 
 
-const bannerImageUrl = vendorDetails?.vendor_details?.banner_image
-? `${baseUrl}${vendorDetails.vendor_details.banner_image}`
-: defaultBanner; 
+  const isYouTubeUrl = (url) => {
+    // Simple regex to detect YouTube URLs
+    return /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=/.test(url);
+  };
 
-const BrandStory = ({ media_url, description }) => {
-  const fullUrl = `${baseUrl}${media_url}`;
-  return(
-    <div className="brand-story mb-6 p-4 border border-gray-200 rounded-lg shadow-md">
-        <img
-            src={fullUrl}
-            alt="Brand Story"
-            className="w-full h-auto object-cover mb-2" />
+  const BrandStory = ({ media_url, description }) => {
+    const [youtubeError, setYoutubeError] = useState(false);
+    const isYouTube = isYouTubeUrl(media_url);
+
+    return (
+      <div className="brand-story border border-gray-200 rounded-lg shadow-md">
+        {youtubeError ? (
+          <div className="fallback-box flex items-center justify-center text-gray-500">
+            <p>Sorry! The URL is not working.</p>
+          </div>
+        ) : isYouTube ? (
+          <iframe
+            width="100%"
+            height="315"
+            src={media_url}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            onError={() => setYoutubeError(true)}
+          />
+        ) : (
+          <video
+            src={media_url}
+            controls
+            loop
+            className="w-full h-auto object-cover mb-2"
+            onError={() => setYoutubeError(true)}
+          >
+            Your browser does not support the video tag.
+          </video>
+        )}
         <p className="text-gray-700">{description}</p>
-    </div>
-  )};
+      </div>
+    );
+  };
 
   const SocialMediaIcons = ({ link, icon, key }) => (
     <div className="social-media-icons flex space-x-4">
@@ -90,8 +121,8 @@ const BrandStory = ({ media_url, description }) => {
     <>
       <Layout childrenClasses="pt-0 pb-0">
       <div className="single-product-wrapper w-full" style={{ backgroundColor: "black" }}>
-        <div className="product-view-main-wrapper bg-white pt-[30px] w-full">
-          <div className="breadcrumb-wrapper w-full">
+        <div className="product-view-main-wrapper bg-white w-full viewStoreDiv" >
+          {/* <div className="breadcrumb-wrapper w-full">
             <div className="container-x mx-auto">
               <BreadcrumbCom
                 paths={[
@@ -100,14 +131,36 @@ const BrandStory = ({ media_url, description }) => {
                 ]}
               />
             </div>
-          </div>
-          <div className="logo-company-section flex items-center justify-between px-4 py-6">
+          </div>   */}
+           <div className="banner-section relative w-full">
+              {imageError ? (
+                <div className="fallback-box flex items-center justify-center h-full text-gray-500" 
+                style={{
+                  width: "100%",
+                  maxWidth: "1200px",
+                  height: "400px",
+                  backgroundColor:"#f9f9f9",
+                  border:"1px solid #ddd"
+                }}>
+                  <p>Sorry! something went wrong on showing Banner Image</p>
+                </div>
+              ) : (
+                <img
+                  src={bannerImageUrl}
+                  alt="Banner"
+                  className="w-full h-auto object-cover"
+                  style={{ maxHeight: '400px' }} // Adjust max height as needed
+                  onError={() => setImageError(true)}
+                />
+              )}
+            </div>
+          <div className="logo-company-section flex items-center justify-between px-4 py-2"
+          style={{borderBottom: "5px solid #d5dbdb"}}>
             <div className="logo-container flex items-center">
               <img
                 src={brandLogoUrl} // Replace with actual logo image URL
                 alt="Company Logo"
-                className="w-24 h-auto"
-                style={{borderRadius:"50%"}}
+                className="w-20 h-auto"
               />
               <div>
               <h1 className="ml-4 text-2xl font-bold text-gray-900">{vendorDetails?.vendor_details?.shop_name}</h1>
@@ -123,18 +176,10 @@ const BrandStory = ({ media_url, description }) => {
             </div>
             </div>
           </div>
-          <div className="banner-section relative w-full">
-            <img
-              src={bannerImageUrl}
-              alt="Banner"
-              className="w-full h-auto object-cover"
-              style={{ maxHeight: '400px' }} // Adjust max height as needed
-            />
-          </div>
           <div className="brand-stories-section p-4">
           {/* Heading for the brand stories section */}
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Brand Stories</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="brandStoryDiv">
           {vendorDetails?.vendor_details?.stories.map((story, index) => (
               <BrandStory
                 key={index}

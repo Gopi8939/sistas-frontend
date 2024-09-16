@@ -62,6 +62,11 @@ export default function ProductView({
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
+  const [isImageError, setIsImageError] = useState(false);
+
+  const handleImageError = () => {
+    setIsImageError(true);
+  };
   const changeImgHandler = (current) => {
     setSrc(current);
   };
@@ -317,13 +322,24 @@ export default function ProductView({
         >
           <div className="w-full">
             <div className="w-full md:h-[600px] h-[350px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
-              <Image
-                layout="fill"
-                objectFit="scale-down"
-                src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
-                alt=""
-                className="object-contain  transform scale-110"
+            {!isImageError ? (
+              <div className="relative w-full h-full"> {/* Make sure the parent has a defined size */}
+                <Image
+                  layout="fill"
+                  objectFit="scale-down"
+                  src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
+                  alt={"img"}
+                  className="object-contain transform scale-110"
+                  onError={handleImageError} 
+                />
+              </div>
+            ) : (
+              <img
+                src={src}
+                alt={"img"}
+                className="object-contain transform scale-110"
               />
+            )}
               {product.offer_price && (
                 <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
                   <span className="text-tblack">{pricePercent}%</span>
@@ -338,22 +354,19 @@ export default function ProductView({
               )}
             </div>
             <div className="flex gap-2 flex-wrap">
-              <div
-                onClick={() => changeImgHandler(product.thumb_image)}
-                className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
-              >
-                <Image
-                  layout="fill"
-                  objectFit="scale-down"
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_URL + product.thumb_image
-                  }`}
-                  alt=""
-                  className={`w-full h-full object-contain transform scale-110 ${
-                    src !== product.thumb_image ? "opacity-50" : ""
-                  } `}
-                />
-              </div>
+            {product.product_image.map((image, index) => (
+                <div
+                  key={index}
+                  onClick={() => changeImgHandler(image.image_url)}
+                  className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
+                >
+                  <img
+                    src={image.image_url}
+                    alt={`Thumbnail ${index}`}
+                    className={`w-full h-full object-contain transform scale-110`}
+                  />
+                </div>
+              ))}
               {productsImg &&
                 productsImg.length > 0 &&
                 productsImg.map((img, i) => (

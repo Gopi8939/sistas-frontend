@@ -55,12 +55,17 @@ export default function ProductView({
   const [price, setPrice] = useState(null);
   const [offerPrice, setOffer] = useState(null);
   const [src, setSrc] = useState(product.thumb_image);
-  useEffect(() => {
-    setSrc(product.thumb_image);
-  }, [product]);
+  // useEffect(() => {
+  //   setSrc(product.thumb_image);
+  // }, [product]);
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
+  const [isImageError, setIsImageError] = useState(false);
+
+  const handleImageError = () => {
+    setIsImageError(true);
+  };
   const changeImgHandler = (current) => {
     setSrc(current);
   };
@@ -316,13 +321,24 @@ export default function ProductView({
         >
           <div className="w-full">
             <div className="w-full md:h-[600px] h-[350px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
-              <Image
-                layout="fill"
-                objectFit="scale-down"
-                src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
-                alt=""
-                className="object-contain  transform scale-110"
+            {!isImageError ? (
+              <div className="relative w-full h-full"> {/* Make sure the parent has a defined size */}
+                <Image
+                  layout="fill"
+                  objectFit="scale-down"
+                  src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
+                  alt={"img"}
+                  className="object-contain transform scale-110"
+                  onError={handleImageError} 
+                />
+              </div>
+            ) : (
+              <img
+                src={src}
+                alt={"img"}
+                className="object-contain transform scale-110"
               />
+            )}
               {product.offer_price && (
                 <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
                   <span className="text-tblack">{pricePercent}%</span>
@@ -337,23 +353,20 @@ export default function ProductView({
               )}
             </div>
             <div className="flex gap-2 flex-wrap">
-              <div
-                onClick={() => changeImgHandler(product.thumb_image)}
-                className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
-              >
-                <Image
-                  layout="fill"
-                  objectFit="scale-down"
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_URL + product.thumb_image
-                  }`}
-                  alt=""
-                  className={`w-full h-full object-contain transform scale-110 ${
-                    src !== product.thumb_image ? "opacity-50" : ""
-                  } `}
-                />
-              </div>
-              {productsImg &&
+              {product.service_image.map((image, index) => (
+                <div
+                  key={index}
+                  onClick={() => changeImgHandler(image.image_url)}
+                  className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
+                >
+                  <img
+                    src={image.image_url}
+                    alt={`Thumbnail ${index}`}
+                    className={`w-full h-full object-contain transform scale-110`}
+                  />
+                </div>
+              ))}
+              {/* {productsImg &&
                 productsImg.length > 0 &&
                 productsImg.map((img, i) => (
                   <div
@@ -371,7 +384,7 @@ export default function ProductView({
                       } `}
                     />
                   </div>
-                ))}
+                ))} */}
             </div>
           </div>
         </div>
@@ -385,7 +398,13 @@ export default function ProductView({
                 {product.brand.name}
               </span>
             )}
-             <Link
+            <p
+              data-aos="fade-up"
+              className="text-xl font-medium text-qblack"
+            >
+              {product.name}
+            </p>
+            <Link
                   href={{
                     pathname: "/viewstore"
                     ,query: { slug: product.vendor_id },
@@ -393,17 +412,12 @@ export default function ProductView({
                 >
             <p
               data-aos="fade-up"
-                  style={{cursor:"pointer",color:"blue"}}
+                  style={{cursor:"pointer",color:"blue",fontSize:"14px"}}
+                  className="mb-4"
             >
               View {seller.shop_name} web store
             </p>
             </Link>
-            <p
-              data-aos="fade-up"
-              className="text-xl font-medium text-qblack mb-4"
-            >
-              {product.name}
-            </p>
             <div
               data-aos="fade-up"
               className="flex space-x-[10px] items-center mb-6"
@@ -487,7 +501,7 @@ export default function ProductView({
                 {more ? "See Less" : "See More"}
               </button>
             </div>
-            <div className="p-3 bg-qyellowlow/10 flex items-center space-x-2 mb-[30px] w-fit">
+            {/* <div className="p-3 bg-qyellowlow/10 flex items-center space-x-2 mb-[30px] w-fit">
               <span className="text-base font-bold text-qblack">
                 {ServeLangItem()?.Availability} :
               </span>
@@ -496,7 +510,7 @@ export default function ProductView({
                   ? `${product.qty} Products Available`
                   : `Products not Available`}
               </span>
-            </div>
+            </div> */}
 
             {/*<div data-aos="fade-up" className="colors mb-[30px]">*/}
             {/*  <span className="text-sm font-normal uppercase text-qgray mb-[14px] inline-block">*/}
@@ -593,7 +607,7 @@ export default function ProductView({
                   </button>
                 </div>
               </div> */}
-              <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border">
+              {/* <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border"> */}
                 {/*<button type="button">*/}
                 {/*  <span>*/}
                 {/*    <svg*/}
@@ -634,8 +648,14 @@ export default function ProductView({
                     </span>
                   </button>
                 )} */}
-              </div>
+              {/* </div> */}
               <div className="flex-1 h-full">
+              <Link
+                  href={{
+                    pathname: "/viewstore"
+                    ,query: { slug: product.vendor_id },
+                  }}
+                >
                 <button
                   // onClick={addToCard}
                   type="button"
@@ -643,6 +663,7 @@ export default function ProductView({
                 >
                   View Service
                 </button>
+                </Link>
               </div>
             </div>
 
@@ -660,12 +681,12 @@ export default function ProductView({
                     ))}
                 </p>
               )}
-              <p className="text-[13px] text-qgray leading-7">
+              {/* <p className="text-[13px] text-qgray leading-7">
                 <span className="text-qblack uppercase">
                   {ServeLangItem()?.SKU}:
                 </span>{" "}
                 {product.sku}
-              </p>
+              </p> */}
             </div>
 
             <div

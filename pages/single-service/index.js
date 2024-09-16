@@ -24,6 +24,7 @@ export const getServerSideProps = async (context) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}api/service/${context.query.slug}`
   );
+  console.log(context.query.slug,"ssssssssssss");
   const data = await res.json();
   return {
     props: {
@@ -31,4 +32,5 @@ export const getServerSideProps = async (context) => {
     },
   };
 };
+
 export default SingleService;

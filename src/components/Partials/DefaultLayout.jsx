@@ -292,11 +292,11 @@ export default function DefaultLayout({ children }) {
             <div>
               <Consent />
               <div>{children}</div>
-              {twkData && (
+              {/* {twkData && (
                   <TawkMessengerReact
                       propertyId={twkData.widgetId}
                       widgetId={twkData.propertyId}/>
-              )}
+              )} */}
 
               {getLoginContexts.loginPopup && (
                 <div
