@@ -195,7 +195,7 @@ const ViewStore = () => {
           </div>
           <div className="brand-stories-section p-4">
           {/* Heading for the brand stories section */}
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Brand Stories</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Brand Story</h2>
           <div className="brandStoryDiv">
               {vendorDetails?.vendor_details?.stories?.length === 0 ? (
               <div className="no-stories border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500">
