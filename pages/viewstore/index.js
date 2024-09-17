@@ -212,11 +212,11 @@ const ViewStore = () => {
            )}
           </div>
         </div>
-        <ContactInfo
+        {/* <ContactInfo
             email={vendorDetails?.vendor_details?.email}
             phone={vendorDetails?.vendor_details?.phone}
             address={vendorDetails?.vendor_details?.address}
-        />
+        /> */}
         </div>
       </div> :
       <div className="noVendorText" >
