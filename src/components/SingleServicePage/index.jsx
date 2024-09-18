@@ -42,27 +42,51 @@ export default function SingleServicePage({ details }) {
     const [description, setDescription] = useState("");
     const [reportErrors, setReportErrors] = useState(null);
     const [commnets, setComments] = useState(null);
+    // useEffect(() => {
+    //     if (!commnets) {
+    //         const reviews =
+    //             commnets &&
+    //             commnets?.length > 0 &&
+    //             commnets?.map((review) => {
+    //                 return {
+    //                     id: review.id,
+    //                     author: review.user.name,
+    //                     comments: review.review,
+    //                     review: parseInt(review.rating),
+    //                     replys: null,
+    //                     image: review.user.image
+    //                         ? process.env.NEXT_PUBLIC_BASE_URL + review.user.image
+    //                         : null,
+    //                 };
+    //             });
+    //         setComments(reviews);
+    //     }
+    // }, [commnets]);
     useEffect(() => {
         if (!commnets) {
-            const reviews =
-                details &&
-                details?.serviceReviews?.length > 0 &&
-                details?.serviceReviews?.map((review) => {
-                    return {
-                        id: review.id,
-                        author: review.user.name,
-                        comments: review.review,
-                        review: parseInt(review.rating),
-                        replys: null,
-                        image: review.user.image
-                            ? process.env.NEXT_PUBLIC_BASE_URL + review.user.image
-                            : null,
-                    };
-                });
-            setComments(reviews);
+            const handleSubmit = async (e) => {
+                try {
+                  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/user/service-review`, {
+                    method: 'GET',
+                    headers: {
+                      Authorization: `Bearer ${auth() && auth().access_token}`,
+                      Accept: "application/json",
+                    },   
+                  });
+                  const data = await response.json();
+                  console.log(data,"ssssss")
+                  setComments(data);
+                  if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                  }
+                } catch (error) {
+                  console.error('Error getting review:', error);
+                } 
+              };
+              handleSubmit()
         }
     }, [commnets]);
-
+    console.log(commnets,"reviews2")
     const sellerInfo = details.seller
         ? {
             seller: {
@@ -188,8 +212,8 @@ export default function SingleServicePage({ details }) {
                                             >
                                                 {ServeLangItem()?.Description}
                                             </span>
-                                        </li>
-                                        {/* <li>
+                                        </li>   
+                                        <li>
                                             <span
                                                 onClick={() => setTab("review")}
                                                 className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${tab === "review"
@@ -199,7 +223,7 @@ export default function SingleServicePage({ details }) {
                                             >
                                                 {ServeLangItem()?.Reviews}
                                             </span>
-                                        </li> */}
+                                        </li>
 
                                         {/*{Multivendor() === 1 && details.is_seller_product && (*/}
                                         {/*  <li>*/}
@@ -347,19 +371,18 @@ export default function SingleServicePage({ details }) {
                                             {/*</div>*/}
                                         </>
                                     )}
-                                    {tab === "review" && (
+                                    {/* {tab === "review" && (
                                         <div data-aos="fade-up" className="w-full tab-content-item">
                                             <h6 className="text-[20px] font-bold text-qblack mb-2">
                                                 {ServeLangItem()?.Reviews}
                                             </h6>
-                                            {/* review-comments */}
                                             <div className="w-full">
                                                 <Reviews
-                                                    comments={commnets.length > 0 && commnets.slice(0, 2)}
+                                                    comments={commnets.reviews.data}
                                                 />
                                             </div>
                                         </div>
-                                    )}
+                                    )} */}
                                     {tab === "info" && (
                                         <div data-aos="fade-up" className="w-full tab-content-item">
                                             {details.seller && (

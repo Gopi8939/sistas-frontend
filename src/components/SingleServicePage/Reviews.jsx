@@ -4,6 +4,7 @@ import Star from "../Helpers/icons/Star";
 // import LoaderStyleOne from "../Helpers/Loaders/LoaderStyleOne";
 // import StarRating from "../Helpers/StarRating";
 export default function Reviews({ comments }) {
+  console.log(comments,"ss11s")
   return (
     <div className="review-wrapper w-full">
       <div className="w-full reviews mb-[60px]">
@@ -22,8 +23,8 @@ export default function Reviews({ comments }) {
                       <Image
                         layout="fill"
                         src={
-                          comment.image
-                            ? comment.image
+                          comment.thumb_image
+                            ? `${process.env.NEXT_PUBLIC_BASE_URL}${comment.thumb_image}`
                             : `/assets/images/comment-user-1.png`
                         }
                         alt=""
@@ -41,16 +42,16 @@ export default function Reviews({ comments }) {
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="flex">
-                      {Array.from(Array(comment.review), () => (
-                        <span key={comment.review + Math.random()}>
+                      {Array.from(Array(comment.rating), () => (
+                        <span key={comment.rating + Math.random()}>
                           <Star />
                         </span>
                       ))}
-                      {comment.review < 5 && (
+                      {comment.rating < 5 && (
                         <>
-                          {Array.from(Array(5 - comment.review), () => (
+                          {Array.from(Array(5 - comment.rating), () => (
                             <span
-                              key={comment.review + Math.random()}
+                              key={comment.rating + Math.random()}
                               className="text-gray-500"
                             >
                               <Star defaultValue={false} />
@@ -60,16 +61,16 @@ export default function Reviews({ comments }) {
                       )}
                     </div>
                     <span className="text-[13px] font-normal text-qblack mt-1 inline-block">
-                      ({comment.review}.0)
+                      ({comment.rating}.0)
                     </span>
                   </div>
                 </div>
                 <div className="comment mb-[30px]">
                   <p className="text-[15px] text-qgray leading-7 text-normal">
-                    {comment.comments}
+                    {comment.review}
                   </p>
                 </div>
-                {comment.replys &&
+                {/* {comment.replys &&
                   comment.replys.length > 0 &&
                   comment.replys.map((reply) => (
                     <div
@@ -92,7 +93,7 @@ export default function Reviews({ comments }) {
                             </p>
                             {/*<p className="text-[13px] font-normal text-qgray">*/}
                             {/*  London,UK*/}
-                            {/*</p>*/}
+                            {/*</p>
                           </div>
                         </div>
                       </div>
@@ -102,7 +103,7 @@ export default function Reviews({ comments }) {
                         </p>
                       </div>
                     </div>
-                  ))}
+                  ))} */}
               </div>
             ))}
         </div>

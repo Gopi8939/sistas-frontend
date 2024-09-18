@@ -21,8 +21,6 @@ function CheckProductIsExistsInFlashSale({
     }
   }, [websiteSetup]);
   const calcProductPrice = (id, price) => {
-    // console.log(id, price);
-    // console.log(flashSale);
     if (flashSale && flashSale.flashSaleActive) {
       const getId = flashSale.flashSaleProducts.find(
         (item) => parseInt(item.product_id) === parseInt(id)

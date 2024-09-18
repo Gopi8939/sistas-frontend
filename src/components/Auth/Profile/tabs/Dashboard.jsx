@@ -147,7 +147,7 @@ export default function Dashboard({ dashBoardData }) {
             </h1>
           </div>
         </div>
-        <div className="quick-view-grid w-full lg:flex justify-between lg:space-x-2 xl:space-x-0 items-center mt-3 ">
+        {/* <div className="quick-view-grid w-full lg:flex justify-between lg:space-x-2 xl:space-x-0 items-center mt-3 ">
           <div className="qv-item xl:w-[252px] xl:h-[208px] lg:w-1/2 w-full mb-5 xl:mb-0 bg-qblack group hover-bg-qyellow transition-all duration-300 ease-in-out p-6">
             <div className="w-[62px] h-[62px] rounded bg-white flex justify-center items-center">
             <span>
@@ -236,7 +236,7 @@ export default function Dashboard({ dashBoardData }) {
             {dashBoardData.totalOrder}
           </span>
           </div>
-        </div>
+        </div> */}
         <div className="dashboard-info mt-8 mb-8 xl:flex justify-between items-center bg-primarygray xl:p-7 p-3">
           <div className="mb-10 xl:mb-0">
             <p className="title text-[22px] font-semibold">

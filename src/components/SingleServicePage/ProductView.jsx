@@ -43,6 +43,8 @@ export default function ProductView({
   const router = useRouter();
   const dispatch = useDispatch();
   const [more, setMore] = useState(false);
+  const [loading, setLoading]=useState(false)
+  const [error,setError]=useState('')
   const productsImg = images && images.length > 0 && images;
   // const varients =
   //   product && product.active_variants.length > 0 && product.active_variants;
@@ -62,6 +64,8 @@ export default function ProductView({
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
   const [isImageError, setIsImageError] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState('');
 
   const handleImageError = () => {
     setIsImageError(true);
@@ -78,6 +82,8 @@ export default function ProductView({
       setQuantity((prev) => prev - 1);
     }
   };
+
+  console.log(product,"rpppppp")
 
   //varient selector handler
   // const [selecteVarientId, setSelecteVarientId] = useState(product.active_variants.length>0&&product.active_variants[0].active_variant_items.length>0?product.active_variants[0].active_variant_items[0]:null);
@@ -236,6 +242,40 @@ export default function ProductView({
     }
   };
 
+  const handleCount = async () => {
+    try {
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/user/add-visitor-count`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${auth() && auth().access_token}`,
+          Accept: "application/json",
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: product.id,
+          vendor_id: product.vendor_id,
+        }),
+      });
+  
+      // Log response status and text for debugging
+      if (!response.ok) {
+        const errorText = await response.text(); // Get the response text
+        console.error(`HTTP error! Status: ${response.status}, Text: ${errorText}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // Do something with data if needed
+      router.push({
+        pathname: "/viewstore",
+        query: { slug: product.vendor_id },
+      });
+    } catch (error) {
+      console.error('Error fetching vendor details:', error);
+    }
+  };
+  
+  
+
   //wishlist
 
   const { wishlistData } = useSelector((state) => state.wishlistData);
@@ -306,6 +346,55 @@ export default function ProductView({
     }else{
       loginPopupBoard.handlerPopup(true);
     }
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/user/store-service-review`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${auth() && auth().access_token}`,
+          Accept: "application/json",
+          'Content-Type': 'application/json',
+        },   
+        body: JSON.stringify({
+          rating, 
+          review,
+          service_id:product.id
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      // Optionally reset the form
+      setRating(0);
+      setReview('');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderStars = () => {
+    return [...Array(5)].map((_, index) => {
+      const starValue = index + 1; // Star value: 1, 2, 3, 4, 5
+      return (
+        <span
+          key={index}
+          className={`star ${rating >= starValue ? 'filled' : ''}`}
+          onClick={() => handleStarClick(starValue)}
+          onMouseEnter={() => setRating(starValue)} // Optional: change rating on hover
+          onMouseLeave={() => setRating(Math.floor(rating))} // Optional: reset on leave
+          role="button"
+          aria-hidden="true"
+        >
+          ★
+        </span>
+      );
+    });
   };
 
   return (
@@ -650,20 +739,20 @@ export default function ProductView({
                 )} */}
               {/* </div> */}
               <div className="flex-1 h-full">
-              <Link
+              {/* <Link
                   href={{
                     pathname: "/viewstore"
                     ,query: { slug: product.vendor_id },
                   }}
-                >
+                > */}
                 <button
-                  // onClick={addToCard}
+                  onClick={handleCount}
                   type="button"
                   className="black-btn text-sm font-semibold w-full h-full"
                 >
                   View Service
                 </button>
-                </Link>
+                {/* </Link> */}
               </div>
             </div>
 
@@ -793,7 +882,6 @@ export default function ProductView({
                 {/*  </span>*/}
                 {/*</Link>*/}
               </div>
-
             </div>
             {seller && (
                 <div data-aos="fade-up" className="message-btn">
@@ -809,8 +897,38 @@ export default function ProductView({
             )}
 
           </div>
+
         </div>
       </div>
+          <div className="review-component">
+      <h2 style={{fontSize:"22px"}}>Write a Review</h2>
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className="rating" style={{gap:"10px"}}>
+          <label>Rating:</label>
+          <div className="rating-input">
+              <input
+                type="number"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                placeholder="Give your rating here..."
+                required
+              />
+              <span className="star">★</span>
+            </div>
+        </div>
+        <textarea
+          value={review}
+          onChange={(e) => setReview(e.target.value)}
+          placeholder="Write your review here..."
+          required
+          className="textReview"
+        />
+        <button className="submitBtn" type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit Review'}
+        </button>
+      </form>
+             </div>
     </>
   );
 }

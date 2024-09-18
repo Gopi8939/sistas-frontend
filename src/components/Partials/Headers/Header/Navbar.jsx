@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Arrow from "../../../Helpers/icons/Arrow";
 import FontAwesomeCom from "../../../Helpers/icons/FontAwesomeCom";
 import Multivendor from "../../../Shared/Multivendor";
 import ServeLangItem from "../../../Helpers/ServeLangItem";
 import axios from "axios";
+import LoginContext from "../../../Contexts/LoginContext";
 export default function Navbar({ className }) {
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   const categoryList = websiteSetup && websiteSetup.payload.productCategories;
@@ -20,7 +21,13 @@ export default function Navbar({ className }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [productCategory, setProductCategory] = useState();
   const [serviceCategory, setServiceCategory] = useState();
-
+  const [auth, setAuth] = useState(null);
+  const getLoginContexts = useContext(LoginContext);
+  useEffect(() => {
+    if (getLoginContexts.loginPopup === false) {
+      setAuth(() => JSON.parse(localStorage.getItem("auth")));
+    }
+  }, [getLoginContexts.loginPopup]);
   const handleCategoryToggle = () => {
     setCategoryToggle(!categoryToggle);
     setServiceToggle(false);
@@ -993,55 +1000,61 @@ useEffect(() => {
               </div>
             </div>
             {Multivendor() === 1 && (
-              <div className="become-seller-btn relative">
-                {/* <Link href="/become-seller" passHref> */}
-                {/* <a rel="noopener noreferrer"> */}
-                <div className=" w-[161px] h-[40px] flex justify-center items-center cursor-pointer" onClick={() => setShowDropdown(!showDropdown)}>
-                  <div className="flex rtl:space-x-reverse space-x-2 items-center">
-                    <span className="text-sm font-600">
-                      {/* {ServeLangItem()?.Become_seller} */}
-                      Sell on Sistas
-                    </span>
-                    <span className="transform rtl:rotate-180 fill-current ">
-                      <svg
-                        width="6"
-                        height="10"
-                        viewBox="0 0 6 10"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="fill-current"
-                      >
-                        <rect
-                          x="1.08984"
-                          width="6.94106"
-                          height="1.54246"
-                          transform="rotate(45 1.08984 0)"
-                        />
-                        <rect
-                          x="6"
-                          y="4.9082"
-                          width="6.94106"
-                          height="1.54246"
-                          transform="rotate(135 6 4.9082)"
-                        />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-                {showDropdown && (
-                  <div className="w-full absolute top-15 right-0 bg-white border border-gray-200 p-2">
-                    <Link href="/seller-product" passHref>
-                      <a className="block p-2 text-sm text-gray-800 custom-hover-color">Product Seller</a>
-                    </Link>
-                    <Link href="/service-provider" passHref>
-                      <a className="block p-2 text-sm text-gray-800 custom-hover-color">Service Provider</a>
-                    </Link>
-                  </div>
-                )}
-                {/* </a> */}
-                {/* </Link> */}
-              </div>
-            )}
+  <div className="become-seller-btn relative">
+    <div 
+      className="w-[161px] h-[40px] flex justify-center items-center cursor-pointer" 
+      onClick={() => {
+          setShowDropdown(!showDropdown);
+      }}
+    >
+      <div className="flex rtl:space-x-reverse space-x-2 items-center">
+        <span className="text-sm font-600">Sell on Sistas</span>
+        <span className="transform rtl:rotate-180 fill-current">
+          <svg
+            width="6"
+            height="10"
+            viewBox="0 0 6 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="fill-current"
+          >
+            <rect
+              x="1.08984"
+              width="6.94106"
+              height="1.54246"
+              transform="rotate(45 1.08984 0)"
+            />
+            <rect
+              x="6"
+              y="4.9082"
+              width="6.94106"
+              height="1.54246"
+              transform="rotate(135 6 4.9082)"
+            />
+          </svg>
+        </span>
+      </div>
+    </div>
+    {showDropdown && (
+          auth ? (
+          <div className="w-full absolute top-15 right-0 bg-white border border-gray-200 p-2">
+            <Link href="/seller-product" passHref>
+              <a className="block p-2 text-sm text-gray-800 custom-hover-color">Product Seller</a>
+            </Link>
+            <Link href="/service-provider" passHref>
+              <a className="block p-2 text-sm text-gray-800 custom-hover-color">Service Provider</a>
+            </Link>
+          </div>):(
+            <div className="w-full absolute top-15 right-0 bg-white border border-gray-200 p-2">
+            <Link href="/login" passHref>
+              <a className="block p-2 text-sm text-gray-800 custom-hover-color">You must login</a>
+            </Link>
+            </div>
+                )
+              )}
+            </div>
+          )}
+
           </div>
         </div>
       </div>

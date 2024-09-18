@@ -78,6 +78,7 @@ export default function ProductView({
       setQuantity((prev) => prev - 1);
     }
   };
+  console.log(product,"sssssss")
 
   //varient selector handler
   const [selecteVarientId, setSelecteVarientId] = useState(product.active_variants.length>0&&product.active_variants[0].active_variant_items.length>0?product.active_variants[0].active_variant_items[0]:null);
@@ -284,6 +285,7 @@ export default function ProductView({
       if (isFlashSaleProduct) {
         const offer = parseInt(offerFlashSale.offer);
         const price = product.offer_price
+        console.log(offer,price,"pricep")
           ? parseInt(product.offer_price)
           : parseInt(product.price);
         const discountPrice = (offer / 100) * price;
@@ -292,7 +294,7 @@ export default function ProductView({
           Math.trunc(((mainPrice - product.price) / product.price) * 100)
         );
       } else {
-        setPricePercent(
+          setPricePercent(
           Math.trunc(
             ((product.offer_price - product.price) / product.price) * 100
           )
@@ -307,6 +309,8 @@ export default function ProductView({
       loginPopupBoard.handlerPopup(true);
     }
   };
+
+  console.log(pricePercent,"pricePercent")
   return (
     <>
       <div

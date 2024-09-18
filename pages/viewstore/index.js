@@ -69,7 +69,7 @@ const ViewStore = () => {
     if (!media_url) {
       // Render a box indicating no brand story media is available
       return (
-        <div className="brand-story border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500">
+        <div className="brand-story border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500" style={{minHeight:"250px"}}>
           <p>No brand story media available</p>
         </div>
       );
@@ -77,7 +77,7 @@ const ViewStore = () => {
     return (
       <div className="brand-story border border-gray-200 rounded-lg shadow-md">
         {youtubeError ? (
-          <div className="fallback-box flex items-center justify-center text-gray-500">
+          <div className="fallback-box flex items-center justify-center text-gray-500" style={{minHeight:"250px"}}>
             <p>Sorry! The URL is not working.</p>
           </div>
         ) : isYouTube ? (
@@ -101,7 +101,7 @@ const ViewStore = () => {
             onError={() => setYoutubeError(true)}
           ></video>
         )}
-        <p className="text-gray-700">{description}</p>
+        {/* <p className="text-gray-700">{description}</p>   */}
       </div>
     );
   };
@@ -151,16 +151,13 @@ const ViewStore = () => {
           </div>   */}
            <div className="banner-section relative w-full">
            {imageError ? (
-                <div className="fallback-box flex items-center justify-center h-full text-gray-500" 
-                style={{
-                  width: "100%",
-                  maxWidth: "1200px",
-                  height: "250px",
-                  backgroundColor:"#f9f9f9",
-                  border:"1px solid #ddd"
-                }}>
-                  <p>Sorry! something went wrong on showing Banner Image</p>
-                </div>
+                <img
+                src={defaultBanner}
+                alt="Banner"
+                className="w-full h-auto object-cover"
+                style={{ maxHeight: '250px' }} // Adjust max height as needed
+                onError={() => setImageError(true)}
+              />
               ) : (
                 <img
                   src={bannerImageUrl}
@@ -198,7 +195,7 @@ const ViewStore = () => {
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Brand Story</h2>
           <div className="brandStoryDiv">
               {vendorDetails?.vendor_details?.stories?.length === 0 ? (
-              <div className="no-stories border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500">
+              <div className="no-stories border border-gray-200 rounded-lg shadow-md flex items-center justify-center h-64 text-gray-500" style={{minHeight:"250px"}}>
                 <p>No brand stories available</p>
               </div>
             ) : (
