@@ -48,29 +48,29 @@ export default function Cart({ className }) {
     if (getCarts && getCarts.length > 0) {
       setGetAllPrice(
         getCarts.map((v) => {
-          if (v.product.offer_price) {
-            if (v.variants && v.variants.length > 0) {
-              const prices = v.variants.map((item) =>
-                item.variant_item ? parseInt(item.variant_item.price) : 0
+          if (v?.product?.offer_price) {
+            if (v?.variants && v?.variants?.length > 0) {
+              const prices = v?.variants?.map((item) =>
+                item?.variant_item ? parseInt(item?.variant_item?.price) : 0
               );
-              const sumCal = prices.reduce((p, c) => p + c);
-              const v_price = sumCal + parseInt(v.product.offer_price);
-              return checkProductExistsInFlashSale(v.product_id, v_price);
+              const sumCal = prices?.reduce((p, c) => p + c);
+              const v_price = sumCal + parseInt(v?.product?.offer_price);
+              return checkProductExistsInFlashSale(v?.product_id, v_price);
             } else {
-              const wo_v_price = v.product.offer_price;
+              const wo_v_price = v?.product?.offer_price;
               return checkProductExistsInFlashSale(v.product_id, wo_v_price);
             }
           } else {
-            if (v.variants && v.variants.length > 0) {
-              const prices = v.variants.map((item) =>
-                item.variant_item ? parseInt(item.variant_item.price) : 0
+            if (v?.variants && v?.variants?.length > 0) {
+              const prices = v?.variants?.map((item) =>
+                item?.variant_item ? parseInt(item?.variant_item?.price) : 0
               );
-              const sumCal = prices.reduce((p, c) => p + c);
-              const v_price = sumCal + parseInt(v.product.price);
-              return checkProductExistsInFlashSale(v.product_id, v_price);
+              const sumCal = prices?.reduce((p, c) => p + c);
+              const v_price = sumCal + parseInt(v?.product?.price);
+              return checkProductExistsInFlashSale(v?.product_id, v_price);
             } else {
-              const wo_v_price = v.product.price;
-              return checkProductExistsInFlashSale(v.product_id, wo_v_price);
+              const wo_v_price = v?.product?.price;
+              return checkProductExistsInFlashSale(v?.product_id, wo_v_price);
             }
           }
         })
@@ -103,10 +103,10 @@ export default function Cart({ className }) {
 
   const price = (item) => {
     if (item) {
-      if (item.product.offer_price) {
-        if (item.variants && item.variants.length > 0) {
-          const prices = item.variants.map((item) =>
-            item.variant_item ? parseInt(item.variant_item.price) : 0
+      if (item?.product?.offer_price) {
+        if (item?.variants && item?.variants?.length > 0) {
+          const prices = item?.variants?.map((item) =>
+            item?.variant_item ? parseInt(item?.variant_item?.price) : 0
           );
           const sumVarient = prices.reduce((p, c) => p + c);
           return parseInt(item.product.offer_price) + sumVarient;
@@ -133,7 +133,7 @@ export default function Cart({ className }) {
           //   price: totalPrice,
           // });
         } else {
-          return item.product.price;
+          return item?.product?.price;
           // return CheckProductIsExistsInFlashSale({
           //   id: item.product_id,
           //   price: parseInt(item.product.price),
@@ -167,7 +167,7 @@ export default function Cart({ className }) {
                           layout="fill"
                           src={`${
                             process.env.NEXT_PUBLIC_BASE_URL +
-                            item.product.thumb_image
+                            item?.product?.thumb_image
                           }`}
                           alt=""
                           className="w-full h-full object-contain"
@@ -175,7 +175,7 @@ export default function Cart({ className }) {
                       </div>
                       <div className="flex-1 h-full flex flex-col justify-center ">
                         <p className="title mb-2 text-[13px] font-600 text-qblack leading-4 line-clamp-2 hover:text-blue-600">
-                          {item.product.name}
+                          {item?.product?.name}
                         </p>
 
                         <p className="price">

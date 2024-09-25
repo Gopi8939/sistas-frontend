@@ -484,7 +484,7 @@ export default function AllProductPage({ response, sellerInfo }) {
 
             {/*<BreadcrumbCom />*/}
             <div className="w-full lg:flex lg:space-x-[30px] rtl:space-x-reverse">
-              <div className="lg:w-[270px]">
+              {/* <div className="lg:w-[270px]">
                 <ProductsFilter
                   filterToggle={filterToggle}
                   filterToggleHandler={() => setToggle(!filterToggle)}
@@ -592,7 +592,7 @@ export default function AllProductPage({ response, sellerInfo }) {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <div className="flex-1">
                 {response.data && response.data.products.data.length > 0 ? (
@@ -785,7 +785,7 @@ export default function AllProductPage({ response, sellerInfo }) {
                         </button>
                       </div>
                     )}
-                    <div className="">
+                    {/* <div className="">
                       <h1 className="sm:text-3xl text-xl font-600 text-qblacktext leading-none mb-5">Our Stories</h1>
                       <div className="grid grid-cols-3 gap-4 mb-10">
                         <div className="">
@@ -798,7 +798,7 @@ export default function AllProductPage({ response, sellerInfo }) {
                           <video src="/assets/videos/video-3.mp4" type="video/mp4" className="w-full" controls></video>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
 

@@ -68,9 +68,7 @@ export default function DefaultLayout({ children }) {
 // not working
   function getMessage() {
     const messaging = firebase.messaging()
-    console.log(messaging)
     messaging.onMessage((message) => {
-      console.log(message)
       const title = message.notification.title;
       const options = {
         body: message.notification.body
@@ -294,11 +292,11 @@ export default function DefaultLayout({ children }) {
             <div>
               <Consent />
               <div>{children}</div>
-              {twkData && (
+              {/* {twkData && (
                   <TawkMessengerReact
                       propertyId={twkData.widgetId}
                       widgetId={twkData.propertyId}/>
-              )}
+              )} */}
 
               {getLoginContexts.loginPopup && (
                 <div

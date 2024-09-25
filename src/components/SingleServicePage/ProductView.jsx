@@ -43,6 +43,8 @@ export default function ProductView({
   const router = useRouter();
   const dispatch = useDispatch();
   const [more, setMore] = useState(false);
+  const [loading, setLoading]=useState(false)
+  const [error,setError]=useState('')
   const productsImg = images && images.length > 0 && images;
   // const varients =
   //   product && product.active_variants.length > 0 && product.active_variants;
@@ -55,13 +57,19 @@ export default function ProductView({
   const [price, setPrice] = useState(null);
   const [offerPrice, setOffer] = useState(null);
   const [src, setSrc] = useState(product.thumb_image);
-  useEffect(() => {
-    setSrc(product.thumb_image);
-  }, [product]);
-console.log(product,"product")
+  // useEffect(() => {
+  //   setSrc(product.thumb_image);
+  // }, [product]);
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
+  const [isImageError, setIsImageError] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState('');
+
+  const handleImageError = () => {
+    setIsImageError(true);
+  };
   const changeImgHandler = (current) => {
     setSrc(current);
   };
@@ -74,6 +82,8 @@ console.log(product,"product")
       setQuantity((prev) => prev - 1);
     }
   };
+
+  console.log(product,"rpppppp")
 
   //varient selector handler
   // const [selecteVarientId, setSelecteVarientId] = useState(product.active_variants.length>0&&product.active_variants[0].active_variant_items.length>0?product.active_variants[0].active_variant_items[0]:null);
@@ -232,6 +242,40 @@ console.log(product,"product")
     }
   };
 
+  const handleCount = async () => {
+    try {
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/user/add-visitor-count`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${auth() && auth().access_token}`,
+          Accept: "application/json",
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          service_id: product.id,
+          vendor_id: product.vendor_id,
+        }),
+      });
+  
+      // Log response status and text for debugging
+      if (!response.ok) {
+        const errorText = await response.text(); // Get the response text
+        console.error(`HTTP error! Status: ${response.status}, Text: ${errorText}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      // Do something with data if needed
+      router.push({
+        pathname: "/viewstore",
+        query: { slug: product.vendor_id },
+      });
+    } catch (error) {
+      console.error('Error fetching vendor details:', error);
+    }
+  };
+  
+  
+
   //wishlist
 
   const { wishlistData } = useSelector((state) => state.wishlistData);
@@ -303,6 +347,55 @@ console.log(product,"product")
       loginPopupBoard.handlerPopup(true);
     }
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/user/store-service-review`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${auth() && auth().access_token}`,
+          Accept: "application/json",
+          'Content-Type': 'application/json',
+        },   
+        body: JSON.stringify({
+          rating, 
+          review,
+          service_id:product.id
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      // Optionally reset the form
+      setRating(0);
+      setReview('');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderStars = () => {
+    return [...Array(5)].map((_, index) => {
+      const starValue = index + 1; // Star value: 1, 2, 3, 4, 5
+      return (
+        <span
+          key={index}
+          className={`star ${rating >= starValue ? 'filled' : ''}`}
+          onClick={() => handleStarClick(starValue)}
+          onMouseEnter={() => setRating(starValue)} // Optional: change rating on hover
+          onMouseLeave={() => setRating(Math.floor(rating))} // Optional: reset on leave
+          role="button"
+          aria-hidden="true"
+        >
+          ★
+        </span>
+      );
+    });
+  };
 
   return (
     <>
@@ -317,14 +410,25 @@ console.log(product,"product")
         >
           <div className="w-full">
             <div className="w-full md:h-[600px] h-[350px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
-              <Image
-                layout="fill"
-                objectFit="scale-down"
-                src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
-                alt=""
-                className="object-contain  transform scale-110"
+            {!isImageError ? (
+              <div className="relative w-full h-full"> {/* Make sure the parent has a defined size */}
+                <Image
+                  layout="fill"
+                  objectFit="scale-down"
+                  src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
+                  alt={"img"}
+                  className="object-contain transform scale-110"
+                  onError={handleImageError} 
+                />
+              </div>
+            ) : (
+              <img
+                src={src}
+                alt={"img"}
+                className="object-contain transform scale-110"
               />
-              {product.offer_price && (
+            )}
+              {product.offer_price && pricePercent > 0 && (
                 <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
                   <span className="text-tblack">{pricePercent}%</span>
                   {/*<span>*/}
@@ -338,23 +442,20 @@ console.log(product,"product")
               )}
             </div>
             <div className="flex gap-2 flex-wrap">
-              <div
-                onClick={() => changeImgHandler(product.thumb_image)}
-                className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
-              >
-                <Image
-                  layout="fill"
-                  objectFit="scale-down"
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_URL + product.thumb_image
-                  }`}
-                  alt=""
-                  className={`w-full h-full object-contain transform scale-110 ${
-                    src !== product.thumb_image ? "opacity-50" : ""
-                  } `}
-                />
-              </div>
-              {productsImg &&
+              {product.service_image.map((image, index) => (
+                <div
+                  key={index}
+                  onClick={() => changeImgHandler(image.image_url)}
+                  className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
+                >
+                  <img
+                    src={image.image_url}
+                    alt={`Thumbnail ${index}`}
+                    className={`w-full h-full object-contain transform scale-110`}
+                  />
+                </div>
+              ))}
+              {/* {productsImg &&
                 productsImg.length > 0 &&
                 productsImg.map((img, i) => (
                   <div
@@ -372,7 +473,7 @@ console.log(product,"product")
                       } `}
                     />
                   </div>
-                ))}
+                ))} */}
             </div>
           </div>
         </div>
@@ -386,7 +487,13 @@ console.log(product,"product")
                 {product.brand.name}
               </span>
             )}
-             <Link
+            <p
+              data-aos="fade-up"
+              className="text-xl font-medium text-qblack"
+            >
+              {product.name}
+            </p>
+            <Link
                   href={{
                     pathname: "/viewstore"
                     ,query: { slug: product.vendor_id },
@@ -394,17 +501,12 @@ console.log(product,"product")
                 >
             <p
               data-aos="fade-up"
-                  style={{cursor:"pointer",color:"blue"}}
+                  style={{cursor:"pointer",color:"blue",fontSize:"14px"}}
+                  className="mb-4"
             >
               View {seller.shop_name} web store
             </p>
             </Link>
-            <p
-              data-aos="fade-up"
-              className="text-xl font-medium text-qblack mb-4"
-            >
-              {product.name}
-            </p>
             <div
               data-aos="fade-up"
               className="flex space-x-[10px] items-center mb-6"
@@ -488,7 +590,7 @@ console.log(product,"product")
                 {more ? "See Less" : "See More"}
               </button>
             </div>
-            <div className="p-3 bg-qyellowlow/10 flex items-center space-x-2 mb-[30px] w-fit">
+            {/* <div className="p-3 bg-qyellowlow/10 flex items-center space-x-2 mb-[30px] w-fit">
               <span className="text-base font-bold text-qblack">
                 {ServeLangItem()?.Availability} :
               </span>
@@ -497,7 +599,7 @@ console.log(product,"product")
                   ? `${product.qty} Products Available`
                   : `Products not Available`}
               </span>
-            </div>
+            </div> */}
 
             {/*<div data-aos="fade-up" className="colors mb-[30px]">*/}
             {/*  <span className="text-sm font-normal uppercase text-qgray mb-[14px] inline-block">*/}
@@ -594,7 +696,7 @@ console.log(product,"product")
                   </button>
                 </div>
               </div> */}
-              <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border">
+              {/* <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border"> */}
                 {/*<button type="button">*/}
                 {/*  <span>*/}
                 {/*    <svg*/}
@@ -635,15 +737,22 @@ console.log(product,"product")
                     </span>
                   </button>
                 )} */}
-              </div>
+              {/* </div> */}
               <div className="flex-1 h-full">
+              {/* <Link
+                  href={{
+                    pathname: "/viewstore"
+                    ,query: { slug: product.vendor_id },
+                  }}
+                > */}
                 <button
-                  // onClick={addToCard}
+                  onClick={handleCount}
                   type="button"
                   className="black-btn text-sm font-semibold w-full h-full"
                 >
                   View Service
                 </button>
+                {/* </Link> */}
               </div>
             </div>
 
@@ -661,12 +770,12 @@ console.log(product,"product")
                     ))}
                 </p>
               )}
-              <p className="text-[13px] text-qgray leading-7">
+              {/* <p className="text-[13px] text-qgray leading-7">
                 <span className="text-qblack uppercase">
                   {ServeLangItem()?.SKU}:
                 </span>{" "}
                 {product.sku}
-              </p>
+              </p> */}
             </div>
 
             <div
@@ -773,7 +882,6 @@ console.log(product,"product")
                 {/*  </span>*/}
                 {/*</Link>*/}
               </div>
-
             </div>
             {seller && (
                 <div data-aos="fade-up" className="message-btn">
@@ -789,8 +897,38 @@ console.log(product,"product")
             )}
 
           </div>
+
         </div>
       </div>
+          <div className="review-component">
+      <h2 style={{fontSize:"22px"}}>Write a Review</h2>
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <div className="rating" style={{gap:"10px"}}>
+          <label>Rating:</label>
+          <div className="rating-input">
+              <input
+                type="number"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+                placeholder="Give your rating here..."
+                required
+              />
+              <span className="star">★</span>
+            </div>
+        </div>
+        <textarea
+          value={review}
+          onChange={(e) => setReview(e.target.value)}
+          placeholder="Write your review here..."
+          required
+          className="textReview"
+        />
+        <button className="submitBtn" type="submit" disabled={loading}>
+          {loading ? 'Submitting...' : 'Submit Review'}
+        </button>
+      </form>
+             </div>
     </>
   );
 }

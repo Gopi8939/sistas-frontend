@@ -13,8 +13,8 @@ export default function BestSellers({ className, sallers = [] }) {
           >
               <Link
                   href={{
-                      pathname: "/seller-products",
-                      query: { seller: saller.slug },
+                      pathname: "/viewstore",
+                      query: { slug: saller.id },
                   }}
               >
                   <a rel="noopener noreferrer">

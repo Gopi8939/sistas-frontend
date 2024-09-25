@@ -134,7 +134,7 @@ function BecomeServiceProvider() {
       formData.append("country", "India");
       // formData.append("open_at", "10.00AM");
       // formData.append("closed_at", "10.00PM");
-      // formData.append("agree_terms_condition", checked);
+      formData.append("agree_terms_condition", checked);
       // formData.append("logo", uploadLogo);
       const options = {
         onUploadProgress: (progressEvent) => {
@@ -622,7 +622,7 @@ function BecomeServiceProvider() {
                 {/*    inputClasses="h-[50px]"*/}
                 {/*  />*/}
                 {/*</div>*/}
-                {/* <div className="remember-checkbox flex items-center space-x-2.5 mb-5">
+                <div className="remember-checkbox flex items-center space-x-2.5 mb-5">
                   <button
                     onClick={rememberMe}
                     type="button"
@@ -645,11 +645,11 @@ function BecomeServiceProvider() {
                   </button>
                   <Link href="/seller-terms-condition">
                     <span className="text-base text-black cursor-pointer">
-                      { {ServeLangItem()?.I_agree_all_terms_and_condition_in_ecoShop} }
+                      {ServeLangItem()?.I_agree_all_terms_and_condition_in_ecoShop}
                       I agree all terms and condition in Sistas
                     </span>
                   </Link>
-                </div> */}
+                </div>
 
                 <div className="signin-area mb-3">
                   <div className="flex justify-center">
@@ -658,7 +658,7 @@ function BecomeServiceProvider() {
                       disabled={
                         // providerName &&
                           email &&
-                          // checked &&
+                          checked &&
                           // coverImg &&
                           // logoImg &&
                           // location &&

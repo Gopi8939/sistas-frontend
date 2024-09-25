@@ -128,18 +128,32 @@ function OrderCom() {
     setReviewModal(!reviewModal);
     setReviewId(id);
   };
-  const reviewAction = () => {
+  const reviewAction = async() => {
     setLoading(true);
     if (auth()) {
-      apiRequest
-        .productReview(
-          {
-            rating: rating,
-            product_id: reviewId,
-            review: message,
+      // apiRequest
+      //   .productReview(
+      //     {
+      //       rating: rating,
+      //       product_id: reviewId,
+      //       review: message,
+      //     },
+      //     auth().access_token
+      //   )
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/user/store-product-review`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${auth() && auth().access_token}`,
+            Accept: "application/json",
+            'Content-Type': 'application/json',
           },
-          auth().access_token
-        )
+          body: JSON.stringify({
+            rating: rating,
+                  product_id: reviewId,
+                  review: message,
+          }),
+        })
         .then((res) => {
           toast.success(res.data && res.data.message);
           setLoading(false);

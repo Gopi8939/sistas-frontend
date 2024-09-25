@@ -26,7 +26,7 @@ function BecomeSaller() {
   const [cities, setCities] = useState([]);
   const [selectedState, setSelectedState] = useState('');
   const [onlineShop, setOnlineShop] = useState('');
-  // const [gstNumber, setGSTNumber] = useState("");
+  const [gstNumber, setGSTNumber] = useState("");
   const [selectedCity, setSelectedCity] = useState('');
   const [errors, setErrors] = useState(null);
   let [uploadProgress, setProgress] = useState(0);
@@ -113,18 +113,18 @@ function BecomeSaller() {
   const sellerReq = async () => {
     if (auth()) {
       const formData = new FormData();
-      formData.append("banner_image", uploadCoverImg);
+      // formData.append("banner_image", uploadCoverImg);
       formData.append("shop_name", shopName);
       formData.append("seller_name", sellerName);
       formData.append("email", email);
       formData.append("phone", phone);
       formData.append("address", shopAddress);
-      formData.append("onlineshop", onlineShop);
-      // formData.append("gst_number", gstNumber);
+      // formData.append("onlineshop", onlineShop);
+      formData.append("gst_number", gstNumber);
       formData.append("open_at", "10.00AM");
       formData.append("closed_at", "10.00PM");
       formData.append("agree_terms_condition", checked);
-      formData.append("logo", uploadLogo);
+      // formData.append("logo", uploadLogo);
       const options = {
         onUploadProgress: (progressEvent) => {
           const { loaded, total } = progressEvent;
@@ -436,7 +436,7 @@ function BecomeSaller() {
                     </span>
                   )}
                 </div>
-                {/* <div className="mb-5">
+                <div className="mb-5">
                     <InputCom
                       placeholder="Enter GST Number"
                       // label={ServeLangItem()?.Address}
@@ -450,14 +450,14 @@ function BecomeSaller() {
                     />
                     {errors && Object.hasOwn(errors, "address") ? (
                       <span className="text-sm mt-1 text-qred">
-                        {errors.address[0]}
+                        {errors.gst_number[0]}
                       </span>
                     ) : (
                       ""
                     )}
-                  </div> */}
+                  </div>
 
-                {/* <div className="remember-checkbox flex items-center space-x-2.5 mb-5">
+                <div className="remember-checkbox flex items-center space-x-2.5 mb-5">
                   <button
                     onClick={rememberMe}
                     type="button"
@@ -480,11 +480,11 @@ function BecomeSaller() {
                   </button>
                   <Link href="/seller-terms-condition">
                     <span className="text-base text-black cursor-pointer">
-                      {{ServeLangItem()?.I_agree_all_terms_and_condition_in_ecoShop}}
+                      {ServeLangItem().I_agree_all_terms_and_condition_in_ecoShop}
                       I agree all terms and condition in Sistas
                     </span>
                   </Link>
-                </div> */}
+                </div>
 
                 <div className="signin-area mb-3">
                   <div className="flex justify-center">
@@ -494,14 +494,14 @@ function BecomeSaller() {
                         sellerName &&
                           email &&
                           checked &&
-                          coverImg &&
-                          logoImg &&
+                          // coverImg &&
+                          // logoImg &&
                           phone &&
                           shopName &&
                           shopAddress &&
                           gstNumber &&
-                          logoImg &&
-                          coverImg
+                          selectedCity &&
+                          selectedState
                           ? false
                           : true
                       }

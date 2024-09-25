@@ -166,7 +166,7 @@ export default function SallerPage() {
               </div>
             </div>
             <div className="w-full lg:flex lg:space-x-[30px]">
-              <div className="lg:w-[270px]">
+              {/* <div className="lg:w-[270px]">
                 <ProductsFilter
                   filterToggle={filterToggle}
                   filterToggleHandler={() => setToggle(!filterToggle)}
@@ -178,7 +178,6 @@ export default function SallerPage() {
                   filterstorage={filterStorage}
                   className="mb-[30px]"
                 />
-                {/* ads */}
                 <div className="w-full hidden lg:block h-[295px] relative">
                   <Image
                     layout="fill"
@@ -187,7 +186,7 @@ export default function SallerPage() {
                     className="w-full h-full object-contain"
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex-1">
                 <div className="products-sorting w-full bg-white md:h-[70px] flex md:flex-row flex-col md:space-y-0 space-y-5 md:justify-between md:items-center p-[30px] mb-[40px]">

@@ -7,6 +7,23 @@ import Star from "../../../Helpers/icons/Star";
 import ServeLangItem from "../../../Helpers/ServeLangItem";
 
 export default function ReviewTab({ className, reviews }) {
+  const StarRating = ({ rating }) => {
+    return (
+      <div className="star-rating">
+        {[...Array(5)].map((_, index) => (
+          <span
+            key={index}
+            className={`star ${rating > index ? 'filled' : ''}`}
+            role="img"
+            aria-label={rating > index ? 'Filled Star' : 'Empty Star'}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    );
+  };
+  
   return (
     <>
       <div className="review-tab-wrapper w-full">
@@ -30,8 +47,7 @@ export default function ReviewTab({ className, reviews }) {
                         layout="fill"
                         objectFit="scale-down"
                         src={`${
-                          process.env.NEXT_PUBLIC_BASE_URL +
-                          datas.product.thumb_image
+                          datas.service.thumb_image ? process.env.NEXT_PUBLIC_BASE_URL + datas.service.thumb_image : process.env.NEXT_PUBLIC_BASE_URL + datas.product.thumb_image
                         }`}
                         alt=""
                         className="w-full h-full object-contain"
@@ -50,16 +66,29 @@ export default function ReviewTab({ className, reviews }) {
                             </span>
                           ))}
                         </div>
-                        <Link
+                       {datas.service ? <Link
                           href={{
-                            pathname: "/single-product",
-                            query: { slug: datas.product.slug },
+                            pathname: "/single-service",
+                            query: { slug: datas.service.slug },
                           }}
                         >
                           <p className="title mb-2 sm:text-[15px] text-[13px] font-600 text-qblack leading-[24px] line-clamp-1 hover:text-blue-600 cursor-pointer">
-                            {datas.product.name}
+                            {datas.service.name}
                           </p>
-                        </Link>
+                        </Link> :
+                        <Link
+                        href={{
+                          pathname: "/single-product",
+                          query: { slug: datas.product.slug },
+                        }}
+                      >
+                        <p className="title mb-2 sm:text-[15px] text-[13px] font-600 text-qblack leading-[24px] line-clamp-1 hover:text-blue-600 cursor-pointer">
+                          {datas.product.name}
+                        </p>
+                      </Link> }
+                       {datas.rating && <p className="price mb-[26px] text-sm text-qgray line-clamp-2">
+                          <StarRating rating={datas.rating} />
+                        </p>}
                         <p className="price mb-[26px] text-sm text-qgray line-clamp-2">
                           {datas.review}
                         </p>

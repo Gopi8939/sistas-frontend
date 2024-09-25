@@ -35,7 +35,7 @@ function Profile() {
   const [dashBoardData, setDashboardData] = useState(null);
   const [profileInfo, setProfile] = useState(null);
   const [orders, setOrders] = useState(null);
-  const [review, setReview] = useState(null);
+  const [reviews, setReviews] = useState();
   useEffect(() => {
     setActive(
       getHashContent && getHashContent.length > 1
@@ -73,20 +73,44 @@ function Profile() {
       }
     }
   }, [orders]);
+  // useEffect(() => {
+  //   if (!review) {
+  //     if (auth()) {
+  //       apiRequest
+  //         .getReview(auth().access_token)
+  //         .then((res) => {
+  //           setReview(res && res.data.reviews && res.data.reviews.data);
+  //         })
+  //         .catch((err) => {
+  //           console.log(err);
+  //         });
+  //     }
+  //   }
+  // }, [review]);
+ 
   useEffect(() => {
-    if (!review) {
-      if (auth()) {
-        apiRequest
-          .getReview(auth().access_token)
-          .then((res) => {
-            setReview(res && res.data.reviews && res.data.reviews.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    }
-  }, [review]);
+      const handleSubmit = async (e) => {
+          try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/user/service-review`, {
+              method: 'GET',
+              headers: {
+                Authorization: `Bearer ${auth() && auth().access_token}`,
+                Accept: "application/json",
+              },   
+            });
+            const data = await response.json();
+            console.log(data,"ssssss")
+            setReviews(data);
+            if (!response.ok) {
+              throw new Error(`Error: ${response.status}`);
+            }
+          } catch (error) {
+            console.error('Error getting review:', error);
+          } 
+        };
+        handleSubmit()
+}, []);
+console.log(reviews,"reviews")
 
   const updateProfile = () => {
     if (auth()) {
@@ -121,7 +145,7 @@ function Profile() {
   useEffect(() => {
     if (switchDashboard) {
       const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
-      const dashboardUrl = baseURL + "seller/dashboard";
+      const dashboardUrl = baseURL + "login";
       router.push(dashboardUrl);
     }
   }, [switchDashboard]);
@@ -314,7 +338,7 @@ function Profile() {
                   ) : active === "password" ? (
                     <PasswordTab />
                   ) : active === "review" ? (
-                    <ReviewTab reviews={review} />
+                    <ReviewTab reviews={reviews?.reviews?.data} />
                   ) : (
                     ""
                   )}

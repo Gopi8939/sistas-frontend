@@ -302,7 +302,7 @@ useEffect(()=>{
               )} */}
             </div>
           )}
-          {Multivendor() === 1 && (
+          {/* {Multivendor() === 1 && ( */}
                   <div className="block my-5 px-2">
                     <Link href="/become-seller" passHref>
                       <a rel="noopener noreferrer">
@@ -312,7 +312,7 @@ useEffect(()=>{
                       </a>
                     </Link>
                   </div>
-              )}  
+              {/* )}   */}
             <div className="menu-item mt-5 w-full">
               <ul className="categories-list">
                 <li className="category-item">

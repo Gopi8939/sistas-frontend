@@ -164,7 +164,7 @@ export default function Home({ homepageData }) {
             className="category-products md:mb-[60px] mb-[30px]"
           />
         )} */}
-        <div className="container-x mx-auto">
+        {/* <div className="container-x mx-auto">
           {homepage && (
             <div>
               <h1 className="sm:text-3xl text-xl font-600 text-qblacktext leading-none mb-5">Sistas Stories</h1>
@@ -184,7 +184,7 @@ export default function Home({ homepageData }) {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
 
 
         {homepage && (

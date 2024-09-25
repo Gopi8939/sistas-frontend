@@ -58,10 +58,14 @@ export default function ProductView({
   useEffect(() => {
     setSrc(product.thumb_image);
   }, [product]);
-
   const tags = product && JSON.parse(product.tags);
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
+  const [isImageError, setIsImageError] = useState(false);
+
+  const handleImageError = () => {
+    setIsImageError(true);
+  };
   const changeImgHandler = (current) => {
     setSrc(current);
   };
@@ -74,6 +78,7 @@ export default function ProductView({
       setQuantity((prev) => prev - 1);
     }
   };
+  console.log(product,"sssssss")
 
   //varient selector handler
   const [selecteVarientId, setSelecteVarientId] = useState(product.active_variants.length>0&&product.active_variants[0].active_variant_items.length>0?product.active_variants[0].active_variant_items[0]:null);
@@ -280,6 +285,7 @@ export default function ProductView({
       if (isFlashSaleProduct) {
         const offer = parseInt(offerFlashSale.offer);
         const price = product.offer_price
+        console.log(offer,price,"pricep")
           ? parseInt(product.offer_price)
           : parseInt(product.price);
         const discountPrice = (offer / 100) * price;
@@ -288,7 +294,7 @@ export default function ProductView({
           Math.trunc(((mainPrice - product.price) / product.price) * 100)
         );
       } else {
-        setPricePercent(
+          setPricePercent(
           Math.trunc(
             ((product.offer_price - product.price) / product.price) * 100
           )
@@ -304,6 +310,7 @@ export default function ProductView({
     }
   };
 
+  console.log(pricePercent,"pricePercent")
   return (
     <>
       <div
@@ -317,14 +324,25 @@ export default function ProductView({
         >
           <div className="w-full">
             <div className="w-full md:h-[600px] h-[350px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
-              <Image
-                layout="fill"
-                objectFit="scale-down"
-                src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
-                alt=""
-                className="object-contain  transform scale-110"
+            {!isImageError ? (
+              <div className="relative w-full h-full"> {/* Make sure the parent has a defined size */}
+                <Image
+                  layout="fill"
+                  objectFit="scale-down"
+                  src={`${process.env.NEXT_PUBLIC_BASE_URL + src}`}
+                  alt={"img"}
+                  className="object-contain transform scale-110"
+                  onError={handleImageError} 
+                />
+              </div>
+            ) : (
+              <img
+                src={src}
+                alt={"img"}
+                className="object-contain transform scale-110"
               />
-              {product.offer_price && (
+            )}
+              {product.offer_price && pricePercent > 0 && (
                 <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
                   <span className="text-tblack">{pricePercent}%</span>
                   {/*<span>*/}
@@ -338,22 +356,19 @@ export default function ProductView({
               )}
             </div>
             <div className="flex gap-2 flex-wrap">
-              <div
-                onClick={() => changeImgHandler(product.thumb_image)}
-                className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
-              >
-                <Image
-                  layout="fill"
-                  objectFit="scale-down"
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_URL + product.thumb_image
-                  }`}
-                  alt=""
-                  className={`w-full h-full object-contain transform scale-110 ${
-                    src !== product.thumb_image ? "opacity-50" : ""
-                  } `}
-                />
-              </div>
+            {product.product_image.map((image, index) => (
+                <div
+                  key={index}
+                  onClick={() => changeImgHandler(image.image_url)}
+                  className="w-[110px] h-[110px] p-[15px] border border-qgray-border cursor-pointer relative"
+                >
+                  <img
+                    src={image.image_url}
+                    alt={`Thumbnail ${index}`}
+                    className={`w-full h-full object-contain transform scale-110`}
+                  />
+                </div>
+              ))}
               {productsImg &&
                 productsImg.length > 0 &&
                 productsImg.map((img, i) => (
