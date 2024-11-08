@@ -16,31 +16,31 @@ export default function Signup() {
     }
   }, [websiteSetup]);
 
-  const location = useRouter();
-  useEffect(() => {
-    if (location.route === "/verify-you") {
-      setVerify(true);
-    } else {
-      setSignupView(true);
-    }
-  }, [location]);
+  // const location = useRouter();
+  // useEffect(() => {
+  //   if (location.route === "/login") {
+  //     setVerify(true);
+  //   } else {
+  //     setSignupView(true);
+  //   }
+  // }, [location]);
 
   return (
     <Layout childrenClasses="pt-0 pb-0">
       <div className="login-page-wrapper w-full py-10">
         <div className="container-x mx-auto">
           <div className="lg:flex items-center relative w-full lg:min-h-[700px]">
-            {verify ? (
+            {/* {verify ? (
               <div className="lg:w-[572px] w-full lg:h-[700px] bg-white flex flex-col justify-center sm:p-10 p-5 border border-[#E0E0E0]">
                 <VerifyWidget />
               </div>
-            ) : signupView ? (
+            ) : signupView ? ( */}
               <div className="lg:w-[572px] w-full lg:h-auto bg-white flex flex-col justify-center sm:p-10 p-5 border border-[#E0E0E0]">
                 <SignupWidget />
               </div>
-            ) : (
+            {/* ) : (
               ""
-            )}
+            )} */}
             <div className="flex-1 lg:flex hidden transform scale-60 xl:scale-100   xl:justify-center">
               <div
                 className="absolute ltr:xl:-right-20 ltr:-right-[138px] rtl:xl:-left-20 rtl:-left-[138px]"
