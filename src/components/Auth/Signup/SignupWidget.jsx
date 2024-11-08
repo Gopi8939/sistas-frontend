@@ -57,7 +57,7 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
           setLoading(false);
           toast.success(res.data.notification);
           if (redirect) {
-            router.push(`/verify-you?email=${email}`);
+            router.push(`/login`);
           }else{
             changeContent()
           }

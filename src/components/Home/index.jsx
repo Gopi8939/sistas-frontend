@@ -45,6 +45,13 @@ export default function Home({ homepageData }) {
     <>
       <Layout childrenClasses="pt-[30px] pb-[60px]">
         <Ads />
+        {homepage && (
+          <div className="w-full text-white md:mb-[60px] mb-[30px]">
+            <div className="container-x mx-auto">
+              <OneColumnAdsTwo data={homepage.singleBannerTwo && parseInt(homepage.singleBannerTwo.status) === 1 ? homepage.singleBannerTwo : null} />
+            </div>
+          </div>
+        )}
         {homepage && homepage.sliders.length > 0 && (
           <Banner
             images={homepage.sliders}
@@ -252,13 +259,6 @@ export default function Home({ homepageData }) {
           />
         )}
 
-        {homepage && (
-          <div className="w-full text-white md:mb-[60px] mb-[30px]">
-            <div className="container-x mx-auto">
-              <OneColumnAdsTwo data={homepage.singleBannerTwo && parseInt(homepage.singleBannerTwo.status) === 1 ? homepage.singleBannerTwo : null} />
-            </div>
-          </div>
-        )}
         {homepage && (
           <SectionStyleFour
             products={
