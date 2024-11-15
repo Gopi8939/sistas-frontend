@@ -20,6 +20,9 @@ function BecomeSaller() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [shopName, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  // const [checked, setCheck] = useState(false);
   const [shopAddress, setAddress] = useState("");
   const [sellingOnline, setSellingOnline] = useState(false);
   const [states, setStates] = useState([]);
@@ -111,19 +114,21 @@ function BecomeSaller() {
     setCheck(!checked);
   };
   const sellerReq = async () => {
-    if (auth()) {
       const formData = new FormData();
       // formData.append("banner_image", uploadCoverImg);
       formData.append("shop_name", shopName);
-      formData.append("seller_name", sellerName);
+      formData.append("name", sellerName);
       formData.append("email", email);
       formData.append("phone", phone);
       formData.append("address", shopAddress);
+      formData.append("password", password);
+      formData.append("password_confirmation", confirmPassword);
       // formData.append("onlineshop", onlineShop);
       formData.append("gst_number", gstNumber);
       formData.append("open_at", "10.00AM");
       formData.append("closed_at", "10.00PM");
       formData.append("agree_terms_condition", checked);
+      formData.append("agree", "true");
       // formData.append("logo", uploadLogo);
       const options = {
         onUploadProgress: (progressEvent) => {
@@ -134,8 +139,7 @@ function BecomeSaller() {
       };
       await axios
         .post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}api/user/seller-request?token=${auth().access_token
-          }`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}api/seller-request`,
           formData,
           options
         )
@@ -148,7 +152,7 @@ function BecomeSaller() {
           // localStorage.removeItem("auth");
           // dispatch(fetchWishlist());
           // dispatch(fetchCart());
-          router.push("/");
+          router.push("/login");
         })
         .catch((err) => {
           setErrors(err.response && err.response.data.errors);
@@ -158,10 +162,6 @@ function BecomeSaller() {
             );
           }
         });
-    } else {
-      router.push("/login");
-      toast.warn("Please Login First");
-    }
   };
   return (
     <div className="become-saller-wrapper w-full">
@@ -312,7 +312,44 @@ function BecomeSaller() {
                     </select>
                   </div>
                 </div>
-
+                <div className="mb-5 flex flex-wrap">
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
+                    <InputCom
+                        placeholder="* * * * * *"
+                        label={ServeLangItem()?.Password + "*"}
+                        name="password"
+                        type="password"
+                        inputClasses="h-[50px]"
+                        value={password}
+                        inputHandler={(e) => setPassword(e.target.value)}
+                    />
+                    {errors && Object.hasOwn(errors, "password") ? (
+                        <span className="text-sm mt-1 text-qred">
+                      {errors.password[0]}
+                    </span>
+                    ) : (
+                        ""
+                    )}
+                  </div>
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
+                    <InputCom
+                        placeholder="* * * * * *"
+                        label={ServeLangItem()?.Confirm_Password + "*"}
+                        name="confirm_password"
+                        type="password"
+                        inputClasses="h-[50px]"
+                        value={confirmPassword}
+                        inputHandler={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    {errors && Object.hasOwn(errors, "password") ? (
+                        <span className="text-sm mt-1 text-qred">
+                      {errors.password[0]}
+                    </span>
+                    ) : (
+                        ""
+                    )}
+                  </div>
+                </div>
                 {/*<div className="input-item mb-5">*/}
                 {/*  <h6 className="input-label text-qgray capitalize text-[13px] font-normal block mb-2 ">*/}
                 {/*    Country**/}
@@ -501,6 +538,8 @@ function BecomeSaller() {
                           shopAddress &&
                           gstNumber &&
                           selectedCity &&
+                          password && 
+                          confirmPassword &&
                           selectedState
                           ? false
                           : true

@@ -5,7 +5,7 @@ import PageHead from "../src/components/Helpers/PageHead";
 export default function login() {
   return (
     <>
-      <PageHead title="shopo | Login" />
+      <PageHead title="sistas | Login" />
       <Login />
     </>
   );

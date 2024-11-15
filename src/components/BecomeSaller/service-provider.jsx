@@ -20,8 +20,10 @@ function BecomeServiceProvider() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [shopName, setName] = useState("");
+  const [name, setName] = useState("");
   const [shopAddress, setAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [open_at, setopen_at] = useState("");
   const [closed_at, setclosed_at] = useState("");
   const [agree_terms_condition, setagree_terms_condition] = useState("");
@@ -117,10 +119,9 @@ function BecomeServiceProvider() {
   };
 
   const sellerReq = async () => {
-    if (auth()) {
       const formData = new FormData();
       // formData.append("banner_image", uploadCoverImg);
-      formData.append("shop_name", shopName);
+      formData.append("shop_name", name);
       // formData.append("logo", logoImg);
       formData.append("email", email);
       formData.append("phone", phone);
@@ -128,6 +129,8 @@ function BecomeServiceProvider() {
       // formData.append("open_at", open_at);
       // formData.append("closed_at", closed_at);
       // formData.append("agree_terms_condition", agree_terms_condition);
+      formData.append("password", password);
+      formData.append("password_confirmation", confirmPassword);
       formData.append("gst_number", gstNumber);
       formData.append("city", selectedCity);
       formData.append("state", selectedState);
@@ -135,6 +138,7 @@ function BecomeServiceProvider() {
       // formData.append("open_at", "10.00AM");
       // formData.append("closed_at", "10.00PM");
       formData.append("agree_terms_condition", checked);
+      formData.append("agree", "true");
       // formData.append("logo", uploadLogo);
       const options = {
         onUploadProgress: (progressEvent) => {
@@ -145,8 +149,7 @@ function BecomeServiceProvider() {
       };
       await axios
         .post(
-          `${process.env.NEXT_PUBLIC_BASE_URL}api/user/service-provider-request?token=${auth().access_token
-          }`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}api/service-provider-request`,
           formData,
           options
         )
@@ -159,7 +162,7 @@ function BecomeServiceProvider() {
           // localStorage.removeItem("auth");
           // dispatch(fetchWishlist());
           // dispatch(fetchCart());
-          router.push("/");
+          router.push("/login");
         })
         .catch((err) => {
           setErrors(err.response && err.response.data.errors);
@@ -169,10 +172,6 @@ function BecomeServiceProvider() {
             );
           }
         });
-    } else {
-      router.push("/login");
-      toast.warn("Please Login First");
-    }
   };
   return (
     <div className="become-saller-wrapper w-full">
@@ -406,10 +405,10 @@ function BecomeServiceProvider() {
                     placeholder={ServeLangItem()?.Name}
                     // label={ServeLangItem()?.Shop_Name+"*"}
                     label="Business Name"
-                    name="shopname"
+                    name="name"
                     type="text"
                     inputClasses="h-[50px]"
-                    value={shopName}
+                    value={name}
                     inputHandler={(e) => setName(e.target.value)}
                     error={!!(errors && Object.hasOwn(errors, "shop_name"))}
                   />
@@ -525,6 +524,44 @@ function BecomeServiceProvider() {
                         India
                       </option>
                     </select>
+                  </div>
+                </div>
+                <div className="mb-5 flex flex-wrap">
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
+                    <InputCom
+                        placeholder="* * * * * *"
+                        label={ServeLangItem()?.Password + "*"}
+                        name="password"
+                        type="password"
+                        inputClasses="h-[50px]"
+                        value={password}
+                        inputHandler={(e) => setPassword(e.target.value)}
+                    />
+                    {errors && Object.hasOwn(errors, "password") ? (
+                        <span className="text-sm mt-1 text-qred">
+                      {errors.password[0]}
+                    </span>
+                    ) : (
+                        ""
+                    )}
+                  </div>
+                  <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
+                    <InputCom
+                        placeholder="* * * * * *"
+                        label={ServeLangItem()?.Confirm_Password + "*"}
+                        name="confirm_password"
+                        type="password"
+                        inputClasses="h-[50px]"
+                        value={confirmPassword}
+                        inputHandler={(e) => setConfirmPassword(e.target.value)}
+                    />
+                    {errors && Object.hasOwn(errors, "password") ? (
+                        <span className="text-sm mt-1 text-qred">
+                      {errors.password[0]}
+                    </span>
+                    ) : (
+                        ""
+                    )}
                   </div>
                 </div>
                 {/* <div className="mb-5">
@@ -663,9 +700,11 @@ function BecomeServiceProvider() {
                           // logoImg &&
                           // location &&
                           phone &&
-                          shopName &&
+                          name &&
                           selectedCity &&
                           selectedState &&
+                          password && 
+                          confirmPassword &&
                           // shopAddress
                           gstNumber 
                           ? false
