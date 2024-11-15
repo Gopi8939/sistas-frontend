@@ -1,7 +1,7 @@
 {
-  "name": "shopo",
-  "short_name": "shopo",
-  "description": "shopo progressive web app",
+  "name": "sistas",
+  "short_name": "sistas",
+  "description": "sistas progressive web app",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",

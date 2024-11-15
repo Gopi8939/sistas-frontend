@@ -139,13 +139,20 @@ export default function Footer({ settings }) {
                             </Link>
                           </li>
                         ))}
-                        {/* <li>
-                          <a href="#">
+                        <li>
+                          <a href="seller-product">
                           <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
-                                  Terms
+                                  Become a Product Seller
                                 </span>
                           </a>
-                        </li> */}
+                        </li>
+                        <li>
+                          <a href="service-provider">
+                          <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
+                                  Become a Service Provider
+                                </span>
+                          </a>
+                        </li>
                     </ul>
                   </div>
                 </>

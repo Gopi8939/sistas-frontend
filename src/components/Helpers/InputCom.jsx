@@ -21,7 +21,7 @@ export default function InputCom({
         </label>
       )}
       <div
-        className={`input-wrapper border  w-full h-full overflow-hidden relative ${
+        className={`input-wrapper border  w-full overflow-hidden relative ${
           error ? "border-qred" : "border-qgray-border"
         }`}
       >

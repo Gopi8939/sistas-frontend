@@ -999,7 +999,7 @@ useEffect(() => {
                 </ul>
               </div>
             </div>
-            {Multivendor() === 1 && (
+            {/* {Multivendor() === 1 && (
   <div className="become-seller-btn relative">
     <div 
       className="w-[161px] h-[40px] flex justify-center items-center cursor-pointer" 
@@ -1036,7 +1036,7 @@ useEffect(() => {
       </div>
     </div>
     {showDropdown && (
-          auth ? (
+          // auth ? (
           <div className="w-full absolute top-15 right-0 bg-white border border-gray-200 p-2">
             <Link href="/seller-product" passHref>
               <a className="block p-2 text-sm text-gray-800 custom-hover-color">Product Seller</a>
@@ -1044,16 +1044,17 @@ useEffect(() => {
             <Link href="/service-provider" passHref>
               <a className="block p-2 text-sm text-gray-800 custom-hover-color">Service Provider</a>
             </Link>
-          </div>):(
-            <div className="w-full absolute top-15 right-0 bg-white border border-gray-200 p-2">
-            <Link href="/login" passHref>
-              <a className="block p-2 text-sm text-gray-800 custom-hover-color">You must login</a>
-            </Link>
-            </div>
-                )
+          </div>
+          // ):(
+          //   <div className="w-full absolute top-15 right-0 bg-white border border-gray-200 p-2">
+          //   <Link href="/login" passHref>
+          //     <a className="block p-2 text-sm text-gray-800 custom-hover-color">You must login</a>
+          //   </Link>
+          //   </div>
+          //       )
               )}
             </div>
-          )}
+          )} */}
 
           </div>
         </div>

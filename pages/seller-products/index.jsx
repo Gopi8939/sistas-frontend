@@ -13,7 +13,7 @@ function sellersProductsPage(data) {
   };
   return (
     <>
-      <PageHead title="shopo | products" />
+      <PageHead title="sistas | products" />
       <AllProductPage
         response={data}
         sellerInfo={sellerInfo ? sellerInfo : null}
