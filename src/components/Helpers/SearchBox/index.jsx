@@ -83,17 +83,19 @@ export default function SearchBox({ className }) {
     let fetch = async ()=>{
       try {
         let arr=[]
-        if(action === "product"){
+        // if(action === "product"){
           let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`)
-          res.data.products.data.map((i)=>{
+          console.log(res.data.data.data,"ddyyvv")
+          res.data.data.data.map((i)=>{
             arr.push({id:i.id,name:i.short_name})
           })
-        }else{
-          let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-service`)
-          res.data.services.data.map((i)=>{
-            arr.push({id:i.id,name:i.short_name})
-          })
-        }
+        // }
+        // else{
+        //   let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-service`)
+        //   res.data.services.data.map((i)=>{
+        //     arr.push({id:i.id,name:i.short_name})
+        //   })
+        // }
         setItems(arr)
       } catch (error) {
         console.log(error.message);
@@ -154,7 +156,7 @@ export default function SearchBox({ className }) {
               onClear={handleOnClear}
               showIcon={false}
               styling={{
-                height: "41px",
+                height: "42px",
                 // border: "1px solid white",
                 backgroundColor: "white",
                 boxShadow: "none",
@@ -162,7 +164,6 @@ export default function SearchBox({ className }) {
                 // hoverBackgroundColor: "lightgreen",
                 color: "darkgreen",
                 fontSize: "14px",
-                fontFamily: "Courier",
                 iconColor: "green",
                 lineColor: "lightgreen",
                 placeholderColor: "darkgreen",
@@ -304,10 +305,10 @@ export default function SearchBox({ className }) {
         {/*    </>*/}
         {/*  )}*/}
         {/*</div>*/}
-        <select id="selectSearch" onChange={(e)=>setAction(e.target.value)} style={{height:"40px",outline:"none",marginLeft:"5px",marginRight:"5px"}} >
+        {/* <select id="selectSearch" onChange={(e)=>setAction(e.target.value)} style={{height:"40px",outline:"none",marginLeft:"5px",marginRight:"5px"}} >
           <option style={{height:"2033px",padding:"5px 4px",marginLeft: "1%",marginRight: "1%"}} value="product" >Product</option>
           <option style={{height:"2033px",padding:"5px 4px"}} value="service" >Service</option>
-        </select>
+        </select> */}
         <button
           onClick={searchHandler}
           className="search-btn w-[93px] h-full text-sm font-600"

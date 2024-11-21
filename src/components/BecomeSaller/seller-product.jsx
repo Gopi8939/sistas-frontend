@@ -483,15 +483,15 @@ function BecomeSaller() {
                       inputClasses="h-[50px]"
                       value={gstNumber}
                       inputHandler={(e) => setGSTNumber(e.target.value)}
-                      error={!!(errors && Object.hasOwn(errors, "address"))}
+                      // error={!!(errors && Object.hasOwn(errors, "gstnumber"))}
                     />
-                    {errors && Object.hasOwn(errors, "address") ? (
+                    {/* {errors && Object.hasOwn(errors, "gstnumber") ? (
                       <span className="text-sm mt-1 text-qred">
                         {errors.gst_number[0]}
                       </span>
                     ) : (
                       ""
-                    )}
+                    )} */}
                   </div>
 
                 <div className="remember-checkbox flex items-center space-x-2.5 mb-5">
@@ -517,7 +517,6 @@ function BecomeSaller() {
                   </button>
                   <Link href="/seller-terms-condition">
                     <span className="text-base text-black cursor-pointer">
-                      {ServeLangItem().I_agree_all_terms_and_condition_in_ecoShop}
                       I agree all terms and condition in Sistas
                     </span>
                   </Link>
@@ -536,7 +535,7 @@ function BecomeSaller() {
                           phone &&
                           shopName &&
                           shopAddress &&
-                          gstNumber &&
+                          // gstNumber &&
                           selectedCity &&
                           password && 
                           confirmPassword &&

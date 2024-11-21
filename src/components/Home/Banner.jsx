@@ -7,10 +7,10 @@ import SimpleSlider from "../Helpers/SliderCom";
 import FontAwesomeCom from "../Helpers/icons/FontAwesomeCom";
 export default function Banner({
   className,
-  images = [],
+  images,
   sidebarImgOne,
   sidebarImgTwo,
-  services = [],
+  services,
 }) {
   const settingBanner = {
     infinite: true,
@@ -20,20 +20,21 @@ export default function Banner({
     fade: true,
   };
   const { text_direction } = settings();
-  useEffect(() => {
-    const getSliderInitElement = document.querySelector(
-      ".slider-wrapper .slick-slider.slick-initialized"
-    );
-    getSliderInitElement.setAttribute("dir", `${text_direction}`);
-  }, [text_direction]);
+  // useEffect(() => {
+  //   const getSliderInitElement = document.querySelector(
+  //     ".slider-wrapper .slick-slider.slick-initialized"
+  //   );
+  //   getSliderInitElement.setAttribute("dir", `${text_direction}`);
+  // }, [text_direction]);
 
   return (
     <>
       <div className={`w-full ${className || ""}`}>
         <div className="container-x mx-auto">
           <div className="main-wrapper w-full">
+          {(images || sidebarImgOne || sidebarImgTwo) &&
             <div className="banner-card xl:flex xl:space-x-[30px] rtl:space-x-0 xl:h-[600px]  mb-[30px] ">
-              <div
+             {images && <div
                 data-aos="fade-right"
                 className={` rtl:ml-[30px] ltr:ml-0 w-full xl:h-full md:h-[500px] h-[220px] xl:mb-0 mb-2 ${sidebarImgOne || sidebarImgTwo ? 'xl:w-[740px] w-full' : 'w-full'}`}
               >
@@ -84,7 +85,8 @@ export default function Banner({
                       ))}
                   </SimpleSlider>
                 </div>
-              </div>
+              </div>}
+             {(sidebarImgOne || sidebarImgTwo) &&
               <div
                 data-aos="fade-left"
                 className="flex-1 flex xl:flex-col flex-row  xl:space-y-[30px] xl:h-full md:h-[350px] h-[150px]"
@@ -243,10 +245,11 @@ export default function Banner({
                   </div>
                 )}
 
-              </div>
-            </div>
+              </div>}
+            </div>}
+           {services &&
             <div
-              data-aos="fade-up"
+              // data-aos="fade-up"
               className="best-services w-full bg-white flex flex-col space-y-10 lg:space-y-0 lg:flex-row lg:justify-between lg:items-center lg:h-[110px] px-10 lg:py-0 py-10"
             >
               {services.map((service) => (
@@ -271,7 +274,7 @@ export default function Banner({
                   </div>
                 </div>
               ))}
-            </div>
+            </div>}
           </div>
         </div>
       </div>

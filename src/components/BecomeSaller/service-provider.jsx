@@ -632,15 +632,15 @@ function BecomeServiceProvider() {
                       inputClasses="h-[50px]"
                       value={gstNumber}
                       inputHandler={(e) => setGSTNumber(e.target.value)}
-                      error={!!(errors && Object.hasOwn(errors, "address"))}
+                      // error={!!(errors && Object.hasOwn(errors, "address"))}
                     />
-                    {errors && Object.hasOwn(errors, "address") ? (
+                    {/* {errors && Object.hasOwn(errors, "address") ? (
                       <span className="text-sm mt-1 text-qred">
                         {errors.gstnumber[0]}
                       </span>
                     ) : (
                       ""
-                    )}
+                    )} */}
                   </div>
                 {/*<div className="flex sm:flex-row flex-col space-y-5 sm:space-y-0 sm:space-x-5 mb-[30px]">*/}
                 {/*  <InputCom*/}
@@ -682,7 +682,6 @@ function BecomeServiceProvider() {
                   </button>
                   <Link href="/seller-terms-condition">
                     <span className="text-base text-black cursor-pointer">
-                      {ServeLangItem()?.I_agree_all_terms_and_condition_in_ecoShop}
                       I agree all terms and condition in Sistas
                     </span>
                   </Link>
@@ -704,9 +703,9 @@ function BecomeServiceProvider() {
                           selectedCity &&
                           selectedState &&
                           password && 
-                          confirmPassword &&
+                          confirmPassword 
                           // shopAddress
-                          gstNumber 
+                          // gstNumber 
                           ? false
                           : true
                       }

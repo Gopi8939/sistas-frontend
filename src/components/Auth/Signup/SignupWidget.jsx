@@ -292,13 +292,13 @@ function SignupWidget({ redirect = true, signupActionPopup,changeContent }) {
               {redirect ? (
                   <Link href="/seller-terms-condition">
                 <span className="text-base text-black cursor-pointer">
-                  {ServeLangItem()?.I_agree_all_terms_and_condition_in_ecoShop}
+                  I agree all terms and condition in Sistas
                 </span>
                   </Link>
               ) : (
                   <button type="button">
                 <span className="text-base text-black cursor-pointer">
-                  {ServeLangItem()?.I_agree_all_terms_and_condition_in_ecoShop}
+                  I agree all terms and condition in Sistas
                 </span>
                   </button>
               )}

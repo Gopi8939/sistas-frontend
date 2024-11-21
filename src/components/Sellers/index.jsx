@@ -6,6 +6,7 @@ import PageTitle from "../Helpers/PageTitle";
 import ServeLangItem from "../Helpers/ServeLangItem";
 function Sallers({ sellersData }) {
   const { sellers } = sellersData;
+  console.log(sellers,"sellersssssuu")
   return (
     <>
       <div className="sallers-page-wrapper w-full mb-[60px]">
@@ -38,6 +39,7 @@ function Sallers({ sellersData }) {
                           <h1 className="text-[30px] font-semibold text-qblack">
                             {seller.shop_name}
                           </h1>
+                          
                           <div className="flex space-x-2 items-center mb-[30px]">
                             <div className="flex ">
                               {Array.from(
@@ -101,7 +103,7 @@ function Sallers({ sellersData }) {
                                 </span>
                                 <span>{seller.email}</span>
                               </li>
-                              <li className="text-black flex space-x-5 rtl:space-x-reverse items-center leading-9 text-base font-normal">
+                              {/* <li className="text-black flex space-x-5 rtl:space-x-reverse items-center leading-9 text-base font-normal">
                                 <span>
                                   <svg
                                     width="15"
@@ -134,7 +136,7 @@ function Sallers({ sellersData }) {
                                   </svg>
                                 </span>
                                 <span>{seller.address}</span>
-                              </li>
+                              </li> */}
                             </ul>
                           </div>
                         </div>
