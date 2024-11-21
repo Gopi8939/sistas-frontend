@@ -135,22 +135,41 @@ const ViewStore = (response) => {
   ? `${baseUrl}${vendorDetails.vendor_details.banner_image}`
   : defaultBanner; 
 
-  const isYouTubeUrl = (url) => {
-    // Simple regex to detect YouTube URLs
-    return /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=/.test(url);
-  };
+  const isYouTubeWatchUrl = (url) => {
+    // Regex to detect YouTube watch URLs
+    return /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/.test(url);
+};
 
-  const getYouTubeEmbedUrl = (url) => {
-    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/);
-    if (videoIdMatch) {
-      return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+const isYouTubeEmbedUrl = (url) => {
+    // Regex to detect YouTube embedded URLs
+    return /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^?&]+)/.test(url);
+};
+
+const getYouTubeEmbedUrl = (url) => {
+    // Extract video ID from watch or short URL
+    const watchMatch = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/);
+    const shortMatch = url.match(/(?:https?:\/\/)?youtu\.be\/([^?&]+)/);
+    
+    if (watchMatch) {
+        return `https://www.youtube.com/embed/${watchMatch[1]}`;
     }
+    
+    if (shortMatch) {
+        return `https://www.youtube.com/embed/${shortMatch[1]}`;
+    }
+    
+    // If it's already an embed URL, return as is
+    const embedMatch = url.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\/([^?&]+)/);
+    if (embedMatch) {
+        return url;
+    }
+    
     return null;
-  };
+};
   
   const BrandStory = ({ media_url, description }) => {
     const [youtubeError, setYoutubeError] = useState(false);
-    const isYouTube = isYouTubeUrl(media_url);
+    const isYouTube = isYouTubeWatchUrl(media_url) || isYouTubeEmbedUrl(media_url);
     const youtubeEmbedUrl = isYouTube ? getYouTubeEmbedUrl(media_url) : null;
     if (!media_url) {
       // Render a box indicating no brand story media is available
@@ -184,7 +203,7 @@ const ViewStore = (response) => {
             controls
             loop
             className="w-full h-auto object-cover mb-2"
-            onError={() => setYoutubeError(true)}
+            // onError={() => setYoutubeError(true)}
           ></video>
         )}
         {/* <p className="text-gray-700">{description}</p>   */}
