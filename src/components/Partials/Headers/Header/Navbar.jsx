@@ -999,7 +999,6 @@ useEffect(() => {
                 </ul>
               </div>
             </div>
-            {/* {Multivendor() === 1 && (
   <div className="become-seller-btn relative">
     <div 
       className="w-[161px] h-[40px] flex justify-center items-center cursor-pointer" 
@@ -1008,7 +1007,7 @@ useEffect(() => {
       }}
     >
       <div className="flex rtl:space-x-reverse space-x-2 items-center">
-        <span className="text-sm font-600">Sell on Sistas</span>
+        <span className="text-sm font-600">Seller Zone</span>
         <span className="transform rtl:rotate-180 fill-current">
           <svg
             width="6"
@@ -1054,7 +1053,6 @@ useEffect(() => {
           //       )
               )}
             </div>
-          )} */}
 
           </div>
         </div>

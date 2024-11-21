@@ -242,7 +242,7 @@ export default function ProductView({
   const { wishlistData } = useSelector((state) => state.wishlistData);
   const wishlist = wishlistData && wishlistData.wishlists;
   const wishlisted =
-    wishlist && wishlist.data.find((id) => id.product.id === product.id);
+    wishlist && wishlist.data.find((id) => id.product?.id === product.id);
 
   const [arWishlist, setArWishlist] = useState(null);
   useEffect(() => {

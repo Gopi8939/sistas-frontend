@@ -42,7 +42,7 @@ export default function ProductCardStyleOne({ datas }) {
   const { wishlistData } = useSelector((state) => state.wishlistData);
   const wishlist = wishlistData && wishlistData.wishlists;
   const wishlisted =
-    wishlist && wishlist.data.find((id) => id.product.id === datas.id);
+    wishlist && wishlist.data.find((id) => id.product?.id === datas.id);
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   const [isProductInFlashSale, setData] = useState(null);
   const loginPopupBoard = useContext(LoginContext);

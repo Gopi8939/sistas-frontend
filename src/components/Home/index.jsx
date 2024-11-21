@@ -46,27 +46,55 @@ export default function Home({ homepageData }) {
       <Layout childrenClasses="pt-[30px] pb-[60px]">
         <Ads />
         {homepage && (
-          <div className="w-full text-white md:mb-[60px] mb-[30px]">
+          <div className="w-full text-white sm:mb-[160px] mb-[0px]">
             <div className="container-x mx-auto">
               <OneColumnAdsTwo data={homepage.singleBannerTwo && parseInt(homepage.singleBannerTwo.status) === 1 ? homepage.singleBannerTwo : null} />
             </div>
           </div>
         )}
-        {homepage && homepage.sliders.length > 0 && (
+        {/* {homepage && homepage.sliders.length > 0 && (
           <Banner
             images={homepage.sliders}
-            services={homepage.services}
+            // services={homepage.services}
             sidebarImgOne={homepage.sliderBannerOne && parseInt(homepage.sliderBannerOne.status) === 1 ? homepage.sliderBannerOne : null}
             sidebarImgTwo={homepage.sliderBannerTwo && parseInt(homepage.sliderBannerTwo.status) === 1 ? homepage.sliderBannerTwo : null}
             className="banner-wrapper md:mb-[60px] mb-[30px]"
           />
+        )} */}
+          {homepage && (
+          <SectionStyleThree
+            products={
+              homepage.newArrivalProducts.length > 0
+                ? homepage.newArrivalProducts.slice(
+                  0,
+                  homepage.newArrivalProducts.length > 16
+                    ? 16
+                    : homepage.newArrivalProducts.length
+                )
+                : []
+            }
+            sectionTitle={sectionTitles && sectionTitles.New_Arrivals}
+            seeMoreUrl={`/products?highlight=new_arrival`}
+            className="new-products md:mb-[60px] mb-[30px]"
+          />
         )}
+
         {homepage && (
+          <SectionStyleFour
+            products={
+              homepage.bestProducts.length > 0 ? homepage.bestProducts : []
+            }
+            sectionTitle={sectionTitles && sectionTitles.Best_Products}
+            seeMoreUrl={`/products?highlight=best_product`}
+            className="category-products md:mb-[60px] mb-[30px]"
+          />
+        )}
+        {/* {homepage && (
           <CategorySection
             categories={homepage.homepage_categories}
             sectionTitle={sectionTitles && sectionTitles.Trending_Category}
           />
-        )}
+        )} */}
         {homepage && (
           <SectionStyleOne
             products={homepage.popularCategoryProducts}
@@ -241,32 +269,10 @@ export default function Home({ homepageData }) {
           />
         )}
         {homepage && <OneColumnAdsOne data={homepage.singleBannerOne && parseInt(homepage.singleBannerOne.status) === 1 ? homepage.singleBannerOne : null} />}
-        {homepage && (
-          <SectionStyleThree
-            products={
-              homepage.newArrivalProducts.length > 0
-                ? homepage.newArrivalProducts.slice(
-                  0,
-                  homepage.newArrivalProducts.length > 16
-                    ? 16
-                    : homepage.newArrivalProducts.length
-                )
-                : []
-            }
-            sectionTitle={sectionTitles && sectionTitles.New_Arrivals}
-            seeMoreUrl={`/products?highlight=new_arrival`}
-            className="new-products md:mb-[60px] mb-[30px]"
-          />
-        )}
-
-        {homepage && (
-          <SectionStyleFour
-            products={
-              homepage.bestProducts.length > 0 ? homepage.bestProducts : []
-            }
-            sectionTitle={sectionTitles && sectionTitles.Best_Products}
-            seeMoreUrl={`/products?highlight=best_product`}
-            className="category-products md:mb-[60px] mb-[30px]"
+         {homepage && homepage.sliders.length > 0 && (
+          <Banner
+            services={homepage.services}
+            className="banner-wrapper md:mb-[60px] mb-[30px]"
           />
         )}
       </Layout>
