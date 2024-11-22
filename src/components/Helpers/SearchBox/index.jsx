@@ -25,14 +25,15 @@ export default function SearchBox({ className },response) {
   const [selectedQuery, setSelectedQuery] = useState("");
   console.log(selectedCat,"searchKey")
   const loginPopupBoard = useContext(LoginContext);
-  useEffect(() => {
-    if (router && router.route && router.route === "/search") {
-      setSearchkey(router.query ? router.query.search : "");
-    }
-    return () => {
-      setSearchkey("");
-    };
-  }, [router]);
+  // useEffect(() => {
+  //   if (router && router.route && router.route === "/search") {
+  //     setSearchkey(router.query ? router.query.search : "");
+  //   }
+  //   return () => {
+  //     setSearchkey("");
+  //   };
+  // }, [router]);
+  
   const categoryHandler = (value) => {
     setSelectedCat(value);
     setSubCategoris(
@@ -54,22 +55,55 @@ export default function SearchBox({ className },response) {
       );
     }
   }, [websiteSetup]);
-  const searchHandler = () => {
+
+  const searchHandler = async () => {
     if (auth()) {
-          router.push({
-            pathname: "/search",
-            query: { search: searchKey || selectedQuery },
-          })
-      }  else if (selectedQuery === "" && selectedCat) {
-        router.push({
-          pathname: "/products",
+      if (searchKey || selectedQuery) {
+        const searchQuery = searchKey || selectedQuery;
+        console.log(searchKey,selectedQuery,"selectedQuery")
+        
+        try {
+          // Force a new navigation regardless of current path
+          await router.push({
+            pathname: '/search',
+            query: { search: searchQuery },
+          });
+  
+          // If you need to fetch new data
+          if (typeof window !== 'undefined') {
+            // Trigger any necessary data fetching
+            // window.location.href = `/search?search=${searchQuery}`;
+          }
+        } catch (error) {
+          console.error('Navigation error:', error);
+        }
+      }
+    } else if (selectedQuery === "" && selectedCat) {
+      try {
+        // Force a new navigation for category
+        await router.push({
+          pathname: '/products',
           query: { category: selectedCat.slug },
-        })
+        });
+  
+        // If you need to fetch new data
+        if (typeof window !== 'undefined') {
+          window.location.href = `/products?category=${selectedCat}`;
+        }
+      } catch (error) {
+        console.error('Category navigation error:', error);
+      }
     } else {
       loginPopupBoard.handlerPopup(true);
     }
   };
 
+  // Optional: Handle search on Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      searchHandler();
+    }
+  };
   useEffect(()=>{
     let fetch = async ()=>{
       try {
@@ -78,7 +112,7 @@ export default function SearchBox({ className },response) {
           let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`)
           console.log(res.data.data.data,"ddyyvv")
           res.data.data.data.map((i)=>{
-            arr.push({id:i.id,name:i.short_name})
+            arr.push({id:i.id,name:i.name})
           })
         // }
         // else{
@@ -98,11 +132,11 @@ export default function SearchBox({ className },response) {
 
 
   const handleOnSearch = (string, results) => {
-    console.log(string, results);
+    console.log(string, results,"selectedQuery");
   };
 
   const handleOnHover = (result) => {
-    console.log(result);
+    setSearchkey(result.name);
   };
 
   const handleOnSelect = (item) => {

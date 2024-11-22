@@ -33,6 +33,7 @@ function BecomeServiceProvider() {
   const [selectedCity, setSelectedCity] = useState('');
   const [gstNumber, setGSTNumber] = useState("");
   const [errors, setErrors] = useState(null);
+  const [passwordErrors, setPasswordErrors] = useState(null);
   let [uploadProgress, setProgress] = useState(0);
   const [uploadLogo, setUploadLogo] = useState(null);
   const [uploadCoverImg, setUploadCoverImg] = useState(null);
@@ -50,6 +51,40 @@ function BecomeServiceProvider() {
     }
   }, [defaultCover, defaultLogo, websiteSetup]);
   // logo img
+
+  
+  const validatePasswords = () => {
+    const newErrors = {};
+
+    // Password validation rules
+    if (!password) {
+      newErrors.password = ['Password is required'];
+    } else {
+      if (password.length < 8) {
+        newErrors.password = ['Password must be at least 8 characters long.'];
+      }
+      if (!/[A-Z]/.test(password)) {
+        newErrors.password = [...(newErrors.password || []), 'Password must contain at least one uppercase letter.'];
+      }
+      if (!/[a-z]/.test(password)) {
+        newErrors.password = [...(newErrors.password || []), 'Password must contain at least one lowercase letter.'];
+      }
+      if (!/[0-9]/.test(password)) {
+        newErrors.password = [...(newErrors.password || []), 'Password must contain at least one number.'];
+      }
+    }
+
+    // Confirm password validation
+    if (!confirmPassword) {
+      newErrors.confirmPassword = ['Please confirm your password'];
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = ['Passwords do not match'];
+    }
+
+    setPasswordErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const logoImgInput = useRef(null);
   const browseLogoImg = () => {
     logoImgInput.current.click();
@@ -166,6 +201,7 @@ function BecomeServiceProvider() {
         })
         .catch((err) => {
           setErrors(err.response && err.response.data.errors);
+          validatePasswords();
           if (err.response && err.response.data.notification) {
             toast.error(
               err.response.data.notification
@@ -537,13 +573,11 @@ function BecomeServiceProvider() {
                         value={password}
                         inputHandler={(e) => setPassword(e.target.value)}
                     />
-                    {errors && Object.hasOwn(errors, "password") ? (
-                        <span className="text-sm mt-1 text-qred">
-                      {errors.password[0]}
-                    </span>
-                    ) : (
-                        ""
-                    )}
+                     {passwordErrors?.password ? (
+                      <span className="text-sm mt-1 text-qred">
+                        {passwordErrors?.password}
+                      </span>
+                    ): ""}
                   </div>
                   <div className="flex flex-col me-5 w-full md:w-1/3 lg:w-1/3">
                     <InputCom
@@ -555,13 +589,11 @@ function BecomeServiceProvider() {
                         value={confirmPassword}
                         inputHandler={(e) => setConfirmPassword(e.target.value)}
                     />
-                    {errors && Object.hasOwn(errors, "password") ? (
-                        <span className="text-sm mt-1 text-qred">
-                      {errors.password[0]}
-                    </span>
-                    ) : (
-                        ""
-                    )}
+                    {passwordErrors?.confirmPassword  ? (
+                      <span className="text-sm mt-1 text-qred">
+                        {passwordErrors?.confirmPassword }
+                      </span>
+                    ): ""}
                   </div>
                 </div>
                 {/* <div className="mb-5">
@@ -691,24 +723,24 @@ function BecomeServiceProvider() {
                   <div className="flex justify-center">
                     <button
                       onClick={sellerReq}
-                      disabled={
-                        // providerName &&
-                          email &&
-                          checked &&
-                          // coverImg &&
-                          // logoImg &&
-                          // location &&
-                          phone &&
-                          name &&
-                          selectedCity &&
-                          selectedState &&
-                          password && 
-                          confirmPassword 
-                          // shopAddress
-                          // gstNumber 
-                          ? false
-                          : true
-                      }
+                      // disabled={
+                      //   // providerName &&
+                      //     email &&
+                      //     checked &&
+                      //     // coverImg &&
+                      //     // logoImg &&
+                      //     // location &&
+                      //     phone &&
+                      //     name &&
+                      //     selectedCity &&
+                      //     selectedState &&
+                      //     password && 
+                      //     confirmPassword 
+                      //     // shopAddress
+                      //     // gstNumber 
+                      //     ? false
+                      //     : true
+                      // }
                       type="button"
                       className="black-btn disabled:bg-opacity-50 disabled:cursor-not-allowed  text-sm text-white w-[490px] h-[50px] font-semibold flex justify-center bg-purple items-center"
                     >
