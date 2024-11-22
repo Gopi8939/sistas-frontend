@@ -12,16 +12,18 @@ import OneColumnAdsTwo from '../../src/components/Home/ProductAds/OneColumnAdsTw
 import LoaderStyleOne from '../../src/components/Helpers/Loaders/LoaderStyleOne';
 import axios from 'axios';
 
-const ViewStore = (response) => {
+const ViewStore = () => {
   const router = useRouter();
   const { slug } = router.query;
   const [vendorDetails, setVendorDetails] = useState(null);
-  console.log(vendorDetails,slug,"vendorDetails")
+  const [storeName, setStoreName] = useState(null);
+  console.log(response,router,"vendorDetails")
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imageError, setImageError] = useState(false);
   const [cardViewStyle, setCardViewStyle] = useState("col");
   const [brands, setBrands] = useState(null);
+  const [response, setResponse] = useState(null);
   const [variantsFilter, setVariantsFilter] = useState(null);
   const [categoriesFilter, setCategoriesFilter] = useState(null);
   const [resProducts, setProducts] = useState(null);
@@ -50,224 +52,9 @@ const ViewStore = (response) => {
   );
   const [selectedBrandsFilterItem, setSelectedBrandsFilterItem] = useState([]);
   const [volume, setVolume] = useState([0, 0]);
-  const varientHandler = (e) => {
-    const { name } = e.target;
-    const filterVariant =
-      variantsFilter &&
-      variantsFilter.length > 0 &&
-      variantsFilter.map((varient) => {
-        return {
-          ...varient,
-          active_variant_items:
-            varient.active_variant_items &&
-            varient.active_variant_items.length > 0 &&
-            varient.active_variant_items.map((variant_item) => {
-              if (variant_item.name === name) {
-                return {
-                  ...variant_item,
-                  selected: !variant_item.selected,
-                };
-              } else {
-                return {
-                  ...variant_item,
-                };
-              }
-            }),
-        };
-      });
-    setVariantsFilter(filterVariant);
-    if (selectedVarientFilterItem.includes(name)) {
-      const newArr = selectedVarientFilterItem.filter((like) => like !== name);
-      setSelectedVarientFilterItem(newArr);
-    } else {
-      setSelectedVarientFilterItem((p) => [...p, name]);
-    }
-  };
-  const categoryHandler = (e) => {
-    const { name } = e.target;
-    const filterCat =
-      categoriesFilter &&
-      categoriesFilter.length > 0 &&
-      categoriesFilter.map((item) => {
-        if (parseInt(item.id) === parseInt(name)) {
-          return {
-            ...item,
-            selected: !item.selected,
-          };
-        } else {
-          return {
-            ...item,
-          };
-        }
-      });
-    setCategoriesFilter(filterCat);
-    if (selectedCategoryFilterItem.includes(name)) {
-      const newArr = selectedCategoryFilterItem.filter((like) => like !== name);
-      setSelectedCategoryFilterItem(newArr);
-    } else {
-      setSelectedCategoryFilterItem((p) => [...p, name]);
-    }
-  };
-  const brandsHandler = (e) => {
-    const { name } = e.target;
-    const filterBrands =
-      brands &&
-      brands.length > 0 &&
-      brands.map((item) => {
-        if (parseInt(item.id) === parseInt(name)) {
-          return {
-            ...item,
-            selected: !item.selected,
-          };
-        } else {
-          return {
-            ...item,
-          };
-        }
-      });
-    setBrands(filterBrands);
-    if (selectedBrandsFilterItem.includes(name)) {
-      const newArr = selectedBrandsFilterItem.filter((like) => like !== name);
-      setSelectedBrandsFilterItem(newArr);
-    } else {
-      setSelectedBrandsFilterItem((p) => [...p, name]);
-    }
-  };
 
   const [filterToggle, setToggle] = useState(false);
-  useEffect(() => {
-    setProducts(response.data && response.data.products.data);
-    setNxtPage(response.data && response.data.products.next_page_url);
-    setCategoriesFilter(
-      response.data &&
-      response.data.categories.length > 0 &&
-      response.data.categories.map((item) => {
-        return {
-          ...item,
-          selected: false,
-        };
-      })
-    );
-    setVariantsFilter(
-      response.data &&
-      response.data.activeVariants.length > 0 &&
-      response.data.activeVariants.map((varient) => {
-        return {
-          ...varient,
-          active_variant_items:
-            varient.active_variant_items &&
-            varient.active_variant_items.length > 0 &&
-            varient.active_variant_items.map((variant_item) => {
-              return {
-                ...variant_item,
-                selected: false,
-              };
-            }),
-        };
-      })
-    );
-    setBrands(
-      response.data &&
-      response.data.brands.length > 0 &&
-      response.data.brands.map((item) => {
-        return {
-          ...item,
-          selected: false,
-        };
-      })
-    );
-    const min = response.data &&
-      response.data.products.data &&
-      Math.min(
-        ...response.data.products.data.map((item) => parseInt(item.price))
-      );
-    const max = response.data &&
-      response.data.products.data &&
-      Math.max(
-        ...response.data.products.data.map((item) => parseInt(item.price))
-      );
-    const volumeArr = [min, max];
-    setVolume(volumeArr);
-  }, [response.data]);
-  useEffect(() => {
-    if (response.data) {
-      const min =
-        response.data &&
-        Math.min(
-          ...response.data.products.data.map((item) => parseInt(item.price))
-        );
-      const max =
-        response.data &&
-        Math.max(
-          ...response.data.products.data.map((item) => parseInt(item.price))
-        );
-      const check =
-        selectedVarientFilterItem.length > 0 ||
-        selectedCategoryFilterItem.length > 0 ||
-        selectedBrandsFilterItem.length > 0 ||
-        (volume[0] && volume[0] !== min) ||
-        (volume[1] && volume[1] !== max);
-      if (check) {
-        const brandsQuery =
-          selectedBrandsFilterItem.length > 0
-            ? selectedBrandsFilterItem.map((value) => {
-              return `brands[]=${value}`;
-            })
-            : [];
-        const brandString =
-          brandsQuery.length > 0
-            ? brandsQuery.map((value) => value + "&").join("")
-            : "";
 
-        const categoryQuery =
-          selectedCategoryFilterItem.length > 0
-            ? selectedCategoryFilterItem.map((value) => {
-              return `categories[]=${value}`;
-            })
-            : [];
-        const categoryString =
-          categoryQuery.length > 0
-            ? categoryQuery.map((value) => value + "&").join("")
-            : "";
-
-        const variantQuery =
-          selectedVarientFilterItem.length > 0
-            ? selectedVarientFilterItem.map((value) => {
-              return `variantItems[]=${value}`;
-            })
-            : [];
-        const variantString =
-          variantQuery.length > 0
-            ? variantQuery.map((value) => value + "&").join("")
-            : "";
-        axios
-          .get(
-            `${process.env.NEXT_PUBLIC_BASE_URL}api/search-product?${brandString && brandString
-            }${categoryString && categoryString}${variantString && variantString
-            }min_price=${volume[0]}&max_price=${volume[1]}${sellerInfo ? `&shop_name=${sellerInfo.seller.slug}` : ""
-            }`
-          )
-          .then((res) => {
-            res.data && res.data.products.data.length > 0
-              ? setProducts(res.data.products.data)
-              : setProducts(response.data.products.data);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        setProducts(response.data.products.data);
-      }
-    } else {
-      return false;
-    }
-  }, [
-    selectedVarientFilterItem,
-    selectedCategoryFilterItem,
-    selectedBrandsFilterItem,
-    volume,
-    response.data,
-  ]);
   const nextPageHandler = async () => {
     setLoading(true);
     if (nxtPage) {
@@ -285,7 +72,7 @@ const ViewStore = (response) => {
           }
 
           // res.data && res.data.products.data.length > 0;
-          // setNxtPage(response.data && response.data.products.next_page_url);
+          // setNxtPage(response && response.products.next_page_url);
         })
         .catch((err) => {
           setLoading(false);
@@ -311,7 +98,7 @@ const ViewStore = (response) => {
             }
 
             const data = await response.json();
-            console.log(data,"newwwwwwww")
+            console.log(data,"olddddddddddddddd")
 
         //     const url2 = `${process.env.NEXT_PUBLIC_BASE_URL}api/sellers/${data.vendor_details.slug}`;            
         //       const response2 = await fetch(url);
@@ -322,6 +109,7 @@ const ViewStore = (response) => {
 
         // const data2 = await response2.json();
         setVendorDetails(data);
+        setStoreName(data.vendor_details.slug);
         } catch (error) {
             console.error('Error fetching vendor details:', error);
             setError(error);
@@ -349,7 +137,22 @@ const ViewStore = (response) => {
 
     getVendorDetails();
     // getProducts()
-  }, [slug]); 
+  }, [slug, storeName]); 
+
+  useEffect(()=>{
+    const getSellerDetails = async() => {
+      const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/sellers/${storeName}`;   
+            const response = await fetch(url);
+          //   if (!response.ok) {
+          //     throw new Error(`HTTP error! Status: ${response.status}`);
+          // }
+
+          const data2 = await response.json();
+          console.log(data2,"vvvvvvvvvvvvvvvvvv")
+          setResponse(data2);
+    }
+    getSellerDetails()
+  },[storeName])
 
   const baseUrl = 'https://vendor.sistas.in/';
 
@@ -549,7 +352,7 @@ const getYouTubeEmbedUrl = (url) => {
         /> */}
            <div className="w-full lg:flex lg:space-x-[30px] rtl:space-x-reverse">
            <div className="flex-1">
-                {response.data && response.data.products.data.length > 0 ? (
+                {response && response?.products?.data.length > 0 ? (
                   <div className="w-full">
                     <div className="products-sorting w-full bg-white md:h-[70px] flex md:flex-row flex-col md:space-y-0 space-y-5 md:justify-between md:items-center p-[30px] mb-[40px]">
                       <div>
@@ -559,8 +362,8 @@ const getYouTubeEmbedUrl = (url) => {
                             {ServeLangItem()?.Showing}
                           </span>{" "}
                           1–
-                          {response.data.products.data.length}{" "}
-                          {ServeLangItem()?.of} {response.data.products.total}{" "}
+                          {response?.products.data.length}{" "}
+                          {ServeLangItem()?.of} {response?.products.total}{" "}
                           {ServeLangItem()?.results}
                         </p>
                       </div>
@@ -664,9 +467,9 @@ const getYouTubeEmbedUrl = (url) => {
                     )}
 
                     <div className="w-full relative text-qblack mb-[40px]">
-                      {response.data && response.data.shopPageCenterBanner && (
+                      {response && response.shopPageCenterBanner && (
                         <OneColumnAdsTwo
-                          data={response.data.shopPageCenterBanner && parseInt(response.data.shopPageCenterBanner.status) === 1 ? response.data.shopPageCenterBanner : null}
+                          data={response.shopPageCenterBanner && parseInt(response.shopPageCenterBanner.status) === 1 ? response.shopPageCenterBanner : null}
                         />
                       )}
                     </div>
