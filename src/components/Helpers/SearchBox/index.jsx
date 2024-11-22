@@ -171,7 +171,7 @@ export default function SearchBox({ className },response) {
             {/* <Select options={options} placeholder="Search" /> */}
             <ReactSearchAutocomplete
               items={items}
-              placeholder=""
+              placeholder="Search Products"
               // fuseOptions={{ keys: ["title", "description"] }} // Search on both fields
               // resultStringKeyName="title" // String to display in the results
               onSearch={handleOnSearch}
@@ -181,17 +181,17 @@ export default function SearchBox({ className },response) {
               onClear={handleOnClear}
               showIcon={false}
               styling={{
-                height: "42px",
-                // border: "1px solid white",
+                height: "40px",
+                border: "2px solid #c4b6b6",
                 backgroundColor: "white",
                 boxShadow: "none",
                 borderRadius:"0px",
                 // hoverBackgroundColor: "lightgreen",
-                color: "darkgreen",
+                color: "black",
                 fontSize: "14px",
-                iconColor: "green",
-                lineColor: "lightgreen",
-                placeholderColor: "darkgreen",
+                iconColor: "black",
+                lineColor: "grey",
+                placeholderColor: "grey",
                 clearIconMargin: "3px 8px 0 0",
                 zIndex: 39,
               }}
