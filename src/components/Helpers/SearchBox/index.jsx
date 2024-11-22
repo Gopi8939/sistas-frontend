@@ -10,7 +10,7 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import axios from "axios";
 
 
-export default function SearchBox({ className }) {
+export default function SearchBox({ className },response) {
   const router = useRouter();
   const [toggleCat, setToggleCat] = useState(false);
   const [items, setItems] = useState([]);
@@ -22,6 +22,8 @@ export default function SearchBox({ className }) {
   const [selectedSubCat, setSelectedSubCat] = useState(null);
   const [action, setAction] = useState("product");
   const [searchKey, setSearchkey] = useState("");
+  const [selectedQuery, setSelectedQuery] = useState("");
+  console.log(selectedCat,"searchKey")
   const loginPopupBoard = useContext(LoginContext);
   useEffect(() => {
     if (router && router.route && router.route === "/search") {
@@ -54,26 +56,15 @@ export default function SearchBox({ className }) {
   }, [websiteSetup]);
   const searchHandler = () => {
     if (auth()) {
-      if (searchKey !== "") {
-         if (selectedCat) {
           router.push({
             pathname: "/search",
-            query: { search: searchKey, category: selectedCat.slug },
-          });
-        } else {
-          router.push({
-            pathname: "/search",
-            query: { search: searchKey },
-          });
-        }
-      }  else if (searchKey === "" && selectedCat) {
+            query: { search: searchKey || selectedQuery },
+          })
+      }  else if (selectedQuery === "" && selectedCat) {
         router.push({
           pathname: "/products",
           query: { category: selectedCat.slug },
-        });
-      } else {
-        return false;
-      }
+        })
     } else {
       loginPopupBoard.handlerPopup(true);
     }
@@ -115,7 +106,7 @@ export default function SearchBox({ className }) {
   };
 
   const handleOnSelect = (item) => {
-    console.log(item);
+    setSelectedQuery(item.name);
   };
 
   const handleOnFocus = () => {
@@ -320,3 +311,21 @@ export default function SearchBox({ className }) {
     </>
   );
 }
+
+export const getServerSideProps = async (context) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}api/product?${
+      context.query.search
+        ? `search=${context.query.search}`
+        : context.query.category && context.query.search
+        ? `search=${context.query.search}&categories[]=${context.query.category}`
+        : `search=${context.query.search}`
+    }`
+  );
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  };
+};
