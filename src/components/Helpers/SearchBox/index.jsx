@@ -10,7 +10,7 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import axios from "axios";
 
 
-export default function SearchBox({ className }) {
+export default function SearchBox({ className },response) {
   const router = useRouter();
   const [toggleCat, setToggleCat] = useState(false);
   const [items, setItems] = useState([]);
@@ -22,15 +22,18 @@ export default function SearchBox({ className }) {
   const [selectedSubCat, setSelectedSubCat] = useState(null);
   const [action, setAction] = useState("product");
   const [searchKey, setSearchkey] = useState("");
+  const [selectedQuery, setSelectedQuery] = useState("");
+  console.log(selectedCat,"searchKey")
   const loginPopupBoard = useContext(LoginContext);
-  useEffect(() => {
-    if (router && router.route && router.route === "/search") {
-      setSearchkey(router.query ? router.query.search : "");
-    }
-    return () => {
-      setSearchkey("");
-    };
-  }, [router]);
+  // useEffect(() => {
+  //   if (router && router.route && router.route === "/search") {
+  //     setSearchkey(router.query ? router.query.search : "");
+  //   }
+  //   return () => {
+  //     setSearchkey("");
+  //   };
+  // }, [router]);
+  
   const categoryHandler = (value) => {
     setSelectedCat(value);
     setSubCategoris(
@@ -52,33 +55,55 @@ export default function SearchBox({ className }) {
       );
     }
   }, [websiteSetup]);
-  const searchHandler = () => {
+
+  const searchHandler = async () => {
     if (auth()) {
-      if (searchKey !== "") {
-         if (selectedCat) {
-          router.push({
-            pathname: "/search",
-            query: { search: searchKey, category: selectedCat.slug },
+      if (searchKey || selectedQuery) {
+        const searchQuery = searchKey || selectedQuery;
+        console.log(searchKey,selectedQuery,"selectedQuery")
+        
+        try {
+          // Force a new navigation regardless of current path
+          await router.push({
+            pathname: '/search',
+            query: { search: searchQuery },
           });
-        } else {
-          router.push({
-            pathname: "/search",
-            query: { search: searchKey },
-          });
+  
+          // If you need to fetch new data
+          if (typeof window !== 'undefined') {
+            // Trigger any necessary data fetching
+            // window.location.href = `/search?search=${searchQuery}`;
+          }
+        } catch (error) {
+          console.error('Navigation error:', error);
         }
-      }  else if (searchKey === "" && selectedCat) {
-        router.push({
-          pathname: "/products",
+      }
+    } else if (selectedQuery === "" && selectedCat) {
+      try {
+        // Force a new navigation for category
+        await router.push({
+          pathname: '/products',
           query: { category: selectedCat.slug },
         });
-      } else {
-        return false;
+  
+        // If you need to fetch new data
+        if (typeof window !== 'undefined') {
+          window.location.href = `/products?category=${selectedCat}`;
+        }
+      } catch (error) {
+        console.error('Category navigation error:', error);
       }
     } else {
       loginPopupBoard.handlerPopup(true);
     }
   };
 
+  // Optional: Handle search on Enter key press
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      searchHandler();
+    }
+  };
   useEffect(()=>{
     let fetch = async ()=>{
       try {
@@ -87,7 +112,7 @@ export default function SearchBox({ className }) {
           let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`)
           console.log(res.data.data.data,"ddyyvv")
           res.data.data.data.map((i)=>{
-            arr.push({id:i.id,name:i.short_name})
+            arr.push({id:i.id,name:i.name})
           })
         // }
         // else{
@@ -107,15 +132,15 @@ export default function SearchBox({ className }) {
 
 
   const handleOnSearch = (string, results) => {
-    console.log(string, results);
+    console.log(string, results,"selectedQuery");
   };
 
   const handleOnHover = (result) => {
-    console.log(result);
+    setSearchkey(result.name);
   };
 
   const handleOnSelect = (item) => {
-    console.log(item);
+    setSelectedQuery(item.name);
   };
 
   const handleOnFocus = () => {
@@ -146,7 +171,7 @@ export default function SearchBox({ className }) {
             {/* <Select options={options} placeholder="Search" /> */}
             <ReactSearchAutocomplete
               items={items}
-              placeholder=""
+              placeholder="Search Products"
               // fuseOptions={{ keys: ["title", "description"] }} // Search on both fields
               // resultStringKeyName="title" // String to display in the results
               onSearch={handleOnSearch}
@@ -156,17 +181,17 @@ export default function SearchBox({ className }) {
               onClear={handleOnClear}
               showIcon={false}
               styling={{
-                height: "42px",
-                // border: "1px solid white",
+                height: "40px",
+                border: "2px solid #c4b6b6",
                 backgroundColor: "white",
                 boxShadow: "none",
                 borderRadius:"0px",
                 // hoverBackgroundColor: "lightgreen",
-                color: "darkgreen",
+                color: "black",
                 fontSize: "14px",
-                iconColor: "green",
-                lineColor: "lightgreen",
-                placeholderColor: "darkgreen",
+                iconColor: "black",
+                lineColor: "grey",
+                placeholderColor: "grey",
                 clearIconMargin: "3px 8px 0 0",
                 zIndex: 39,
               }}
@@ -320,3 +345,21 @@ export default function SearchBox({ className }) {
     </>
   );
 }
+
+export const getServerSideProps = async (context) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}api/product?${
+      context.query.search
+        ? `search=${context.query.search}`
+        : context.query.category && context.query.search
+        ? `search=${context.query.search}&categories[]=${context.query.category}`
+        : `search=${context.query.search}`
+    }`
+  );
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  };
+};
