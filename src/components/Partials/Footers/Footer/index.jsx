@@ -13,6 +13,7 @@ export default function Footer({ settings }) {
   const [thirdCol, setThirdCol] = useState(null);
   const [footerContent, setFooterContent] = useState(null);
   const [socialLink, setSocialLink] = useState(null);
+  console.log(secondCol,thirdCol,"secondCol")
 
   useEffect(() => {
     if (!footerContent) {
@@ -84,10 +85,37 @@ export default function Footer({ settings }) {
         </div>
         <div className="lg:flex justify-between mb-[50px]">
           <div className="lg:w-[424px]  ml-0 w-full mb-10 lg:mb-0">
-            <h1 className="text-[18] font-500 text-[#2F2F2F] mb-5">About Us</h1>
-            <p className="text-[#9A9A9A] text-[15px] w-[247px] leading-[28px]">
+            {firstCol && (
+                <>
+                  <div className="mb-5">
+                    <h6 className="text-[18] font-500 text-[#2F2F2F]">
+                    Policies
+                    </h6>
+                  </div>
+                  <div>
+                    <ul className="flex flex-col space-y-4 ">
+                      {firstCol.col_links.length > 0 &&
+                        firstCol.col_links
+                            .filter(item => item.title === "Terms Condition")
+                            .map((item, i) => (
+                                <li key={i}>
+                                    <Link href={item.link} passHref>
+                                        <a rel="noopener noreferrer">
+                                            <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
+                                                {item.title}
+                                            </span>
+                                        </a>
+                                    </Link>
+                                </li>
+                            ))}
+                    </ul>
+                  </div>
+                </>
+              )}
+            {/* <h1 className="text-[18] font-500 text-[#2F2F2F] mb-5">Policies</h1> */}
+            {/* <p className="text-[#9A9A9A] text-[15px] w-[247px] leading-[28px]">
               {footerContent && footerContent.about_us}
-            </p>
+            </p> */}
             {/*<p className="text-[#9A9A9A] text-[15px] w-[247px] leading-[28px]">*/}
             {/*  {footerContent && footerContent.email ? footerContent.email : ""}*/}
             {/*</p>*/}
@@ -118,7 +146,7 @@ export default function Footer({ settings }) {
           </div>
           <div className="flex-1 lg:flex">
             <div className="lg:w-1/3 w-full mb-10 lg:mb-0">
-              {firstCol && (
+              {firstCol && thirdCol && (
                 <>
                   <div className="mb-5">
                     <h6 className="text-[18] font-500 text-[#2F2F2F]">
@@ -128,17 +156,32 @@ export default function Footer({ settings }) {
                   <div>
                     <ul className="flex flex-col space-y-4 ">
                       {firstCol.col_links.length > 0 &&
-                        firstCol.col_links.map((item, i) => (
-                          <li key={i}>
-                            <Link href={item.link} passHref>
-                              <a rel="noopener noreferrer">
-                                <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
-                                  {item.title}
-                                </span>
-                              </a>
-                            </Link>
-                          </li>
-                        ))}
+                        firstCol.col_links
+                            .filter(item => item.title !== "Terms Condition" && item.title !== "About Us")
+                            .map((item, i) => (
+                                <li key={i}>
+                                    <Link href={item.link} passHref>
+                                        <a rel="noopener noreferrer">
+                                            <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
+                                                {item.title}
+                                            </span>
+                                        </a>
+                                    </Link>
+                                </li>
+                            ))}
+                               {thirdCol.col_links.length > 0 &&
+                          thirdCol.col_links .filter(item => item.title === "Popular Category")
+                          .map((item, i) => (
+                            <li key={i}>
+                              <Link href={item.link} passHref>
+                                <a rel="noopener noreferrer">
+                                  <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
+                                    {item.title}
+                                  </span>
+                                </a>
+                              </Link>
+                            </li>
+                          ))}
                         <li>
                           <a href="seller-product">
                           <span className="text-[#9A9A9A] text-[15px] hover:text-qblack border-b border-transparent hover:border-qblack cursor-pointer capitalize">
@@ -170,7 +213,8 @@ export default function Footer({ settings }) {
                     <div>
                       <ul className="flex flex-col space-y-4 ">
                         {secondCol.col_links.length > 0 &&
-                          secondCol.col_links.map((item, i) => (
+                          secondCol.col_links.filter(item => item.title !== "shop" && item.title !== "Support")
+                          .map((item, i) => (
                             <li key={i}>
                               <Link href={item.link} passHref>
                                 <a rel="noopener noreferrer">
@@ -193,13 +237,14 @@ export default function Footer({ settings }) {
                   <>
                     <div className="mb-5">
                       <h6 className="text-[18] font-500 text-[#2F2F2F]">
-                        {thirdCol.columnTitle}
+                        Support
                       </h6>
                     </div>
                     <div>
                       <ul className="flex flex-col space-y-4 ">
                         {thirdCol.col_links.length > 0 &&
-                          thirdCol.col_links.map((item, i) => (
+                          thirdCol.col_links .filter(item => item.title !== "About Us" &&  item.title !== "Popular Category")
+                          .map((item, i) => (
                             <li key={i}>
                               <Link href={item.link} passHref>
                                 <a rel="noopener noreferrer">
@@ -241,7 +286,7 @@ export default function Footer({ settings }) {
                 : ""}
             </span>
           </div>
-          {footerContent && footerContent.payment_image ? (
+          {/* {footerContent && footerContent.payment_image ? (
             <div className="mt-2 lg:mt-0">
               <Link href="#" passHref>
                 <a>
@@ -259,7 +304,7 @@ export default function Footer({ settings }) {
             </div>
           ) : (
             ""
-          )}
+          )} */}
         </div>
       </div>
     </footer>

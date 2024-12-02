@@ -185,15 +185,15 @@ function BecomeSaller() {
           options
         )
         .then((res) => {
-          toast.success(
-            "Congratulation on Your seller registration successfully"
-          );
+          // toast.success(
+          //   "Congratulation on Your seller registration successfully"
+          // );
 
           // apiRequest.logout(auth.access_token);
           // localStorage.removeItem("auth");
           // dispatch(fetchWishlist());
           // dispatch(fetchCart());
-          router.push("/login");
+          router.push("/thank-you");
         })
         .catch((err) => {
           setErrors(err.response && err.response.data.errors);
@@ -591,9 +591,9 @@ function BecomeSaller() {
                 </div>
 
                 <div className="signup-area flex justify-center">
-                  <p className="text-sm text-qgraytwo font-normal">
+                  <p className="text-sm text-qgraytwo font-normal flex" style={{gap:'2px'}}>
                     {ServeLangItem()?.Already_have_an_Account}?
-                    <Link href="/login" className="ml-2 text-qblack">
+                    <Link href="https://vendor.sistas.in" className="ml-2 text-qblack " style={{marginLeft:'2px'}}>
                       {ServeLangItem()?.Log_In}
                     </Link>
                   </p>

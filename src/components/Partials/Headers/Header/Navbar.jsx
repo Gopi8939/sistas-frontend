@@ -347,7 +347,7 @@ useEffect(() => {
                             }}
                             passHref
                           >
-                            <a rel="noopener noreferrer">
+                            <a rel="noopener noreferrer" onClick={() => setCategoryToggle(!categoryToggle)}>
                               <div className=" flex justify-between items-center px-5 h-10 transition-all duration-300 ease-in-out cursor-pointer">
                                 <div className="flex items-center rtl:space-x-reverse space-x-6">
                                   <span>
@@ -413,7 +413,7 @@ useEffect(() => {
                                       }}
                                       passHref
                                     >
-                                      <a rel="noopener noreferrer">
+                                      <a rel="noopener noreferrer" onClick={() => setCategoryToggle(!categoryToggle)}>
                                         <div className=" flex justify-between items-center px-5 h-10 transition-all duration-300 ease-in-out cursor-pointer">
                                           <div>
                                             <span className="text-xs font-400">
@@ -562,7 +562,7 @@ useEffect(() => {
                             }}
                             passHref
                           >
-                            <a rel="noopener noreferrer">
+                            <a rel="noopener noreferrer" onClick={() => setServiceToggle(!serviceToggle)}>
                               <div className=" flex justify-between items-center px-5 h-10 transition-all duration-300 ease-in-out cursor-pointer">
                                 <div className="flex items-center rtl:space-x-reverse space-x-6">
                                   <span>

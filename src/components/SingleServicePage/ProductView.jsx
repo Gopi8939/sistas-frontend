@@ -900,7 +900,7 @@ export default function ProductView({
 
         </div>
       </div>
-          <div className="review-component">
+          {/* <div className="review-component">
       <h2 style={{fontSize:"22px"}}>Write a Review</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
@@ -928,7 +928,7 @@ export default function ProductView({
           {loading ? 'Submitting...' : 'Submit Review'}
         </button>
       </form>
-             </div>
+             </div> */}
     </>
   );
 }

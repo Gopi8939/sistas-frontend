@@ -751,9 +751,9 @@ function BecomeServiceProvider() {
                 </div>
 
                 <div className="signup-area flex justify-center">
-                  <p className="text-sm text-qgraytwo font-normal">
+                  <p className="text-sm text-qgraytwo font-normal flex" style={{gap:'2px'}}>
                     {ServeLangItem()?.Already_have_an_Account}?
-                    <Link href="/login" className="ml-2 text-qblack">
+                    <Link href="https://vendor.sistas.in" className="ml-2 text-qblack">
                       {ServeLangItem()?.Log_In}
                     </Link>
                   </p>
