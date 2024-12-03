@@ -66,6 +66,7 @@ export default function ProductView({
   const [isImageError, setIsImageError] = useState(false);
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState('');
+  const [hover, setHover] = useState(0);
 
   const handleImageError = () => {
     setIsImageError(true);
@@ -900,35 +901,51 @@ export default function ProductView({
 
         </div>
       </div>
-          {/* <div className="review-component">
-      <h2 style={{fontSize:"22px"}}>Write a Review</h2>
-      {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div className="rating" style={{gap:"10px"}}>
-          <label>Rating:</label>
-          <div className="rating-input">
-              <input
-                type="number"
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                placeholder="Give your rating here..."
-                required
-              />
-              <span className="star">★</span>
-            </div>
-        </div>
-        <textarea
-          value={review}
-          onChange={(e) => setReview(e.target.value)}
-          placeholder="Write your review here..."
-          required
-          className="textReview"
-        />
-        <button className="submitBtn" type="submit" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Review'}
-        </button>
-      </form>
-             </div> */}
+             {/* mx-auto */}
+              {/* <div className="review-form bg-white shadow-lg rounded-xl p-6 max-w-md mt-4 ">
+              <div className="mb-6 text-center">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-2">Share Your Experience</h2>
+                <p className="text-gray-500">How would you rate this?</p>
+              </div>
+      
+              <form onSubmit={handleSubmit}>
+                <div className="star-rating mb-6 flex justify-center">
+                  {[...Array(5)].map((star, index) => {
+                    const ratingValue = index + 0.5;
+                    return (
+                      <span
+                        key={index}
+                        className="star text-4xl transition-colors duration-200"
+                        style={{
+                          color: ratingValue <= (hover || rating) ? "#FF6B6B" : "#E0E0E0",
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => setRating(ratingValue)}
+                        onMouseEnter={() => setHover(ratingValue)}
+                        onMouseLeave={() => setHover(0)}
+                      >
+                        ★
+                      </span>
+                    );
+                  })}
+                </div>
+
+                <textarea
+                  value={review}
+                  onChange={(e) => setReview(e.target.value)}
+                  placeholder="Tell us about your experience..."
+                  className="w-full p-4 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-red-300 min-h-[150px] mb-6 resize-none"
+                  required
+                />
+
+                <button 
+                  type="submit" 
+                  className="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition-colors duration-300 uppercase tracking-wider font-semibold"
+                >
+                  Submit Review
+                </button>
+              </form>
+               </div> */}
     </>
   );
 }

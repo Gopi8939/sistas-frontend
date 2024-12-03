@@ -62,6 +62,9 @@ export default function ProductView({
   const loginPopupBoard = useContext(LoginContext);
   const messageHandler=useContext(messageContext);
   const [isImageError, setIsImageError] = useState(false);
+  // const [rating, setRating] = useState(0);
+  // const [review, setReview] = useState('');
+  // const [hover, setHover] = useState(0);
 
   const handleImageError = () => {
     setIsImageError(true);
