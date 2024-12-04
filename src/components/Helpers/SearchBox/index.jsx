@@ -171,7 +171,7 @@ export default function SearchBox({ className },response) {
             {/* <Select options={options} placeholder="Search" /> */}
             <ReactSearchAutocomplete
               items={items}
-              placeholder="Search Products"
+              placeholder="Search Products / Services"
               // fuseOptions={{ keys: ["title", "description"] }} // Search on both fields
               // resultStringKeyName="title" // String to display in the results
               onSearch={handleOnSearch}

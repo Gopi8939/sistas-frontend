@@ -8,8 +8,12 @@ import Multivendor from "../../../Shared/Multivendor";
 import ServeLangItem from "../../../Helpers/ServeLangItem";
 import axios from "axios";
 import LoginContext from "../../../Contexts/LoginContext";
+import { useRouter } from "next/router";
+import isauth from "../../../../../utils/auth";
+import apiRequest from "../../../../../utils/apiRequest";
 export default function Navbar({ className }) {
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
+  const router = useRouter();
   const categoryList = websiteSetup && websiteSetup.payload.productCategories;
   const serviceList = websiteSetup && websiteSetup.payload.serviceCategories;
   const mageMenuList = websiteSetup && websiteSetup.payload.megaMenuCategories;
@@ -23,11 +27,40 @@ export default function Navbar({ className }) {
   const [serviceCategory, setServiceCategory] = useState();
   const [auth, setAuth] = useState(null);
   const getLoginContexts = useContext(LoginContext);
+  const [switchDashboard, setSwitchDashboard] = useState(false);
+  const [dashBoardData, setDashboardData] = useState(null);
+  
   useEffect(() => {
     if (getLoginContexts.loginPopup === false) {
       setAuth(() => JSON.parse(localStorage.getItem("auth")));
     }
   }, [getLoginContexts.loginPopup]);
+
+  useEffect(() => {
+    let cancelToken;
+    if (!dashBoardData) {
+      if (auth) {
+        cancelToken = axios.CancelToken.source();
+        apiRequest
+          .dashboard(auth?.access_token, { cancelToken: cancelToken.token })
+          .then((res) => {
+            setDashboardData(res?.data);
+          })
+          .catch((err) => {
+            if (axios.isCancel(err)) {
+              console.log("Request canceled", err.message);
+            } else {
+              console.log(err);
+            }
+          });
+      }
+    }
+  
+    return () => {
+      if (cancelToken) cancelToken.cancel("Request canceled by cleanup");
+    };
+  }, [dashBoardData, auth]);
+  
   const handleCategoryToggle = () => {
     setCategoryToggle(!categoryToggle);
     setServiceToggle(false);
@@ -36,6 +69,7 @@ export default function Navbar({ className }) {
     setServiceToggle(!serviceToggle);
     setCategoryToggle(false);
   };
+
   
   const apiFetch = async() => {
     await axios
@@ -62,6 +96,18 @@ useEffect(() => {
   let categorySelector = document.querySelector(".category-dropdown");
     setHeight(categorySelector.offsetHeight);
   }, [categoryToggle]);
+
+  const switchDashboardHandler = () => {
+    setSwitchDashboard(!switchDashboard);
+  };
+  useEffect(() => {
+    if (switchDashboard) {
+      const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+      const dashboardUrl = baseURL + "login";
+      router.push(dashboardUrl);
+    }
+  }, [switchDashboard]);
+  const checkSellerAndVendor = Multivendor() === 1 && dashBoardData && dashBoardData.is_seller ;
   return (
     <div
       className={`nav-widget-wrapper w-full  h-[60px] relative z-30  ${className || ""
@@ -347,7 +393,7 @@ useEffect(() => {
                             }}
                             passHref
                           >
-                            <a rel="noopener noreferrer">
+                            <a rel="noopener noreferrer" onClick={() => setCategoryToggle(!categoryToggle)}>
                               <div className=" flex justify-between items-center px-5 h-10 transition-all duration-300 ease-in-out cursor-pointer">
                                 <div className="flex items-center rtl:space-x-reverse space-x-6">
                                   <span>
@@ -413,7 +459,7 @@ useEffect(() => {
                                       }}
                                       passHref
                                     >
-                                      <a rel="noopener noreferrer">
+                                      <a rel="noopener noreferrer" onClick={() => setCategoryToggle(!categoryToggle)}>
                                         <div className=" flex justify-between items-center px-5 h-10 transition-all duration-300 ease-in-out cursor-pointer">
                                           <div>
                                             <span className="text-xs font-400">
@@ -562,7 +608,7 @@ useEffect(() => {
                             }}
                             passHref
                           >
-                            <a rel="noopener noreferrer">
+                            <a rel="noopener noreferrer" onClick={() => setServiceToggle(!serviceToggle)}>
                               <div className=" flex justify-between items-center px-5 h-10 transition-all duration-300 ease-in-out cursor-pointer">
                                 <div className="flex items-center rtl:space-x-reverse space-x-6">
                                   <span>
@@ -876,7 +922,7 @@ useEffect(() => {
                     </Link>
                   </li> */}
 
-                  <li>
+                  <li style={{display:'flex',alignItems:'center'}}>
                     <Link href="/about" passHref>
                       <a rel="noopener noreferrer">
                         <span className="flex items-center text-sm font-600 cursor-pointer text-white ">
@@ -885,7 +931,7 @@ useEffect(() => {
                       </a>
                     </Link>
                   </li>
-                  <li>
+                  <li style={{display:'flex',alignItems:'center'}}>
                     <Link href="/contact" passHref>
                       <a rel="noopener noreferrer">
                         <span className="flex items-center text-sm font-600 cursor-pointer text-white ">
@@ -893,6 +939,26 @@ useEffect(() => {
                         </span>
                       </a>
                     </Link>
+                  </li>
+                  <li style={{display:'flex',alignItems:'center'}}>
+                  {checkSellerAndVendor && (
+                    <div className="switch-dashboard flex md:flex-row md:space-x-3 flex-col space-y-3 md:space-y-0 rtl:space-x-reverse rtl:space-x-reverse items-center">
+                      <p className="text-white text-base text-sm font-600" >
+                        {ServeLangItem()?.Switch_Dashboard}
+                      </p>
+                      <button
+                        onClick={switchDashboardHandler}
+                        type="button"
+                        className="w-[73px] h-[31px] border border-[#D9D9D9] rounded-full relative "
+                      >
+                        <div
+                          className={`w-[23px] h-[23px] bg-qblack rounded-full absolute top-[3px] transition-all duration-300 ease-in-out ${
+                            switchDashboard ? "left-[44px]" : "left-[4px]"
+                          }`}
+                        ></div>
+                      </button>
+                    </div>
+                  )}
                   </li>
                   {/*<li className="relative">
                     <span className="flex items-center text-sm font-600 cursor-pointer text-qblack ">

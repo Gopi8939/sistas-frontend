@@ -11,6 +11,7 @@ import PageTitle from "../Helpers/PageTitle";
 import { useSelector } from "react-redux";
 import ServeLangItem from "../Helpers/ServeLangItem";
 import { Country, State, City } from 'country-state-city';
+import Accodion from "../Helpers/Accodion";
 function BecomeServiceProvider() {
   const router = useRouter();
   const [logoImg, setLogoImg] = useState(null);
@@ -39,6 +40,7 @@ function BecomeServiceProvider() {
   const [uploadCoverImg, setUploadCoverImg] = useState(null);
   const [defaultCover, setDefaultCover] = useState(null);
   const [defaultLogo, setLogo] = useState(null);
+  const [faqs, setFaqs] = useState();
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   useEffect(() => {
     if (!defaultCover || !defaultLogo) {
@@ -152,6 +154,15 @@ function BecomeServiceProvider() {
   const rememberMe = () => {
     setCheck(!checked);
   };
+  const getFAQ = async() =>{
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/faq`);
+    const data = await res.json();
+    setFaqs(data.faqs)
+  }
+
+  useEffect(()=>{
+    getFAQ()
+  },[])
 
   const sellerReq = async () => {
       const formData = new FormData();
@@ -220,6 +231,7 @@ function BecomeServiceProvider() {
           ]}
         />
       </div>
+      <div style={{display:'flex'}}>
       <div className="content-wrapper w-full mb-10">
         <div className="container-x mx-auto">
           <div className="w-full bg-white p-3" >
@@ -749,9 +761,9 @@ function BecomeServiceProvider() {
                     </button>
                   </div>
                 </div>
-
+                {/* https://vendor.sistas.in */}
                 <div className="signup-area flex justify-center">
-                  <p className="text-sm text-qgraytwo font-normal">
+                  <p className="text-sm text-qgraytwo font-normal flex" style={{gap:'2px'}}>
                     {ServeLangItem()?.Already_have_an_Account}?
                     <Link href="/login" className="ml-2 text-qblack">
                       {ServeLangItem()?.Log_In}
@@ -947,6 +959,21 @@ function BecomeServiceProvider() {
             style={{ width: `${uploadProgress}%`, height: "2px" }}
           ></div>
         </div>
+      </div>
+      <div className="lg:w-1/2 w-full mb-10 lg:mb-0">
+              <h1 className="text-qblack font-bold text-[22px] mb-4">
+                {ServeLangItem()?.Frequently_asked_questions}
+              </h1>
+              <div className="flex flex-col space-y-7 justify-between">
+                {faqs?.map((faq) => (
+                  <Accodion
+                    key={faq.id}
+                    title={faq.question}
+                    des={faq.answer}
+                  />
+                ))}
+              </div>
+      </div>
       </div>
     </div>
   );
