@@ -23,7 +23,6 @@ export default function SearchBox({ className },response) {
   const [action, setAction] = useState("product");
   const [searchKey, setSearchkey] = useState("");
   const [selectedQuery, setSelectedQuery] = useState("");
-  console.log(selectedCat,"searchKey")
   const loginPopupBoard = useContext(LoginContext);
   // useEffect(() => {
   //   if (router && router.route && router.route === "/search") {
@@ -57,7 +56,7 @@ export default function SearchBox({ className },response) {
   }, [websiteSetup]);
 
   const searchHandler = async () => {
-    if (auth()) {
+    // if (auth()) {
       if (searchKey || selectedQuery) {
         const searchQuery = searchKey || selectedQuery;
         console.log(searchKey,selectedQuery,"selectedQuery")
@@ -77,7 +76,7 @@ export default function SearchBox({ className },response) {
         } catch (error) {
           console.error('Navigation error:', error);
         }
-      }
+      // }
     } else if (selectedQuery === "" && selectedCat) {
       try {
         // Force a new navigation for category
