@@ -128,13 +128,13 @@ export default function SearchBox({ className },response) {
 
 
   const handleOnSearch = (string, results) => {
-    console.log(string, results,"selectedQuery");
+    setSearchkey(string);
   };
-
+  
   const handleOnHover = (result) => {
     setSearchkey(result.name);
   };
-
+  
   const handleOnSelect = (item) => {
     setSelectedQuery(item.name);
   };
