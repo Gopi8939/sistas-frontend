@@ -38,7 +38,7 @@ export default function Middlebar({ className, settings }) {
       router.push("/login");
     }
   };
-  console.log(profile,"profilesss")
+
   //cart
   const { cart } = useSelector((state) => state.cart);
   const [cartItems, setCartItem] = useState(null);
