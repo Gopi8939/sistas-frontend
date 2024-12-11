@@ -5,19 +5,19 @@ import ServeLangItem from "../../Helpers/ServeLangItem";
 function OneColumnAdsTwo({ data }) {
   if(data){
       return (
-          <div className={`one-column-ads-one sm:h-[166px] h-[300px] sm:w-full w-[1000px]`}>
+          <div className={`one-column-ads-one sm:h-[500px] h-[500px] sm:w-full w-[1000px]`}>
               <div
                   data-aos="fade-right"
                   style={{
                       backgroundImage: `url(${
                           process.env.NEXT_PUBLIC_BASE_URL + data.image
                       })`,
-                      backgroundSize: `contain`,
+                      backgroundSize: `cover`,
                       backgroundRepeat: `no-repeat`,
                   }}
-                  className="w-full h-[300px] flex justify-center items-center ltr:md:pl-[80px] rtl:md:pr-[80px] ltr:pl-3 rtl:pr-3 md:py-[40px] py-4 group"
+                  className="w-full h-[500px] flex justify-center items-center ltr:md:pl-[80px] rtl:md:pr-[80px] ltr:pl-3 rtl:pr-3 md:py-[40px] py-4 group"
               >
-                  <div className="w-full h-full flex flex-col justify-evenly">
+                  {/* <div className="w-full h-full flex flex-col justify-evenly"> */}
                       {/* <div>
                           <div className="">
                               <h1 className="md:text-[30px] text-[20px] md:leading-[40px] font-semibold">
@@ -70,7 +70,7 @@ function OneColumnAdsTwo({ data }) {
                               </a>
                           </Link>
                       </div> */}
-                  </div>
+                  {/* </div> */}
               </div>
           </div>
       );

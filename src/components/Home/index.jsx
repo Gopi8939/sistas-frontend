@@ -44,9 +44,9 @@ export default function Home({ homepageData }) {
   return (
     <>
       <Layout childrenClasses="pt-[30px] pb-[60px]">
-        <Ads />
+        {/* <Ads /> */}
         {homepage && (
-          <div className="w-full text-white sm:mb-[160px] mb-[0px]">
+          <div className="w-full text-white sm:mb-[60px] mb-[0px]">
             <div className="container-x mx-auto">
               <OneColumnAdsTwo data={homepage.singleBannerTwo && parseInt(homepage.singleBannerTwo.status) === 1 ? homepage.singleBannerTwo : null} />
             </div>
