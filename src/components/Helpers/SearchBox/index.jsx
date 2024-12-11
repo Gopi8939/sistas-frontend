@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import ServeLangItem from "../ServeLangItem";
 import LoginContext from "../../Contexts/LoginContext";
-import auth from "../../../../utils/auth";
+// import auth from "../../../../utils/auth";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import axios from "axios";
 
@@ -59,7 +59,6 @@ export default function SearchBox({ className },response) {
     // if (auth()) {
       if (searchKey || selectedQuery) {
         const searchQuery = searchKey || selectedQuery;
-        console.log(searchKey,selectedQuery,"selectedQuery")
         
         try {
           // Force a new navigation regardless of current path
@@ -69,10 +68,10 @@ export default function SearchBox({ className },response) {
           });
   
           // If you need to fetch new data
-          if (typeof window !== 'undefined') {
+          // if (typeof window !== 'undefined') {
             // Trigger any necessary data fetching
             // window.location.href = `/search?search=${searchQuery}`;
-          }
+          // }
         } catch (error) {
           console.error('Navigation error:', error);
         }
@@ -92,9 +91,7 @@ export default function SearchBox({ className },response) {
       } catch (error) {
         console.error('Category navigation error:', error);
       }
-    } else {
-      loginPopupBoard.handlerPopup(true);
-    }
+    } 
   };
 
   // Optional: Handle search on Enter key press
@@ -103,13 +100,13 @@ export default function SearchBox({ className },response) {
       searchHandler();
     }
   };
+  
   useEffect(()=>{
     let fetch = async ()=>{
       try {
         let arr=[]
         // if(action === "product"){
           let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`)
-          console.log(res.data.data.data,"ddyyvv")
           res.data.data.data.map((i)=>{
             arr.push({id:i.id,name:i.name})
           })
