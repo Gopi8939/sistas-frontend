@@ -23,7 +23,7 @@ export default function SearchBox({ className },response) {
   const [action, setAction] = useState("product");
   const [searchKey, setSearchkey] = useState("");
   const [selectedQuery, setSelectedQuery] = useState("");
-  const loginPopupBoard = useContext(LoginContext);
+
   // useEffect(() => {
   //   if (router && router.route && router.route === "/search") {
   //     setSearchkey(router.query ? router.query.search : "");
@@ -137,6 +137,7 @@ export default function SearchBox({ className },response) {
   
   const handleOnSelect = (item) => {
     setSelectedQuery(item.name);
+    searchHandler();
   };
 
   const handleOnFocus = () => {
@@ -165,6 +166,13 @@ export default function SearchBox({ className },response) {
               placeholder= "Search Product or Services"
             /> */}
             {/* <Select options={options} placeholder="Search" /> */}
+              <div 
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    searchHandler();
+                  }
+                }}
+              >
             <ReactSearchAutocomplete
               items={items}
               placeholder="Search Products / Services"
@@ -192,16 +200,7 @@ export default function SearchBox({ className },response) {
                 zIndex: 39,
               }}
             />
-            {/* <ReactSearchAutocomplete
-            items={items}
-            onSearch={handleOnSearch}
-            onHover={handleOnHover}
-            onSelect={handleOnSelect}
-            onFocus={handleOnFocus}
-            onClear={handleOnClear}
-            styling={{ zIndex: 4 }} // To display it on top of the search box below
-            autoFocus
-          /> */}
+            </div>
           </div>
         </div>
         {/* <div className="w-[1px] h-[22px] bg-qgray-border"></div>
