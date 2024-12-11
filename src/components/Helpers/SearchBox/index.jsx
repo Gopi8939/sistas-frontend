@@ -69,8 +69,8 @@ export default function SearchBox({ className },response) {
   
           // If you need to fetch new data
           // if (typeof window !== 'undefined') {
-            // Trigger any necessary data fetching
-            // window.location.href = `/search?search=${searchQuery}`;
+          //   // Trigger any necessary data fetching
+          //   window.location.href = `/search?search=${searchQuery}`;
           // }
         } catch (error) {
           console.error('Navigation error:', error);
