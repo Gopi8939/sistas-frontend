@@ -1499,12 +1499,13 @@ console.log(shippingRulesByCityId,'shippingRulesByCityId')
                       {ServeLangItem()?.Apply_Coupon}
                     </h1>
                     <div className="discount-code  w-full mb-5 sm:mb-0 h-[50px] flex ">
-                      <div className="flex-1 h-full">
+                      <div className="flex-1 h-[50px]">
                         <InputCom
                           value={inputCoupon}
                           inputHandler={(e) => setInputCoupon(e.target.value)}
                           type="text"
                           placeholder="Discount Code"
+                          inputClasses="h-[50px]"                          
                         />
                       </div>
                       <button

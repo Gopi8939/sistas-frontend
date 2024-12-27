@@ -72,8 +72,6 @@ function BecomeSaller() {
     setStates(stateList);
   }, []);
 
-  console.log(passwordErrors,errors,"passwordErrors")
-
   const validatePasswords = () => {
     const newErrors = {};
 
