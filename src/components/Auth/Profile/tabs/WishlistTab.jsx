@@ -49,7 +49,7 @@ export default function WishlistTab({ className }) {
           wishlists.data.map((item) => {
             return {
               ...item,
-              totalPrice: item.product.price,
+              totalPrice: item?.product?.price,
             };
           })
       );
@@ -101,7 +101,7 @@ export default function WishlistTab({ className }) {
                             layout="fill"
                             src={`${
                               process.env.NEXT_PUBLIC_BASE_URL +
-                              item.product.thumb_image
+                              item?.product?.thumb_image
                             }`}
                             alt="product"
                             className="w-full h-full object-contain"
@@ -109,7 +109,7 @@ export default function WishlistTab({ className }) {
                         </div>
                         <div className="flex-1 flex flex-col">
                           <p className="font-medium text-[15px] text-qblack">
-                            {item.product.name}
+                            {item?.product?.name}
                           </p>
                         </div>
                       </div>
@@ -121,7 +121,7 @@ export default function WishlistTab({ className }) {
                           suppressHydrationWarning
                           className="text-[15px] font-normal"
                         >
-                          <CurrencyConvert price={item.product.price}/>
+                          <CurrencyConvert price={item?.product?.price}/>
                         </span>
                       </div>
                     </td>

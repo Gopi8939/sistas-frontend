@@ -7,6 +7,7 @@ import InputCom from "../../../Helpers/InputCom";
 import LoaderStyleOne from "../../../Helpers/Loaders/LoaderStyleOne";
 import Selectbox from "../../../Helpers/Selectbox";
 import ServeLangItem from "../../../Helpers/ServeLangItem";
+import { City, Country, State } from "country-state-city";
 
 export default function AddressesTab() {
   const [newAddress, setNewAddress] = useState(false);
@@ -25,6 +26,19 @@ export default function AddressesTab() {
   const [city, setcity] = useState(null);
   const [errors, setErrors] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const country = Country.getCountryByCode('IN');
+    const stateList = State.getStatesOfCountry(country.isoCode);
+    setStateDropdown(stateList);
+  }, []);
+
+  const handleStateChange = (e) => {
+    const stateCode = e.target.value;
+    setState(stateCode);
+    const cityList = City.getCitiesOfState('IN', stateCode);
+    setCityDropdown(cityList);
+  }
   const getAllAddress = () => {
     axios
       .get(
@@ -58,48 +72,48 @@ export default function AddressesTab() {
         });
     }
   }, []);
-  const getState = async (value) => {
-    if (auth() && value) {
-      setCountry(value.id);
-      await axios
-        .get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}api/user/state-by-country/${
-            value.id
-          }?token=${auth().access_token}`
-        )
-        .then((res) => {
-          setCityDropdown(null);
-          setStateDropdown(res.data && res.data.states);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      return false;
-    }
-  };
-  const getcity = async (value) => {
-    if (auth() && value) {
-      setState(value.id);
-      await axios
-        .get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}api/user/city-by-state/${
-            value.id
-          }?token=${auth().access_token}`
-        )
-        .then((res) => {
-          setCityDropdown(res.data && res.data.cities);
-        })
-        .catch((err) => {
-          console.log(err.response);
-        });
-    } else {
-      return false;
-    }
-  };
+  // const getState = async (value) => {
+  //   if (auth() && value) {
+  //     setCountry(value.id);
+  //     await axios
+  //       .get(
+  //         `${process.env.NEXT_PUBLIC_BASE_URL}api/user/state-by-country/${
+  //           value.id
+  //         }?token=${auth().access_token}`
+  //       )
+  //       .then((res) => {
+  //         setCityDropdown(null);
+  //         setStateDropdown(res.data && res.data.states);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   } else {
+  //     return false;
+  //   }
+  // };
+  // const getcity = async (value) => {
+  //   if (auth() && value) {
+  //     setState(value.id);
+  //     await axios
+  //       .get(
+  //         `${process.env.NEXT_PUBLIC_BASE_URL}api/user/city-by-state/${
+  //           value.id
+  //         }?token=${auth().access_token}`
+  //       )
+  //       .then((res) => {
+  //         setCityDropdown(res.data && res.data.cities);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err.response);
+  //       });
+  //   } else {
+  //     return false;
+  //   }
+  // };
   const selectCity = (value) => {
     if (auth() && value) {
-      setcity(value.id);
+      setcity(value);
     }
   };
   const saveAddress = async () => {
@@ -112,7 +126,7 @@ export default function AddressesTab() {
           phone: phone,
           address: address,
           type: home ? "home" : office ? "office" : null,
-          country: country,
+          country: "India",
           state: state,
           city: city,
         })
@@ -166,6 +180,7 @@ export default function AddressesTab() {
         .editAddress(id, auth().access_token)
         .then(async (res) => {
           if (res.data) {
+            console.log(res,"sssssssssssssss")
             if (res.data.address) {
               setFname(res.data.address.name);
               setEmail(res.data.address.email);
@@ -175,11 +190,9 @@ export default function AddressesTab() {
               setHome(checkHomeOrNot);
               const checkOfficeOrNot=parseInt(res.data.address.type)===0;
               setOffice(checkOfficeOrNot);
-              setCountry(parseInt(res.data.address.country_id));
-              setState(parseInt(res.data.address.state_id));
-              setcity(parseInt(res.data.address.city_id));
-              await getState(res.data.address.country);
-              await getcity(res.data.address.country_state);
+              setCountry(parseInt(res.data.address.country));
+              setState(parseInt(res.data.address.state));
+              setcity(parseInt(res.data.address.city));
               setNewAddress(!newAddress);
             }
           }
@@ -329,192 +342,53 @@ export default function AddressesTab() {
                   )}
                 </div>
               </div>
-              <div className="mb-6">
-                <h1 className="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">
-                  {ServeLangItem()?.Country}*
-                </h1>
-                <div
-                  className={`w-full h-[50px] border px-5 flex justify-between items-center border-qgray-border mb-2 ${
-                    !!(errors && Object.hasOwn(errors, "country"))
-                      ? "border-qred"
-                      : "border-qgray-border"
-                  }`}
-                >
-                  <Selectbox
-                    action={getState}
-                    className="w-full"
-                    defaultValue={
-                      countryDropdown &&
-                      countryDropdown.length > 0 &&
-                      (function () {
-                        let item =
-                          countryDropdown.length > 0 &&
-                          countryDropdown.find(
-                            (item) => parseInt(item.id) === parseInt(country)
-                          );
-                        return item ? item.name : "Select";
-                      })()
-                    }
-                    datas={countryDropdown && countryDropdown}
-                  >
-                    {({ item }) => (
-                      <>
-                        <div className="flex justify-between items-center w-full">
-                          <div>
-                            <span className="text-[13px] text-qblack">
-                              {item}
-                            </span>
-                          </div>
-                          <span>
-                            <svg
-                              width="11"
-                              height="7"
-                              viewBox="0 0 11 7"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M5.4 6.8L0 1.4L1.4 0L5.4 4L9.4 0L10.8 1.4L5.4 6.8Z"
-                                fill="#222222"
-                              />
-                            </svg>
-                          </span>
-                        </div>
-                      </>
-                    )}
-                  </Selectbox>
-                </div>
-                {errors && Object.hasOwn(errors, "country") ? (
-                  <span className="text-sm mt-1 text-qred">
-                    {errors.country[0]}
-                  </span>
-                ) : (
-                  ""
-                )}
+              <div className="input-item md:flex md:space-x-2.5 rtl:space-x-reverse mb-8">
+                  <div className="md:w-1/2 w-full h-full mb-8 md:mb-0">
+                    <label className="mb-2 text-[13px] text-qgray">State*</label>
+                    <select
+                      className="cursor-pointer p-2 border w-full px-3 text-sm text-qgray focus:outline-none h-[50px]"
+                      name="state"
+                      value={state}
+                      onChange={handleStateChange}
+                    >
+                      <option value="">Select State</option>
+                      {stateDropdown?.map((state) => (
+                        <option key={state.isoCode} value={state.isoCode}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="md:w-1/2 w-full h-full relative">
+                    <label className="mb-2 text-[13px] text-qgray">City*</label>
+                    <select
+                      className="cursor-pointer p-2 border w-full px-3 text-sm text-qgray focus:outline-none h-[50px]"
+                      name="city"
+                      value={city}
+                      onChange={(e)=>selectCity(e.target.value)}
+                    >
+                      <option value="">Select City</option>
+                      {cityDropdown?.map((city) => (
+                        <option key={city.name} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
               </div>
-              <div className="flex rtl:space-x-reverse space-x-5 items-center mb-6">
-                <div className="w-1/2">
-                  <h1 className="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">
-                    {ServeLangItem()?.State}*
-                  </h1>
-                  <div
-                    className={`w-full h-[50px] border px-5 flex justify-between items-center border-qgray-border mb-2 ${
-                      !!(errors && Object.hasOwn(errors, "state"))
-                        ? "border-qred"
-                        : "border-qgray-border"
-                    }`}
-                  >
-                    <Selectbox
-                      action={getcity}
-                      className="w-full"
-                      defaultValue={
-                        stateDropdown &&
-                        stateDropdown.length > 0 &&
-                        (function () {
-                          let item = stateDropdown.find(
-                            (item) => item.id === parseInt(state)
-                          );
-                          return item ? item.name : "Select";
-                        })()
-                      }
-                      datas={stateDropdown && stateDropdown}
+              <div className="mb-5 flex flex-wrap">
+                  <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
+                    <label className="mb-2 text-[13px] text-qgray">Country*</label>
+                    <select
+                      className="cursor-not-allowed p-2 border w-full px-3 text-sm text-qgray bg-gray-200 focus:outline-none h-[50px]"
+                      name="country"
+                      disabled
                     >
-                      {({ item }) => (
-                        <>
-                          <div className="flex justify-between items-center w-full">
-                            <div>
-                              <span className="text-[13px] text-qblack">
-                                {item}
-                              </span>
-                            </div>
-                            <span>
-                              <svg
-                                width="11"
-                                height="7"
-                                viewBox="0 0 11 7"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M5.4 6.8L0 1.4L1.4 0L5.4 4L9.4 0L10.8 1.4L5.4 6.8Z"
-                                  fill="#222222"
-                                />
-                              </svg>
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </Selectbox>
+                      <option value="IN" selected>
+                        India
+                      </option>
+                    </select>
                   </div>
-                  {errors && Object.hasOwn(errors, "state") ? (
-                    <span className="text-sm mt-1 text-qred">
-                      {errors.state[0]}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <div className="w-1/2">
-                  <h1 className="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">
-                    {ServeLangItem()?.City}*
-                  </h1>
-                  <div
-                    className={`w-full h-[50px] border px-5 flex justify-between items-center border-qgray-border mb-2 ${
-                      !!(errors && Object.hasOwn(errors, "city"))
-                        ? "border-qred"
-                        : "border-qgray-border"
-                    }`}
-                  >
-                    <Selectbox
-                      action={selectCity}
-                      className="w-full"
-                      defaultValue={
-                        cityDropdown &&
-                        cityDropdown.length > 0 &&
-                        (function () {
-                          let item = cityDropdown.find(
-                            (item) => item.id === parseInt(city)
-                          );
-                          return item ? item.name : "Select";
-                        })()
-                      }
-                      datas={cityDropdown && cityDropdown}
-                    >
-                      {({ item }) => (
-                        <>
-                          <div className="flex justify-between items-center w-full">
-                            <div>
-                              <span className="text-[13px] text-qblack">
-                                {item}
-                              </span>
-                            </div>
-                            <span>
-                              <svg
-                                width="11"
-                                height="7"
-                                viewBox="0 0 11 7"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M5.4 6.8L0 1.4L1.4 0L5.4 4L9.4 0L10.8 1.4L5.4 6.8Z"
-                                  fill="#222222"
-                                />
-                              </svg>
-                            </span>
-                          </div>
-                        </>
-                      )}
-                    </Selectbox>
-                  </div>
-                  {errors && Object.hasOwn(errors, "city") ? (
-                    <span className="text-sm mt-1 text-qred">
-                      {errors.city[0]}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </div>
               </div>
               <div className=" mb-6">
                 <div className="w-full">
@@ -712,7 +586,7 @@ export default function AddressesTab() {
                           <p>{ServeLangItem()?.Country}:</p>
                         </td>
                         <td className="text-base text-qblack line-clamp-1 font-medium">
-                          {item.country.name}
+                          {item.country}
                         </td>
                       </tr>
                       <tr className="flex mb-3">
@@ -720,7 +594,7 @@ export default function AddressesTab() {
                           <p>{ServeLangItem()?.State}:</p>
                         </td>
                         <td className="text-base text-qblack line-clamp-1 font-medium">
-                          {item.country_state.name}
+                          {item.country_state}
                         </td>
                       </tr>
                       <tr className="flex mb-3">
@@ -728,7 +602,7 @@ export default function AddressesTab() {
                           <p>{ServeLangItem()?.City}:</p>
                         </td>
                         <td className="text-base text-qblack line-clamp-1 font-medium">
-                          {item.city.name}
+                          {item.city}
                         </td>
                       </tr>
                     </tbody>

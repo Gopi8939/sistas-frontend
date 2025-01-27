@@ -21,7 +21,7 @@ function BecomeServiceProvider() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [name, setName] = useState("");
+  const [shopName, setName] = useState("");
   const [shopAddress, setAddress] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -167,7 +167,8 @@ function BecomeServiceProvider() {
   const sellerReq = async () => {
       const formData = new FormData();
       // formData.append("banner_image", uploadCoverImg);
-      formData.append("shop_name", name);
+      formData.append("name", providerName);
+      formData.append("shop_name", shopName);
       // formData.append("logo", logoImg);
       formData.append("email", email);
       formData.append("phone", phone);
@@ -451,18 +452,38 @@ function BecomeServiceProvider() {
                 <div className="mb-5">
                   <InputCom
                     placeholder={ServeLangItem()?.Name}
-                    // label={ServeLangItem()?.Shop_Name+"*"}
+                    // label={ServeLangItem()?.Name+"*"}
+                    label="Provider Name"
+                    name="name"
+                    type="text"
+                    inputClasses="h-[50px]"
+                    value={providerName}
+                    inputHandler={(e) => setProviderName(e.target.value)}
+                    error={!!(errors && Object.hasOwn(errors, "name"))}
+                  />
+                  {errors && Object.hasOwn(errors, "name") ? (
+                    <span className="text-sm mt-1 text-qred">
+                      {errors.name[0]}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="mb-5">
+                  <InputCom
+                    placeholder="Shop Name"
+                    // label={ServeLangItem()?.Name+"*"}
                     label="Business Name"
                     name="name"
                     type="text"
                     inputClasses="h-[50px]"
-                    value={name}
+                    value={shopName}
                     inputHandler={(e) => setName(e.target.value)}
-                    error={!!(errors && Object.hasOwn(errors, "shop_name"))}
+                    error={!!(errors && Object.hasOwn(errors, "shopName"))}
                   />
-                  {errors && Object.hasOwn(errors, "shop_name") ? (
+                  {errors && Object.hasOwn(errors, "shopName") ? (
                     <span className="text-sm mt-1 text-qred">
-                      {errors.shop_name[0]}
+                      {errors.name[0]}
                     </span>
                   ) : (
                     ""
