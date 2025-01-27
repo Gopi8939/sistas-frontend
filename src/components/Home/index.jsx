@@ -61,25 +61,18 @@ export default function Home({ homepageData }) {
             className="banner-wrapper md:mb-[60px] mb-[30px]"
           />
         )} */}
-          {homepage && (
-          <SectionStyleThree
-            products={
-              homepage.newArrivalProducts.length > 0
-                ? homepage.newArrivalProducts.slice(
-                  0,
-                  homepage.newArrivalProducts.length > 16
-                    ? 16
-                    : homepage.newArrivalProducts.length
-                )
-                : []
-            }
-            sectionTitle={sectionTitles && sectionTitles.New_Arrivals}
-            seeMoreUrl={`/products?highlight=new_arrival`}
-            className="new-products md:mb-[60px] mb-[30px]"
-          />
-        )}
+         {/* New Arrivals Section */}
+         {homepageData?.newArrivalProducts?.length > 0 && (
+        <SectionStyleThree
+          products={homepageData.newArrivalProducts.slice(0, 16)}
+          sectionTitle={sectionTitles?.New_Arrivals}
+          seeMoreUrl="/products?highlight=new_arrival"
+          className="new-products md:mb-[60px] mb-[30px]"
+        />
+      )}
 
-        {homepage && (
+
+        {/* {homepage && (
           <SectionStyleFour
             products={
               homepage.bestProducts.length > 0 ? homepage.bestProducts : []
@@ -88,7 +81,7 @@ export default function Home({ homepageData }) {
             seeMoreUrl={`/products?highlight=best_product`}
             className="category-products md:mb-[60px] mb-[30px]"
           />
-        )}
+        )} */}
         {/* {homepage && (
           <CategorySection
             categories={homepage.homepage_categories}
@@ -117,14 +110,14 @@ export default function Home({ homepageData }) {
           />
         )}
 
-        {homepage && (
+        {/* {homepage && (
           <CampaignCountDown
             className="md:mb-[60px] mb-[30px]"
             flashSaleData={homepage.flashSale}
             downloadData={homepage.flashSaleSidebarBanner}
             lastDate={homepage.flashSale.end_time}
           />
-        )}
+        )} */}
         {homepage && (
           <ViewMoreTitle
             className="top-selling-product md:mb-[60px] mb-[30px]"
@@ -158,7 +151,7 @@ export default function Home({ homepageData }) {
           </ViewMoreTitle>
         )}
 
-        {homepage && isMultivendor === 1 && (
+        {/* {homepage && isMultivendor === 1 && (
           <ViewMoreTitle
             className="best-sallers-section md:mb-[60px] mb-[30px]"
             seeMoreUrl="/sellers"
@@ -169,7 +162,7 @@ export default function Home({ homepageData }) {
               sallers={homepage.sellers.length > 0 ? homepage.sellers : []}
             />
           </ViewMoreTitle>
-        )}
+        )} */}
 
         {homepage && (
           <TwoColumnAds
