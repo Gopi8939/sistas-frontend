@@ -9,45 +9,45 @@ function CheckProductIsExistsInFlashSale({
   className,
 }) {
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
-  const [flashSale, setData] = useState(null);
-  const [calPrice, setPrice] = useState(null);
+  const [flashSale, setFlashSale] = useState(null);
+  const [calPrice, setCalPrice] = useState(price || 0);
+
   useEffect(() => {
-    if (websiteSetup) {
-      setData({
+    if (websiteSetup && websiteSetup.payload) {
+      setFlashSale({
         flashSale: websiteSetup.payload.flashSale,
         flashSaleActive: websiteSetup.payload.flashSaleActive,
-        flashSaleProducts: websiteSetup.payload.flashSaleProducts,
+        flashSaleProducts: websiteSetup.payload.flashSaleProducts || [],
       });
     }
   }, [websiteSetup]);
-  const calcProductPrice = (id, price) => {
-    if (flashSale && flashSale.flashSaleActive) {
-      const getId = flashSale.flashSaleProducts.find(
-        (item) => parseInt(item.product_id) === parseInt(id)
-      );
-      if (getId) {
-        const offer = parseInt(flashSale.flashSale.offer);
-        const discountPrice = (offer / 100) * price;
-        const mainPrice = parseFloat(price) - discountPrice;
-        setPrice(mainPrice);
-      } else {
-        setPrice(price);
-      }
-    } else {
-      setPrice(price);
-    }
-  };
+
   useEffect(() => {
-    if (id && price) {
+    if (id && price && flashSale) {
       calcProductPrice(id, price);
     }
-  });
-  return <CurrencyConvert price={parseFloat(calPrice)}/>
+  }, [id, price, flashSale]); // Add dependencies to avoid infinite re-renders
+
+  const calcProductPrice = (id, price) => {
+    if (flashSale && flashSale.flashSaleActive && flashSale.flashSaleProducts) {
+      const productInFlashSale = flashSale.flashSaleProducts.find(
+        (item) => parseInt(item.product_id) === parseInt(id)
+      );
+
+      if (productInFlashSale && flashSale.flashSale?.offer) {
+        const offer = parseFloat(flashSale.flashSale.offer);
+        const discountPrice = (offer / 100) * price;
+        const mainPrice = price - discountPrice;
+        setCalPrice(mainPrice);
+      } else {
+        setCalPrice(price);
+      }
+    } else {
+      setCalPrice(price);
+    }
+  };
+
+  return <CurrencyConvert price={parseFloat(calPrice)} />;
 }
 
 export default CheckProductIsExistsInFlashSale;
-
-//(27 * 20 /100)-27
-
-//offer =(20/100*price)
-//total=price-offer

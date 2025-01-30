@@ -1,360 +1,172 @@
-// import Link from "next/link";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-// import axios from "axios";
 import { useRouter } from "next/router";
-import ServeLangItem from "../ServeLangItem";
-import LoginContext from "../../Contexts/LoginContext";
-// import auth from "../../../../utils/auth";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import axios from "axios";
+import ServeLangItem from "../ServeLangItem";
 
-
-export default function SearchBox({ className },response) {
+export default function SearchBox({ className }) {
   const router = useRouter();
+  const categoryRef = useRef(null);
   const [toggleCat, setToggleCat] = useState(false);
   const [items, setItems] = useState([]);
   const [subToggleCat, setSubToggleCat] = useState(false);
   const { websiteSetup } = useSelector((state) => state.websiteSetup);
   const [categories, setCategories] = useState(null);
-  const [subCategories, setSubCategoris] = useState(null);
+  const [subCategories, setSubCategories] = useState(null);
   const [selectedCat, setSelectedCat] = useState(null);
   const [selectedSubCat, setSelectedSubCat] = useState(null);
   const [action, setAction] = useState("product");
-  const [searchKey, setSearchkey] = useState("");
+  const [searchKey, setSearchKey] = useState("");
   const [selectedQuery, setSelectedQuery] = useState("");
 
-  // useEffect(() => {
-  //   if (router && router.route && router.route === "/search") {
-  //     setSearchkey(router.query ? router.query.search : "");
-  //   }
-  //   return () => {
-  //     setSearchkey("");
-  //   };
-  // }, [router]);
-  
+  // Initialize search key from query params
+  useEffect(() => {
+    if (router.route === "/search") {
+      setSearchKey(router.query.search || "");
+    }
+  }, [router]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (categoryRef.current && !categoryRef.current.contains(event.target)) {
+        setToggleCat(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Handle category selection
   const categoryHandler = (value) => {
     setSelectedCat(value);
-    setSubCategoris(
-      value.active_sub_categories && value.active_sub_categories.length > 0
-        ? value.active_sub_categories
-        : null
-    );
-    setToggleCat(!toggleCat);
+    setSubCategories(value.active_sub_categories?.length ? value.active_sub_categories : null);
+    setToggleCat(false);
   };
+
+  // Handle sub-category selection
   const subCategoryHandler = (value) => {
     setSelectedSubCat(value);
-
-    setSubToggleCat(!subToggleCat);
+    setSubToggleCat(false);
   };
+
+  // Fetch categories from store
   useEffect(() => {
-    if (websiteSetup) {
-      setCategories(
-        websiteSetup.payload && websiteSetup.payload.productCategories
-      );
+    if (websiteSetup?.payload?.productCategories) {
+      setCategories(websiteSetup.payload.productCategories);
     }
   }, [websiteSetup]);
 
+  // Perform search operation
   const searchHandler = async () => {
-    // if (auth()) {
-      if (searchKey || selectedQuery) {
-        const searchQuery = searchKey || selectedQuery;
-        
-        try {
-          // Force a new navigation regardless of current path
-          await router.push({
-            pathname: '/search',
-            query: { search: searchQuery },
-          });
-  
-          // If you need to fetch new data
-          // if (typeof window !== 'undefined') {
-          //   // Trigger any necessary data fetching
-          //   window.location.href = `/search?search=${searchQuery}`;
-          // }
-        } catch (error) {
-          console.error('Navigation error:', error);
-        }
-      // }
-    } else if (selectedQuery === "" && selectedCat) {
-      try {
-        // Force a new navigation for category
-        await router.push({
-          pathname: '/products',
-          query: { category: selectedCat.slug },
-        });
-  
-        // If you need to fetch new data
-        if (typeof window !== 'undefined') {
-          window.location.href = `/products?category=${selectedCat}`;
-        }
-      } catch (error) {
-        console.error('Category navigation error:', error);
+    const searchQuery = searchKey || selectedQuery;
+
+    try {
+      if (searchQuery) {
+        await router.push({ pathname: "/search", query: { search: searchQuery } });
+      } else if (!selectedQuery && selectedCat) {
+        await router.push({ pathname: "/products", query: { category: selectedCat.slug } });
       }
-    } 
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
   };
 
-  // Optional: Handle search on Enter key press
+  // Handle enter key press
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       searchHandler();
     }
   };
-  
-  useEffect(()=>{
-    let fetch = async ()=>{
+
+  // Fetch search items dynamically based on action (product/service)
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        let arr=[]
-        // if(action === "product"){
-          let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`)
-          res.data.data.data.map((i)=>{
-            arr.push({id:i.id,name:i.name})
-          })
-        // }
-        // else{
-        //   let res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}api/search-service`)
-        //   res.data.services.data.map((i)=>{
-        //     arr.push({id:i.id,name:i.short_name})
-        //   })
-        // }
-        setItems(arr)
+        const url =
+          action === "product"
+            ? `${process.env.NEXT_PUBLIC_BASE_URL}api/search-product`
+            : `${process.env.NEXT_PUBLIC_BASE_URL}api/search-service`;
+
+        const response = await axios.get(url);
+        const data = response.data.data?.data || response.data.services?.data || [];
+
+        setItems(data.map((item) => ({ id: item.id, name: item.name || item.short_name })));
       } catch (error) {
-        console.log(error.message);
+        console.error("Fetch error:", error.message);
       }
-    }
-    fetch()
-  },[action])
+    };
 
-
-
-  const handleOnSearch = (string, results) => {
-    setSearchkey(string);
-  };
-  
-  const handleOnHover = (result) => {
-    setSearchkey(result.name);
-  };
-  
-  const handleOnSelect = (item) => {
-    setSelectedQuery(item.name);
-    searchHandler();
-  };
-
-  const handleOnFocus = () => {
-    console.log("Focused");
-  };
-
-  const handleOnClear = () => {
-    console.log("Cleared");
-  };
+    fetchData();
+  }, [action]);
 
   return (
-    <>
-      <div
-        className={`w-full h-full flex items-center  border border-qgray-border bg-white  ${
-          className || ""
-        }`}
-      >
-        <div className="flex-1 bg-red-500 h-full">
-          <div className="h-full">
-            {/* <input
-              value={searchKey}
-              onKeyDown={(e) => e.key === "Enter" && searchHandler()}
-              onChange={(e) => setSearchkey(e.target.value)}
-              type="text"
-              className="search-input"
-              placeholder= "Search Product or Services"
-            /> */}
-            {/* <Select options={options} placeholder="Search" /> */}
-              <div 
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    searchHandler();
-                  }
-                }}
-              >
-            <ReactSearchAutocomplete
-              items={items}
-              placeholder="Search Products / Services"
-              // fuseOptions={{ keys: ["title", "description"] }} // Search on both fields
-              // resultStringKeyName="title" // String to display in the results
-              onSearch={handleOnSearch}
-              onHover={handleOnHover}
-              onSelect={handleOnSelect}
-              onFocus={handleOnFocus}
-              onClear={handleOnClear}
-              showIcon={false}
-              styling={{
-                height: "40px",
-                border: "2px solid #c4b6b6",
-                backgroundColor: "white",
-                boxShadow: "none",
-                borderRadius:"0px",
-                // hoverBackgroundColor: "lightgreen",
-                color: "black",
-                fontSize: "14px",
-                iconColor: "black",
-                lineColor: "grey",
-                placeholderColor: "grey",
-                clearIconMargin: "3px 8px 0 0",
-                zIndex: 39,
-              }}
-            />
-            </div>
-          </div>
-        </div>
-        {/* <div className="w-[1px] h-[22px] bg-qgray-border"></div>
-        <div className="flex-1 flex items-center px-4 relative">
-          <button
-            onClick={() => setToggleCat(!toggleCat)}
-            type="button"
-            className="w-full text-xs font-500 text-qgray flex justify-between items-center capitalize"
-          >
-            <span className="line-clamp-1">
-              {selectedCat ? selectedCat.name : ServeLangItem()?.category}
-            </span>
-            <span>
-              <svg
-                width="10"
-                height="5"
-                viewBox="0 0 10 5"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect
-                  x="9.18359"
-                  y="0.90918"
-                  width="5.78538"
-                  height="1.28564"
-                  transform="rotate(135 9.18359 0.90918)"
-                  fill="#8E8E8E"
-                />
-                <rect
-                  x="5.08984"
-                  y="5"
-                  width="5.78538"
-                  height="1.28564"
-                  transform="rotate(-135 5.08984 5)"
-                  fill="#8E8E8E"
-                />
-              </svg>
-            </span>
-          </button>
-          {toggleCat && (
-            <>
-              <div
-                className="w-full h-full fixed left-0 top-0 z-50"
-                onClick={() => setToggleCat(!toggleCat)}
-              ></div>
-              <div
-                className="w-[227px] h-auto absolute bg-white left-0 top-[29px] z-50 p-5"
-                style={{ boxShadow: "0px 15px 50px 0px rgba(0, 0, 0, 0.14)" }}
-              >
-                <ul className="flex flex-col space-y-2">
-                  {categories &&
-                    categories.map((item, i) => (
-                      <li onClick={() => categoryHandler(item)} key={i}>
-                        <span className="text-qgray text-sm font-400 border-b border-transparent hover:border-qyellow hover:text-qyellow cursor-pointer">
-                          {item.name}
-                        </span>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            </>
-          )}
-        </div> */}
-        {/*<div className="w-[1px] h-[22px] bg-qgray-border"></div>*/}
-        {/*<div className="w-[160px] flex items-center px-4 relative">*/}
-        {/*  <button*/}
-        {/*    onClick={() => setSubToggleCat(!subToggleCat)}*/}
-        {/*    type="button"*/}
-        {/*    className="w-full text-xs font-500 text-qgray flex justify-between items-center capitalize"*/}
-        {/*  >*/}
-        {/*    <span className="line-clamp-1">*/}
-        {/*      {selectedSubCat ? selectedSubCat.name : "Sub Categories"}*/}
-        {/*    </span>*/}
-        {/*    <span>*/}
-        {/*      <svg*/}
-        {/*        width="10"*/}
-        {/*        height="5"*/}
-        {/*        viewBox="0 0 10 5"*/}
-        {/*        fill="none"*/}
-        {/*        xmlns="http://www.w3.org/2000/svg"*/}
-        {/*      >*/}
-        {/*        <rect*/}
-        {/*          x="9.18359"*/}
-        {/*          y="0.90918"*/}
-        {/*          width="5.78538"*/}
-        {/*          height="1.28564"*/}
-        {/*          transform="rotate(135 9.18359 0.90918)"*/}
-        {/*          fill="#8E8E8E"*/}
-        {/*        />*/}
-        {/*        <rect*/}
-        {/*          x="5.08984"*/}
-        {/*          y="5"*/}
-        {/*          width="5.78538"*/}
-        {/*          height="1.28564"*/}
-        {/*          transform="rotate(-135 5.08984 5)"*/}
-        {/*          fill="#8E8E8E"*/}
-        {/*        />*/}
-        {/*      </svg>*/}
-        {/*    </span>*/}
-        {/*  </button>*/}
-        {/*  {subToggleCat && (*/}
-        {/*    <>*/}
-        {/*      <div*/}
-        {/*        className="w-full h-full fixed left-0 top-0 z-50"*/}
-        {/*        onClick={() => setSubToggleCat(!subToggleCat)}*/}
-        {/*      ></div>*/}
-        {/*      <div*/}
-        {/*        className="w-[227px] h-auto absolute bg-white left-0 top-[29px] z-50 p-5"*/}
-        {/*        style={{ boxShadow: "0px 15px 50px 0px rgba(0, 0, 0, 0.14)" }}*/}
-        {/*      >*/}
-        {/*        <ul className="flex flex-col space-y-2">*/}
-        {/*          {subCategories &&*/}
-        {/*            subCategories.map((item, i) => (*/}
-        {/*              <li onClick={() => subCategoryHandler(item)} key={i}>*/}
-        {/*                <span className="text-qgray text-sm font-400 border-b border-transparent hover:border-qyellow hover:text-qyellow cursor-pointer">*/}
-        {/*                  {item.name}*/}
-        {/*                </span>*/}
-        {/*              </li>*/}
-        {/*            ))}*/}
-        {/*        </ul>*/}
-        {/*      </div>*/}
-        {/*    </>*/}
-        {/*  )}*/}
-        {/*</div>*/}
-        {/* <select id="selectSearch" onChange={(e)=>setAction(e.target.value)} style={{height:"40px",outline:"none",marginLeft:"5px",marginRight:"5px"}} >
-          <option style={{height:"2033px",padding:"5px 4px",marginLeft: "1%",marginRight: "1%"}} value="product" >Product</option>
-          <option style={{height:"2033px",padding:"5px 4px"}} value="service" >Service</option>
-        </select> */}
-        <button
-          onClick={searchHandler}
-          className="search-btn w-[93px] h-full text-sm font-600"
-          type="button"
-        >
-          {ServeLangItem()?.Search}
-        </button>
+    <div className={`w-full flex items-center gap-3 ${className || ""}`}>
+      {/* Search Input */}
+      <div className="flex-1">
+        <ReactSearchAutocomplete
+          items={items}
+          placeholder="Search Products / Services"
+          fuseOptions={{ keys: ["name"] }}
+          resultStringKeyName="name"
+          onSearch={(string) => setSearchKey(string)}
+          onSelect={(item) => {
+            setSelectedQuery(item.name);
+            searchHandler();
+          }}
+          showIcon={false}
+          styling={{
+            height: "40px",
+            border: "2px solid #c4b6b6",
+            backgroundColor: "white",
+            fontSize: "14px",
+            zIndex: 100
+          }}
+        />
       </div>
-    </>
+
+      {/* Category Selector */}
+      <div className="relative" ref={categoryRef}>
+        <button
+          onClick={() => setToggleCat(!toggleCat)}
+          type="button"
+          className="text-xs font-semibold flex items-center px-3 py-1.5 bg-yellow-500 text-white rounded-md transition hover:bg-yellow-600"
+        >
+          {selectedCat ? selectedCat.name : "Category"}
+        </button>
+
+        {toggleCat && (
+          <div className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-md p-2 z-50">
+            <ul className="space-y-1">
+              {categories?.map((item, i) => (
+                <li
+                  key={i}
+                  onClick={() => categoryHandler(item)}
+                  className="cursor-pointer px-3 py-1.5 rounded-md transition hover:bg-yellow-100 hover:text-yellow-600"
+                >
+                  {item.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Search Button */}
+      <button onClick={searchHandler} className="px-4 py-2 bg-blue-500 text-white rounded transition hover:bg-blue-600">
+        {ServeLangItem()?.Search || "Search"}
+      </button>
+    </div>
   );
 }
 
 export const getServerSideProps = async (context) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}api/product?${
-      context.query.search
-        ? `search=${context.query.search}`
-        : context.query.category && context.query.search
-        ? `search=${context.query.search}&categories[]=${context.query.category}`
-        : `search=${context.query.search}`
-    }`
-  );
+  const searchParam = context.query.search ? `search=${context.query.search}` : "";
+  const categoryParam = context.query.category ? `&categories[]=${context.query.category}` : "";
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/product?${searchParam}${categoryParam}`);
   const data = await res.json();
-  return {
-    props: {
-      data,
-    },
-  };
+
+  return { props: { data } };
 };
