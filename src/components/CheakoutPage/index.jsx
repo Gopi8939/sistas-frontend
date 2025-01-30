@@ -1,3 +1,4 @@
+
 import axios from "axios";
 import {useRouter} from "next/router";
 import {useEffect, useState} from "react";
@@ -497,52 +498,52 @@ function CheakoutPage() {
       }
     }
   };
-  // const shippingHandler = (addressId, cityId) => {
-  //   setShipping(addressId);
-  //   const getRules =
-  //     shippingRules &&
-  //     shippingRules.filter((f) => parseInt(f.city_id) === cityId);
-  //   const defaultRule = shippingRules.filter(
-  //     (item) => parseInt(item.city_id) === 0
-  //   );
-  //   if (getRules && getRules.length > 0) {
-  //     const isIncluded = shippingRulesByCityId.some((value) =>
-  //         getRules.includes(value)
-  //     );
-  //     if (isIncluded) {
-  //       return setShippingRulesByCityId([...defaultRule, ...getRules]);
-  //     } else {
-  //       if (shippingRulesByCityId.length > 0) {
-  //         setShippingRulesByCityId([...defaultRule, ...getRules]);
-  //       } else {
-  //         setShippingRulesByCityId((prev) => [...prev, ...getRules]);
-  //       }
-  //     }
-  //   } else {
-  //     const defaultRule = shippingRules.filter(
-  //         (item) => parseInt(item.city_id) === 0
-  //     );
-  //     setShippingRulesByCityId(defaultRule);
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (
-  //     addresses &&
-  //     addresses.length > 0 &&
-  //     shippingRules &&
-  //     shippingRules.length > 0
-  //   ) {
-  //     shippingHandler(
-  //       parseInt(addresses[0].id),
-  //       parseInt(addresses[0].city_id)
-  //     );
-  //   }
-  // }, [shippingRules, addresses]);
+  const shippingHandler = (addressId, cityId) => {
+    setShipping(addressId);
+    const getRules =
+      shippingRules &&
+      shippingRules.filter((f) => parseInt(f.city_id) === cityId);
+    const defaultRule = shippingRules.filter(
+      (item) => parseInt(item.city_id) === 0
+    );
+    if (getRules && getRules.length > 0) {
+      const isIncluded = shippingRulesByCityId.some((value) =>
+          getRules.includes(value)
+      );
+      if (isIncluded) {
+        return setShippingRulesByCityId([...defaultRule, ...getRules]);
+      } else {
+        if (shippingRulesByCityId.length > 0) {
+          setShippingRulesByCityId([...defaultRule, ...getRules]);
+        } else {
+          setShippingRulesByCityId((prev) => [...prev, ...getRules]);
+        }
+      }
+    } else {
+      const defaultRule = shippingRules.filter(
+          (item) => parseInt(item.city_id) === 0
+      );
+      setShippingRulesByCityId(defaultRule);
+    }
+  };
+  useEffect(() => {
+    if (
+      addresses &&
+      addresses.length > 0 &&
+      shippingRules &&
+      shippingRules.length > 0
+    ) {
+      shippingHandler(
+        parseInt(addresses[0].id),
+        parseInt(addresses[0].city_id)
+      );
+    }
+  }, [shippingRules, addresses]);
 
-  // const selectedRuleHandler = (e, price) => {
-  //   setSelectedRule(e.target.value);
-  //   setShippingCharge(price);
-  // };
+  const selectedRuleHandler = (e, price) => {
+    setSelectedRule(e.target.value);
+    setShippingCharge(price);
+  };
   //delete address
   const deleteAddress = (id) => {
     if (auth()) {
@@ -562,34 +563,19 @@ function CheakoutPage() {
   const placeOrderHandler = async () => {
     if (auth()) {
       if (selectedBilling && selectedShipping) {
-        // if (selectedRule) {
+        if (selectedRule) {
           if (selectPayment) {
             if (selectPayment && selectPayment === "cashOnDelivery") {
-              const url = `${process.env.NEXT_PUBLIC_BASE_URL}api/user/checkout/cash-on-delivery`;
-              const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${auth() && auth().access_token}`,
-                  Accept: "application/json",
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  shipping_address_id: selectedShipping,
+              await apiRequest
+                .cashOnDelivery(
+                  {
+                    shipping_address_id: selectedShipping,
                     billing_address_id: selectedBilling,
-                    shipping_method_id: 1,
+                    shipping_method_id: parseInt(selectedRule),
                     coupon: couponCode && couponCode.code,
-                }),
-              })
-              // await apiRequest
-              //   .cashOnDelivery(
-              //     {
-              //       shipping_address_id: selectedShipping,
-              //       billing_address_id: selectedBilling,
-              //       shipping_method_id: parseInt(selectedRule),
-              //       coupon: couponCode && couponCode.code,
-              //     },
-              //     auth().access_token
-              //   )
+                  },
+                  auth().access_token
+                )
                 .then((res) => {
                   if (res.data) {
                     toast.success(res.data.message);
@@ -862,14 +848,13 @@ function CheakoutPage() {
           } else {
             toast.error(ServeLangItem()?.Please_Select_Your_Payment_Method);
           }
-        // } 
-        // else {
-        //   toast.error(ServeLangItem()?.Please_Select_Shipping_Rule);
-        // }
+        } else {
+          toast.error(ServeLangItem()?.Please_Select_Shipping_Rule);
+        }
       }
     }
   };
-console.log(shippingRulesByCityId,'shippingRulesByCityId')
+
   return (
     <>
       {carts && (
@@ -1043,12 +1028,12 @@ console.log(shippingRulesByCityId,'shippingRulesByCityId')
                             addresses.length > 0 &&
                             addresses.map((address, i) => (
                               <div
-                                // onClick={() =>
-                                //   shippingHandler(
-                                //     address.id,
-                                //     parseInt(address.city_id)
-                                //   )
-                                // }
+                                onClick={() =>
+                                  shippingHandler(
+                                    address.id,
+                                    parseInt(address.city_id)
+                                  )
+                                }
                                 key={i}
                                 className={`w-full p-5 border relative cursor-pointer ${
                                   address.id === selectedShipping
@@ -1602,11 +1587,11 @@ console.log(shippingRulesByCityId,'shippingRulesByCityId')
                         </p>
                       </div>
                     </div>
-                  {/*  <div className="shipping mb-6 mt-6">
+                    <div className="shipping mb-6 mt-6">
                       <span className="text-[15px] font-medium text-qblack mb-[18px] block">
                         {ServeLangItem()?.Shipping} (+)
                       </span>
-                       <div className="flex flex-col space-y-2.5">
+                      <div className="flex flex-col space-y-2.5">
                         {shippingRulesByCityId &&
                           shippingRulesByCityId.length > 0 &&
                           shippingRulesByCityId.map((rule, i) => (
@@ -1664,7 +1649,7 @@ console.log(shippingRulesByCityId,'shippingRulesByCityId')
                                               />
                                             </div>
                                             <span className="text-[15px] text-normal text-qgraytwo">
-                                              {rule.shipping_rule} 
+                                              {rule.shipping_rule}
                                             </span>
                                           </div>
                                           <span
@@ -1823,8 +1808,8 @@ console.log(shippingRulesByCityId,'shippingRulesByCityId')
                               )}
                             </div>
                           ))}
-                      </div> 
-                    </div>*/}
+                      </div>
+                    </div>
                     <div className="mt-[30px]">
                       <div className=" flex justify-between mb-5">
                         <p className="text-2xl font-medium text-qblack capitalize">
@@ -2552,5 +2537,3 @@ console.log(shippingRulesByCityId,'shippingRulesByCityId')
 }
 
 export default isAuth(CheakoutPage);
-
-
